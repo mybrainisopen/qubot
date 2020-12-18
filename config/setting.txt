@@ -1,0 +1,1 @@
+pip 버전 업데이트 : c:\python\python.exe -m pip install --upgrade pip

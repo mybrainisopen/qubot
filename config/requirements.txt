@@ -1,0 +1,8 @@
+pymysql
+numpy==1.19.3
+pandas
+sqlalchemy
+requests
+bs4
+lxml
+dart_fss
