@@ -1,7 +1,7 @@
-num1 = 17.141592
-num2 = 6.85361
-num3 = 17
-num4 = 19
+import pandas as pd
+import numpy as np
+df = pd.DataFrame({"A":[1,2,3], "B":[4,5,6], "C":[7,8,9]})
+print(df)
 
-num = int(num1)/3
-print(num, type(num))
+df.iloc[1][1:] = df.iloc[1][1:] * 7
+print(df)

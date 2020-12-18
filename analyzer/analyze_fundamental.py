@@ -565,56 +565,264 @@ class analyze_fundamental():
     # 성장성: 매출액증가율, 영업이익증가율, 순이익증가율, 유형자산증가율, 총자산증가율, 자기자본증가율
     def calc_sales_growth(self, stock):
         """매출액증가율 = [매출액TTM-(전분기)매출액TTM]/(전분기)매출액TTM"""
-        """운전자본회전율 = 매출액(TTM)/(전기)운전자본, 운전자본 = 매출채권+재고자산-매입채무"""
         # 필요항목 가져오기
-        sql = f"SELECT date, 매출액TTM, 매출채권, 재고자산, 매입채무, 운전자본회전율 FROM fundamental.`{stock}`"
+        sql = f"SELECT date, 매출액TTM, 매출액증가율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
         fs = self.cur.fetchall()
         fs = pd.DataFrame(fs)
         # 계산
         for idx in range(len(fs)):
             if idx == 0:
-                fs['운전자본회전율'][idx] = 0
-            elif (fs['매출채권'][idx - 1] + fs['재고자산'][idx - 1] - fs['매입채무'][idx - 1]) == 0:
-                fs['운전자본회전율'][idx] = 0
+                fs['매출액증가율'][idx] = 0
+            elif fs['매출액TTM'][idx - 1] == 0:
+                fs['매출액증가율'][idx] = 0
             else:
-                fs['운전자본회전율'][idx] = fs['매출액TTM'][idx] / (fs['매출채권'][idx - 1] + fs['재고자산'][idx - 1] - fs['매입채무'][idx - 1])
+                fs['매출액증가율'][idx] = (fs['매출액TTM'][idx] - fs['매출액TTM'][idx - 1]) / fs['매출액TTM'][idx - 1]
         # DB입력
         for row in fs.itertuples():
-            sql = f"UPDATE fundamental.`{stock}` SET 운전자본회전율={row.운전자본회전율} WHERE date='{row.date}'"
+            sql = f"UPDATE fundamental.`{stock}` SET 매출액증가율={row.매출액증가율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        print(f"[{self.now}] ({stock}) 운전자본회전율 계산 완료")
+        print(f"[{self.now}] ({stock}) 매출액증가율 계산 완료")
 
     def calc_operating_profit_growth(self, stock):
         """영업이익증가율 = [영업이익TTM-(전분기)영업이익TTM]/(전분기)영업이익TTM"""
+        # 필요항목 가져오기
+        sql = f"SELECT date, 영업이익TTM, 영업이익증가율 FROM fundamental.`{stock}`"
+        self.cur.execute(sql)
+        fs = self.cur.fetchall()
+        fs = pd.DataFrame(fs)
+        # 계산
+        for idx in range(len(fs)):
+            if idx == 0:
+                fs['영업이익증가율'][idx] = 0
+            elif fs['영업이익TTM'][idx - 1] == 0:
+                fs['영업이익증가율'][idx] = 0
+            else:
+                fs['영업이익증가율'][idx] = (fs['영업이익TTM'][idx] - fs['영업이익TTM'][idx - 1]) / fs['영업이익TTM'][idx - 1]
+        # DB입력
+        for row in fs.itertuples():
+            sql = f"UPDATE fundamental.`{stock}` SET 영업이익증가율={row.영업이익증가율} WHERE date='{row.date}'"
+            self.cur.execute(sql)
+            self.conn.commit()
+        print(f"[{self.now}] ({stock}) 영업이익증가율 계산 완료")
 
     def calc_net_income_growth(self, stock):
-        """순이익증가율 = [당기순이익TTM-(전분기)당기순이익TTM]/(전분기)당기순이익TTM"""
+        """순이익증가율 = [순이익TTM-(전분기)순이익TTM]/(전분기)순이익TTM"""
+        # 필요항목 가져오기
+        sql = f"SELECT date, 순이익TTM, 순이익증가율 FROM fundamental.`{stock}`"
+        self.cur.execute(sql)
+        fs = self.cur.fetchall()
+        fs = pd.DataFrame(fs)
+        # 계산
+        for idx in range(len(fs)):
+            if idx == 0:
+                fs['순이익증가율'][idx] = 0
+            elif fs['순이익TTM'][idx - 1] == 0:
+                fs['순이익증가율'][idx] = 0
+            else:
+                fs['순이익증가율'][idx] = (fs['순이익TTM'][idx] - fs['순이익TTM'][idx - 1]) / fs['순이익TTM'][idx - 1]
+        # DB입력
+        for row in fs.itertuples():
+            sql = f"UPDATE fundamental.`{stock}` SET 순이익증가율={row.순이익증가율} WHERE date='{row.date}'"
+            self.cur.execute(sql)
+            self.conn.commit()
+        print(f"[{self.now}] ({stock}) 순이익증가율 계산 완료")
 
     def calc_property_growth(self, stock):
         """유형자산증가율 = [유형자산-(전분기)유형자산]/(전분기)유형자산"""
+        # 필요항목 가져오기
+        sql = f"SELECT date, 유형자산, 유형자산증가율 FROM fundamental.`{stock}`"
+        self.cur.execute(sql)
+        fs = self.cur.fetchall()
+        fs = pd.DataFrame(fs)
+        # 계산
+        for idx in range(len(fs)):
+            if idx == 0:
+                fs['유형자산증가율'][idx] = 0
+            elif fs['유형자산'][idx - 1] == 0:
+                fs['유형자산증가율'][idx] = 0
+            else:
+                fs['유형자산증가율'][idx] = (fs['유형자산'][idx] - fs['유형자산'][idx - 1]) / fs['유형자산'][idx - 1]
+        # DB입력
+        for row in fs.itertuples():
+            sql = f"UPDATE fundamental.`{stock}` SET 유형자산증가율={row.유형자산증가율} WHERE date='{row.date}'"
+            self.cur.execute(sql)
+            self.conn.commit()
+        print(f"[{self.now}] ({stock}) 유형자산증가율 계산 완료")
 
     def calc_assets_growth(self, stock):
         """총자산증가율 = [자산총계-(전분기)자산총계]/(전분기)자산총계"""
+        # 필요항목 가져오기
+        sql = f"SELECT date, 자산총계, 총자산증가율 FROM fundamental.`{stock}`"
+        self.cur.execute(sql)
+        fs = self.cur.fetchall()
+        fs = pd.DataFrame(fs)
+        # 계산
+        for idx in range(len(fs)):
+            if idx == 0:
+                fs['총자산증가율'][idx] = 0
+            elif fs['자산총계'][idx - 1] == 0:
+                fs['총자산증가율'][idx] = 0
+            else:
+                fs['총자산증가율'][idx] = (fs['자산총계'][idx] - fs['자산총계'][idx - 1]) / fs['자산총계'][idx - 1]
+        # DB입력
+        for row in fs.itertuples():
+            sql = f"UPDATE fundamental.`{stock}` SET 총자산증가율={row.총자산증가율} WHERE date='{row.date}'"
+            self.cur.execute(sql)
+            self.conn.commit()
+        print(f"[{self.now}] ({stock}) 총자산증가율 계산 완료")
 
     def calc_capital_growth(self, stock):
         """자기자본증가율 = [자본총계-(전분기)자본총계]/(전분기)자본총계"""
+        # 필요항목 가져오기
+        sql = f"SELECT date, 자본총계, 자기자본증가율 FROM fundamental.`{stock}`"
+        self.cur.execute(sql)
+        fs = self.cur.fetchall()
+        fs = pd.DataFrame(fs)
+        # 계산
+        for idx in range(len(fs)):
+            if idx == 0:
+                fs['자기자본증가율'][idx] = 0
+            elif fs['자본총계'][idx - 1] == 0:
+                fs['자기자본증가율'][idx] = 0
+            else:
+                fs['자기자본증가율'][idx] = (fs['자본총계'][idx] - fs['자본총계'][idx - 1]) / fs['자본총계'][idx - 1]
+        # DB입력
+        for row in fs.itertuples():
+            sql = f"UPDATE fundamental.`{stock}` SET 자기자본증가율={row.자기자본증가율} WHERE date='{row.date}'"
+            self.cur.execute(sql)
+            self.conn.commit()
+        print(f"[{self.now}] ({stock}) 자기자본증가율 계산 완료")
 
     # 주당가치: EPS, BPS, SPS, CPS
     def calc_EPS(self, stock):
-        """EPS = 당기순이익TTM/발행주식수"""
+        """EPS = 순이익TTM/발행주식수"""
+        # 필요항목 가져오기
+        sql = f"SELECT date, 순이익TTM, EPS FROM fundamental.`{stock}`"
+        self.cur.execute(sql)
+        fs = self.cur.fetchall()
+        fs = pd.DataFrame(fs)
+        sql = f"SELECT shares FROM stock_info.stock_info WHERE stock='{stock}'"
+        self.cur.execute(sql)
+        shares = self.cur.fetchone()['shares']
+        # 계산
+        for idx in range(len(fs)):
+            fs['EPS'][idx] = fs['순이익TTM'][idx] / shares
+        # DB입력
+        for row in fs.itertuples():
+            sql = f"UPDATE fundamental.`{stock}` SET EPS={row.EPS} WHERE date='{row.date}'"
+            self.cur.execute(sql)
+            self.conn.commit()
+        print(f"[{self.now}] ({stock}) EPS 계산 완료")
 
     def calc_BPS(self, stock):
         """BPS = 자본총계/발행주식수"""
+        # 필요항목 가져오기
+        sql = f"SELECT date, 자본총계, BPS FROM fundamental.`{stock}`"
+        self.cur.execute(sql)
+        fs = self.cur.fetchall()
+        fs = pd.DataFrame(fs)
+        sql = f"SELECT shares FROM stock_info.stock_info WHERE stock='{stock}'"
+        self.cur.execute(sql)
+        shares = self.cur.fetchone()['shares']
+        # 계산
+        for idx in range(len(fs)):
+            fs['BPS'][idx] = fs['자본총계'][idx] / shares
+        # DB입력
+        for row in fs.itertuples():
+            sql = f"UPDATE fundamental.`{stock}` SET BPS={row.BPS} WHERE date='{row.date}'"
+            self.cur.execute(sql)
+            self.conn.commit()
+        print(f"[{self.now}] ({stock}) BPS 계산 완료")
 
     def calc_SPS(self, stock):
         """SPS = 매출액TTM/발행주식수"""
+        # 필요항목 가져오기
+        sql = f"SELECT date, 매출액TTM, SPS FROM fundamental.`{stock}`"
+        self.cur.execute(sql)
+        fs = self.cur.fetchall()
+        fs = pd.DataFrame(fs)
+        sql = f"SELECT shares FROM stock_info.stock_info WHERE stock='{stock}'"
+        self.cur.execute(sql)
+        shares = self.cur.fetchone()['shares']
+        # 계산
+        for idx in range(len(fs)):
+            fs['SPS'][idx] = fs['매출액TTM'][idx] / shares
+        # DB입력
+        for row in fs.itertuples():
+            sql = f"UPDATE fundamental.`{stock}` SET SPS={row.SPS} WHERE date='{row.date}'"
+            self.cur.execute(sql)
+            self.conn.commit()
+        print(f"[{self.now}] ({stock}) SPS 계산 완료")
 
     def calc_CPS(self, stock):
         """CPS = 영업현금TTM/발행주식수"""
+        # 필요항목 가져오기
+        sql = f"SELECT date, 영업현금TTM, CPS FROM fundamental.`{stock}`"
+        self.cur.execute(sql)
+        fs = self.cur.fetchall()
+        fs = pd.DataFrame(fs)
+        sql = f"SELECT shares FROM stock_info.stock_info WHERE stock='{stock}'"
+        self.cur.execute(sql)
+        shares = self.cur.fetchone()['shares']
+        # 계산
+        for idx in range(len(fs)):
+            fs['CPS'][idx] = fs['영업현금TTM'][idx] / shares
+        # DB입력
+        for row in fs.itertuples():
+            sql = f"UPDATE fundamental.`{stock}` SET CPS={row.CPS} WHERE date='{row.date}'"
+            self.cur.execute(sql)
+            self.conn.commit()
+        print(f"[{self.now}] ({stock}) CPS 계산 완료")
 
-
+    # Piotroski f-score
+    def calc_f_score(self, stock):
+        """ ROA : 순이익TTM > 0
+            CFO : 영업현금TTM > 0
+            dROA : ROA 증가
+            ACCRUAL : 순이익TTM < 영업현금TTM
+            dLEVER : 비유동부채/자산총계 비율 감소
+            dLIQUID : 유동비율 증가
+            EQ_OFFER : 발행주식수 x
+            dMARGIN : GPM 증가
+            dTURN : 총자산회전율 증가 """
+        # 필요항목 가져오기
+        sql = f"SELECT date, 비유동부채, 자산총계, 발행주식수, 순이익TTM, 영업현금TTM, 유동비율, 총자산회전율, ROA, GPM, F_SCORE FROM fundamental.`{stock}`"
+        self.cur.execute(sql)
+        fs = self.cur.fetchall()
+        fs = pd.DataFrame(fs)
+        # 계산
+        for idx in range(len(fs)):
+            if idx == 0:
+                fs['F_SCORE'][idx] = 0
+            else:
+                ROA, CFO, dROA, ACCRUAL, dLEVER, dLIQUID, EQ_OFFER, dMARGIN, dTURN = 0, 0, 0, 0, 0, 0, 0, 0, 0
+                if fs['순이익TTM'][idx] > 0:
+                    ROA = 1
+                if fs['영업현금TTM'][idx] > 0:
+                    CFO = 1
+                if fs['ROA'][idx] > fs['ROA'][idx-1]:
+                    dROA = 1
+                if fs['순이익TTM'][idx] < fs['영업현금TTM'][idx]:
+                    ACCRUAL = 1
+                if fs['비유동부채'][idx]/fs['자산총계'][idx] < fs['비유동부채'][idx-1]/fs['자산총계'][idx-1]:
+                    dLEVER = 1
+                if fs['유동비율'][idx] > fs['유동비율'][idx-1]:
+                    dLIQUID = 1
+                if fs['발행주식수'][idx] == 0:
+                    EQ_OFFER = 1
+                if fs['GPM'][idx] > fs['GPM'][idx-1]:
+                    dMARGIN = 1
+                if fs['총자산회전율'][idx] > fs['총자산회전율'][idx-1]:
+                    dTURN = 1
+                fs['F_SCORE'][idx] = ROA + CFO + dROA + ACCRUAL + dLEVER + dLIQUID + EQ_OFFER + dMARGIN + dTURN
+        # DB입력
+        for row in fs.itertuples():
+            sql = f"UPDATE fundamental.`{stock}` SET F_SCORE={row.F_SCORE} WHERE date='{row.date}'"
+            self.cur.execute(sql)
+            self.conn.commit()
+        print(f"[{self.now}] ({stock}) F_SCORE 계산 완료")
 
     def analyze_fundamental_by_stock(self, stock):
         '''종목별로 재무분석 실행'''
@@ -651,7 +859,7 @@ class analyze_fundamental():
         self.calc_BPS(stock)  # BPS
         self.calc_SPS(stock)  # SPS
         self.calc_CPS(stock)  # CPS
-
+        self.calc_f_score(stock)  # F_SCORE
 
     def analyze_fundamental(self):
         '''전체 종목 재무분석 실행'''
@@ -666,16 +874,7 @@ class analyze_fundamental():
 
 
 
-    # Piotroski f-score
-        """ROA : 당기순이익TTM > 0"""
-        """CFO : 영업현금TTM > 0"""
-        """dROA : ROA증가"""
-        """ACCRUAL : 당기순이익TTM < 영업현금TTM"""
-        """dLEVER : 비유동부채/자산총계 비율 감소"""
-        """dLIQUID : 유동비율 증가"""
-        """EQ_OFFER : 보통주발행x"""
-        """dMARGIN : 매출총이익률 증가"""
-        """dTURN : 총자산회전율 증가"""
+
 
 
 
