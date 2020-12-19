@@ -20,10 +20,8 @@ class scrap_all():
         self.cur = self.conn.cursor()
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
         self.today = datetime.date.today()
-
         # DB초기화
         self.initialize_db()
-        
         # 스크랩 모듈 불러오기
         self.ssi = ssi.scrap_stock_info()
         self.smi = smi.scrap_market_index()

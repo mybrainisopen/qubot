@@ -72,7 +72,6 @@ class db_sql():
 
 if __name__ == "__main__":
     sdb = db_sql()
-    sdb.drop_db(db_name='fundamental')
-    # sdb.init_db_tbl_col(db_name='status', tbl_name='scrap_stock_status', col_name='financial_statements_scraped')
-    # sdb.drop_db_tbl(db_name='financial_statements', tbl_name='한일홀딩스')
+    sdb.drop_db(db_name='momentum')
+    sdb.init_db_tbl_col(db_name='status', tbl_name='analyze_stock_status', col_name='momentum_analyzed')
     print("테스트 완료")

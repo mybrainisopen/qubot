@@ -16,7 +16,7 @@ class analyze_fundamental():
             cursorclass=pymysql.cursors.DictCursor)
         self.cur = self.conn.cursor()
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
-        self.today = datetime.datetime.today().strftime('%Y%m%d')
+        self.today = datetime.datetime.today().strftime('%Y-%m-%d')
         # DB초기화
         self.initialize_db()
         # 데이터프레임 조작시 SettingWithCopyWarning 에러 안 뜨게 처리
@@ -69,7 +69,7 @@ class analyze_fundamental():
                     'GPM': 'FLOAT', 'OPM': 'FLOAT', 'NPM': 'FLOAT', 'ROE': 'FLOAT', 'ROA': 'FLOAT', 'ROIC': 'FLOAT', 'GPA': 'FLOAT',
                     '총자산회전율': 'FLOAT', '유형자산회전율': 'FLOAT', '영업자산회전율': 'FLOAT', '재고자산회전율': 'FLOAT', '매출채권회전율': 'FLOAT', '매입채무회전율': 'FLOAT', '운전자본회전율': 'FLOAT',
                     '매출액증가율': 'FLOAT', '영업이익증가율': 'FLOAT', '순이익증가율': 'FLOAT', '유형자산증가율': 'FLOAT', '총자산증가율': 'FLOAT', '자기자본증가율': 'FLOAT',
-                    'EPS': 'BIGINT(20)', 'BPS': 'BIGINT(20)', 'SPS': 'BIGINT(20)', 'CPS': 'BIGINT(20)', 'F_SCORE': 'INT(10)'}
+                    'EPS': 'BIGINT(20)', 'BPS': 'BIGINT(20)', 'SPS': 'BIGINT(20)', 'CPS': 'BIGINT(20)', 'EPS증가율': 'FLOAT', 'F_SCORE': 'INT(10)'}
         for col_name in col_list:
             sql = f"ALTER TABLE fundamental.`{stock}` ADD {col_name} {col_list[col_name]}"
             self.cur.execute(sql)
@@ -776,6 +776,28 @@ class analyze_fundamental():
             self.conn.commit()
         print(f"[{self.now}] ({stock}) CPS 계산 완료")
 
+    def calc_EPS_growth(self, stock):
+        """EPS증가율 = (EPS-(전분기)EPS)/(전분기)EPS"""
+        # 필요항목 가져오기
+        sql = f"SELECT date, EPS, EPS증가율 FROM fundamental.`{stock}`"
+        self.cur.execute(sql)
+        fs = self.cur.fetchall()
+        fs = pd.DataFrame(fs)
+        # 계산
+        for idx in range(len(fs)):
+            if idx == 0:
+                fs['EPS증가율'][idx] = 0
+            elif fs['EPS'][idx - 1] == 0:
+                fs['EPS증가율'][idx] = 0
+            else:
+                fs['EPS증가율'][idx] = (fs['EPS'][idx] - fs['EPS'][idx - 1]) / fs['EPS'][idx - 1]
+        # DB입력
+        for row in fs.itertuples():
+            sql = f"UPDATE fundamental.`{stock}` SET EPS증가율={row.EPS증가율} WHERE date='{row.date}'"
+            self.cur.execute(sql)
+            self.conn.commit()
+        print(f"[{self.now}] ({stock}) EPS증가율 계산 완료")
+
     # Piotroski f-score
     def calc_f_score(self, stock):
         """ ROA : 순이익TTM > 0
@@ -859,6 +881,7 @@ class analyze_fundamental():
         self.calc_BPS(stock)  # BPS
         self.calc_SPS(stock)  # SPS
         self.calc_CPS(stock)  # CPS
+        self.calc_EPS_growth(stock)  # EPS증가율
         self.calc_f_score(stock)  # F_SCORE
 
     def analyze_fundamental(self):
@@ -871,14 +894,50 @@ class analyze_fundamental():
         stock_list = self.cur.fetchall()
         stock_list = pd.DataFrame(stock_list)
 
+        print(f"[{self.now}] (전종목) 펀더멘털 계산 시작")
+        for idx in range(len(stock_list)):
+            stock = stock_list['stock'][idx]
+            check_analysis = stock_list['fundamental_analyzed'][idx]
+            check_scrap = stock_list['financial_statements_scraped'][idx]
 
-
-
-
-
+            # 종목별, 스크랩 상태별 스크랩 실행
+            if check_scrap is None:  # 스크랩이 아직 안된 경우 다음 종목으로 그냥 넘어감
+                print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 아직 안됨")
+                continue
+            elif check_scrap == datetime.date(9000, 1, 1):  # 스크랩 비대상 종목(90000101)은 펀더멘털 계산 비대상 종목(90000101)으로 처리
+                sql = f"UPDATE status.analyze_stock_status SET fundamental_analyzed='90000101' WHERE stock='{stock}'"
+                self.cur.execute(sql)
+                self.conn.commit()
+                print(f"[{self.now}] ({idx+1}/{stock}) 펀더멘털 계산 비대상 종목")
+                continue
+            elif check_scrap == datetime.date(1000, 1, 1):  # 스크랩 에러가 났던 종목(10000101)은 펀더멘털 계산하되 펀더멘털 계산 에러 종목(10000101)로 처리
+                try:
+                    self.analyze_fundamental_by_stock(stock=stock)
+                except Exception as e:
+                    print(f"[{self.now}] ({idx+1}/{stock}) 펀더멘털 계산 미완료:", str(e))
+                sql = f"UPDATE status.analyze_stock_status SET fundamental_analyzed='10000101' WHERE stock='{stock}'"
+                self.cur.execute(sql)
+                self.conn.commit()
+                print(f"[{self.now}] ({idx+1}/{stock}) 펀더멘털 계산 미완료")
+                continue
+            elif check_analysis is None:
+                self.analyze_fundamental_by_stock(stock=stock)
+                sql = f"UPDATE status.analyze_stock_status SET fundamental_analyzed='{self.today}' WHERE stock='{stock}'"
+                self.cur.execute(sql)
+                self.conn.commit()
+                print(f"[{self.now}] ({idx+1}/{stock}) 펀더멘털 계산 완료")
+                continue
+            elif check_analysis.strftime('%Y%m') == datetime.date.today().strftime('%Y%m'):  # 이번달에 펀더멘털 계산을 이미 했다면 그냥 넘어감
+                print(f"[{self.now}] ({idx+1}/{stock}) 펀더멘털 계산 이미 완료됨")
+                continue
+            elif check_analysis.strftime('%Y%m') < datetime.date.today().strftime('%Y%m'):  # 펀더멘털 계산한지 한 달이 지난 종목은 다시 계산
+                self.analyze_fundamental_by_stock(stock=stock)
+                print(f"[{self.now}] ({idx+1}/{stock}) 펀더멘털 계산 완료")
+                continue
+        print(f"[{self.now}] (전종목) 펀더멘털 계산 완료")
 
 
 if __name__=="__main__":
     analyze_fundamental = analyze_fundamental()
-    analyze_fundamental.analyze_fundamental_by_stock(stock='동화약품')
-    # analyze_fundamental.analyze_fundamental()
+    # analyze_fundamental.analyze_fundamental_by_stock(stock='동화약품')
+    analyze_fundamental.analyze_fundamental()

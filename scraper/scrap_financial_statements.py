@@ -401,19 +401,19 @@ class scrap_financial_statements():
             check = stock_list['financial_statements_scraped'][idx]
 
             # 종목별, 스크랩 상태별 스크랩 실행
-            if wics in ['은행', '창업투자', '부동산', '손해보험', '생명보험', '증권']:  # 스크랩 비대상 종목 처리
+            if wics in ['은행', '창업투자', '부동산', '손해보험', '생명보험', '증권', '카드', '기타금융']:  # 스크랩 비대상 종목(90000101) 처리
                 sql = f"UPDATE status.scrap_stock_status SET financial_statements_scraped='90000101' WHERE stock='{stock}'"
                 self.cur.execute(sql)
                 self.conn.commit()
-                print(f"[{self.now}] ({stock}/{wics}) 재무제표 스크랩 비대상 종목")
+                print(f"[{self.now}] ({idx+1}/{stock}/{wics}) 재무제표 스크랩 비대상 종목")
                 continue
             elif check is None:  # 스크랩이 아직 안된 경우 전체 스크랩 실행
                 self.scrap_financial_statements_by_start_year_stock(start_year=2016, stock=stock)
-                print(f"[{self.now}] ({idx + 1}/{stock}) 재무제표 스크랩 완료")
+                print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 완료")
                 continue
             elif check == datetime.date(1000, 1, 1):  # 스크랩 에러가 났던 종목(10000101)은 다시 처음부터 스크랩
                 self.scrap_financial_statements_by_start_year_stock(start_year=2016, stock=stock)
-                print(f"[{self.now}] ({idx + 1}/{stock}) 재무제표 스크랩 완료")
+                print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 완료")
                 continue
             elif check.strftime('%Y%m') == datetime.date.today().strftime('%Y%m'):  # 이번달에 스크랩을 이미 했다면 그냥 넘어감
                 print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 이미 완료됨")

@@ -1,10 +1,7 @@
 import pymysql
-import requests
-import time
 import pandas as pd
 import config.config as cf
 from datetime import datetime
-from bs4 import BeautifulSoup
 
 class backtester():
     def __init__(self):
@@ -19,7 +16,8 @@ class backtester():
         self.cur = self.conn.cursor()
         self.now = datetime.now().strftime('%Y-%m-%d %H:%M')
         self.today = datetime.today().strftime('%Y-%m-%d')
-
+        # 데이터프레임 조작시 SettingWithCopyWarning 에러 안 뜨게 처리
+        pd.options.mode.chained_assignment = None
         # DB초기화
         self.initialize_db()
 
@@ -55,16 +53,22 @@ class backtester():
             self.conn.commit()
             print(f"[{self.now}] backtest_result 스키마 생성")
 
+    def create_book_table(self, strategy):
+        pass
+
+    def create_portfolio_table(self, strategy):
+        pass
+
     def get_universe(self):
         pass
 
-    def backtest_book(self):
+    def backtest_book(self, strategy):
         pass
 
-    def backtest_portfolio(self):
+    def backtest_portfolio(self, strategy):
         pass
 
-    def backtest_result(self):
+    def backtest_result(self, strategy):
         pass
 
 if __name__=="__main__":

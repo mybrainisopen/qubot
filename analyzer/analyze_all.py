@@ -4,7 +4,7 @@ from config import config as cf
 from analyzer import analyze_fundamental as af
 from analyzer import analyze_valuation as av
 from analyzer import analyze_momentum as am
-from analyzer import universe_builder as au
+from analyzer import build_universe as bu
 
 class analyze_all():
     def __init__(self):
@@ -19,15 +19,13 @@ class analyze_all():
         self.cur = self.conn.cursor()
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
         self.today = datetime.date.today()
-
         # DB초기화
         self.initialize_db()
-        
         # 분석 모듈 불러오기
         self.af = af.analyze_fundamental()
         self.av = av.analyze_valuation()
         self.am = am.analyze_momentum()
-        self.au = au.universe_builder()
+        self.bu = bu.universe_builder()
 
     def initialize_db(self):
         '''DB초기화'''
@@ -135,7 +133,7 @@ class analyze_all():
             print(f"[{self.now}] fundamental 분석 시작!")
             # fundamental 분석 실행
             self.af.analyze_fundamental()
-            sql = f"UPDATE status.analyze_all_status SET fundamental_analyzed='20200101'"  #'{self.today}'"
+            sql = f"UPDATE status.analyze_all_status SET fundamental_analyzed='{self.today}'"
             self.cur.execute(sql)
             self.conn.commit()
             print(f"[{self.now}] fundamental 분석 완료!")
@@ -144,7 +142,7 @@ class analyze_all():
             print(f"[{self.now}] valuation 분석 시작!")
             # valuation 분석 실행
             self.av.analyze_valuation()
-            sql = f"UPDATE status.analyze_all_status SET valuation_analyzed='20200101'"  #'{self.today}'"
+            sql = f"UPDATE status.analyze_all_status SET valuation_analyzed='{self.today}'"
             self.cur.execute(sql)
             self.conn.commit()
             print(f"[{self.now}] valuation 분석 완료!")
@@ -153,7 +151,7 @@ class analyze_all():
             print(f"[{self.now}] momentum 분석 시작!")
             # momentum 분석 실행
             self.am.analyze_momentum()
-            sql = f"UPDATE status.analyze_all_status SET momentum_analyzed='20200101'"  #'{self.today}'"
+            sql = f"UPDATE status.analyze_all_status SET momentum_analyzed='{self.today}'"
             self.cur.execute(sql)
             self.conn.commit()
             print(f"[{self.now}] momentum 분석 완료!")
@@ -161,7 +159,7 @@ class analyze_all():
         if checklist[3] != self.today:
             print(f"[{self.now}] universe 분석 시작!")
             # universe 분석 실행
-            self.au.universe_builder()
+            self.bu.universe_builder()
             sql = f"UPDATE status.analyze_all_status SET universe_analyzed='20200101'"  #'{self.today}'"
             self.cur.execute(sql)
             self.conn.commit()
