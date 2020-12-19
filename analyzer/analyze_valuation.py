@@ -5,7 +5,7 @@ import datetime
 
 class analyze_valuation():
     def __init__(self):
-        """생성자"""
+        '''생성자'''
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -20,7 +20,7 @@ class analyze_valuation():
         self.initialize_db()
 
     def initialize_db(self):
-        """DB초기화"""
+        '''DB초기화'''
         # valuation 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'valuation'"
         if self.cur.execute(sql):
@@ -32,7 +32,7 @@ class analyze_valuation():
             print(f"[{self.now}] valuation 스키마 생성")
 
     def create_table(self, stock):
-        """종목별 밸류에이션 테이블 생성 함수"""
+        '''종목별 밸류에이션 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'valuation' and table_name = '{stock}'"
         if self.cur.execute(sql):
             print(f"[{self.now}] valuation.{stock} 테이블 존재함")
@@ -183,5 +183,4 @@ class analyze_valuation():
 
 if __name__=="__main__":
     analyze_valuation = analyze_valuation()
-    # analyze_valuation.analyze_valuation_by_date_stock('20170101', '20181231', '동화약품')
     analyze_valuation.analyze_valuation()

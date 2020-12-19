@@ -165,7 +165,6 @@ class analyze_all():
             self.conn.commit()
             print(f"[{self.now}] universe 분석 완료!")
 
-
 if __name__ == '__main__':
     analyze_all = analyze_all()
     analyze_all.analysis_check()

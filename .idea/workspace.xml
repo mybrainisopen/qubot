@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe5df4b0-3be7-42b5-ac85-31d96f15a87f" name="Default Changelist" comment="">
+    <list default="true" id="fe5df4b0-3be7-42b5-ac85-31d96f15a87f" name="Default Changelist" comment="20201219-momentum">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/analyzer/analyze_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_all.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/analyzer/analyze_fundamental.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_fundamental.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/analyzer/analyze_momentum.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_momentum.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/analyzer/analyze_valuation.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_valuation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyzer/universe_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/build_universe.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyzer/build_universe.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/build_universe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backtester/backtester.py" beforeDir="false" afterPath="$PROJECT_DIR$/backtester/backtester.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/db_sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/db_sql.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/documents/qubot.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/documents/qubot.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scraper/scrap_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_all.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scraper/scrap_daily_price.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_daily_price.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scraper/scrap_financial_statements.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_financial_statements.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scraper/scrap_macro_economics.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_macro_economics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scraper/scrap_market_index.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_market_index.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scraper/scrap_stock_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_stock_info.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +40,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../study" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
   </component>
-  <component name="RunManager" selected="Python.db_sql">
+  <component name="RunManager" selected="Python.analyze_all">
     <configuration name="analyze_all" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="qubot" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -145,11 +148,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.analyze_all" />
         <item itemvalue="Python.db_sql" />
         <item itemvalue="Python.scrap_all" />
         <item itemvalue="Python.analyze_momentum" />
         <item itemvalue="Python.analyze_fundamental" />
-        <item itemvalue="Python.analyze_all" />
       </list>
     </recent_temporary>
   </component>
@@ -169,11 +172,19 @@
       <option name="project" value="LOCAL" />
       <updated>1608291627530</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="20201219-momentum">
+      <created>1608402947105</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1608402947105</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="20201218" />
-    <option name="LAST_COMMIT_MESSAGE" value="20201218" />
+    <MESSAGE value="20201219-momentum" />
+    <option name="LAST_COMMIT_MESSAGE" value="20201219-momentum" />
   </component>
 </project>

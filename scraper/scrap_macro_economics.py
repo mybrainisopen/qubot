@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 
 class scrap_macro_economics():
     def __init__(self):
-        """생성자"""
+        '''생성자'''
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -25,7 +25,7 @@ class scrap_macro_economics():
         self.initialize_db()
 
     def initialize_db(self):
-        """DB초기화"""
+        '''DB초기화'''
         # macro_economics 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'macro_economics'"
         if self.cur.execute(sql):

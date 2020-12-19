@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 
 class scrap_daily_price():
     def __init__(self):
-        """생성자"""
+        '''생성자'''
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -20,12 +20,11 @@ class scrap_daily_price():
         self.now = datetime.now().strftime('%Y-%m-%d %H:%M')
         self.today = datetime.today().strftime('%Y-%m-%d')
         self.headers = {'User-Agent': cf.user_agent}
-
         # DB초기화
         self.initialize_db()
 
     def initialize_db(self):
-        """DB초기화"""
+        '''DB초기화'''
         # daily_price 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'daily_price'"
         if self.cur.execute(sql):
@@ -37,7 +36,7 @@ class scrap_daily_price():
             print(f"[{self.now}] daily_price 스키마 생성")
 
     def create_tbl(self, stock):
-        """종목별 주가 테이블 생성 함수"""
+        '''종목별 주가 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'daily_price' and table_name = '{stock}'"
         if self.cur.execute(sql):
             print(f"[{self.now}] daily_price.{stock} 테이블 존재함")
@@ -56,7 +55,7 @@ class scrap_daily_price():
             print(f"[{self.now}] daily_price.{stock} 테이블 생성 완료")
 
     def scrap_daily_price(self):
-        """daily_price 스크랩"""
+        '''daily_price 스크랩'''
         # 종목 리스트 가져오기
         sql = "SELECT code, stock from status.scrap_stock_status"
         self.cur.execute(sql)

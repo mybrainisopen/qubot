@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 
 class scrap_market_index():
     def __init__(self):
-        """생성자"""
+        '''생성자'''
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -20,11 +20,11 @@ class scrap_market_index():
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
         self.today = datetime.date.today()
         self.headers = {'User-Agent': cf.user_agent}
-
         # DB초기화
         self.initialize_db()
 
     def initialize_db(self):
+        '''DB 초기화'''
         # market_index 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'market_index'"
         if self.cur.execute(sql):
@@ -73,6 +73,7 @@ class scrap_market_index():
 
 
     def scrap_kospi(self):
+        '''코스피 지수 스크랩'''
         print(f"[{self.now}] (KOSPI지수) 스크랩 시작")
         sql = "SELECT max(date) FROM market_index.kospi"
         self.cur.execute(sql)
@@ -113,9 +114,9 @@ class scrap_market_index():
             self.cur.execute(sql)
             self.conn.commit()
         print(f"[{self.now}] (KOSPI지수) 스크랩 완료")
-        pass
 
     def scrap_kosdaq(self):
+        '''코스닥 지수 스크랩'''
         print(f"[{self.now}] (KOSDAQ지수) 스크랩 시작")
         sql = "SELECT max(date) FROM market_index.kosdaq"
         self.cur.execute(sql)
@@ -156,8 +157,6 @@ class scrap_market_index():
             self.cur.execute(sql)
             self.conn.commit()
         print(f"[{self.now}] (KOSDAQ지수) 스크랩 완료")
-        pass
-
 
 if __name__ == '__main__':
     scrap_market_index = scrap_market_index()

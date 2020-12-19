@@ -183,8 +183,6 @@ class scrap_all():
             self.conn.commit()
             print(f"[{self.now}] financial_statements 스크랩 완료!")
 
-
-
 if __name__ == '__main__':
     scrap_all = scrap_all()
     scrap_all.scrap_check()

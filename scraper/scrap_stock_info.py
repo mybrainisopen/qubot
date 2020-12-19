@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 class scrap_stock_info():
     def __init__(self):
-        """생성자"""
+        '''생성자'''
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -21,12 +21,11 @@ class scrap_stock_info():
         self.now = datetime.now().strftime('%Y-%m-%d %H:%M')
         self.today = datetime.today().strftime('%Y-%m-%d')
         self.headers = {'User-Agent': cf.user_agent}
-
         # DB초기화
         self.initialize_db()
 
     def initialize_db(self):
-        """DB초기화"""
+        '''DB초기화'''
         # status 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'status'"
         if self.cur.execute(sql):

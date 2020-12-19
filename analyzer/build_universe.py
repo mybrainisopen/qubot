@@ -6,7 +6,7 @@ from datetime import datetime
 
 class universe_builder():
     def __init__(self):
-        """생성자"""
+        '''생성자'''
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -17,12 +17,11 @@ class universe_builder():
         self.cur = self.conn.cursor()
         self.now = datetime.now().strftime('%Y-%m-%d %H:%M')
         self.today = datetime.today().strftime('%Y-%m-%d')
-
         # DB초기화
         self.initialize_db()
 
     def initialize_db(self):
-        """DB초기화"""
+        '''DB초기화'''
         # universe 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'universe'"
         if self.cur.execute(sql):
@@ -34,30 +33,43 @@ class universe_builder():
             print(f"[{self.now}] universe 스키마 생성")
 
     def create_table(self, date):
-        """종목별 밸류에이션 테이블 생성 함수"""
+        '''종목별 밸류에이션 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'universe' and table_name = '{date}'"
         if self.cur.execute(sql):
             print(f"[{self.now}] universe.{date} 테이블 존재함")
         else:
             sql = f"CREATE TABLE IF NOT EXISTS universe.`{date}` (" \
-                  f"date DATE," \
+                  f"code CHAR(10), " \
+                  f"stock VARCHAR(50), " \
+                  f"ROE FLOAT, " \
+                  f"ROA FLOAT, " \
+                  f"GPA FLOAT, " \
+                  f"F_SCORE INT(2), " \
                   f"PER FLOAT, " \
                   f"PBR FLOAT, " \
                   f"PSR FLOAT, " \
                   f"PCR FLOAT, " \
                   f"PEG FLOAT, " \
                   f"EVEBIT FLOAT, " \
-                  f"PRIMARY KEY (date))"
+                  f"1MRM FLOAT, " \
+                  f"3MRM FLOAT, " \
+                  f"6MRM FLOAT, " \
+                  f"12MRM FLOAT, " \
+                  f"PRIMARY KEY (code, stock))"
             self.cur.execute(sql)
             self.conn.commit()
             print(f"[{self.now}] universe.{date} 테이블 생성 완료")
 
-    def universe_builder_by_date(self, start_date, end_date):
+    def universe_builder_by_date(self, date):
+        self.create_table(date)
+
         pass
 
     def universe_builder(self):
+
         pass
 
 if __name__=="__main__":
     universe_builder = universe_builder()
-    universe_builder.universe_builder()
+    # universe_builder.universe_builder()
+    universe_builder.universe_builder_by_date('20201201')

@@ -6,7 +6,7 @@ import config.config as cf
 
 class analyze_fundamental():
     def __init__(self):
-        """생성자 : 기본 변수 생성"""
+        '''생성자 : 기본 변수 생성'''
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -23,7 +23,7 @@ class analyze_fundamental():
         pd.options.mode.chained_assignment = None
 
     def initialize_db(self):
-        """DB초기화"""
+        '''DB초기화'''
         # fundamental 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'fundamental'"
         if self.cur.execute(sql):
@@ -177,7 +177,7 @@ class analyze_fundamental():
 
     # 안정성: 부채비율, 순부채비율, 자기자본비율, 유동비율
     def calc_debt_ratio(self, stock):
-        """부채비율 = 부채총계/자본총계"""
+        '''부채비율 = 부채총계/자본총계'''
         # 필요항목 가져오기
         sql = f"SELECT date, 부채총계, 자본총계, 부채비율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -197,7 +197,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 부채비율 계산 완료")
 
     def calc_net_debt_ratio(self, stock):
-        """순부채비율 = (이자발생부채-현금)/자본총계"""
+        '''순부채비율 = (이자발생부채-현금)/자본총계'''
         # 필요항목 가져오기
         sql = f"SELECT date, 현금, 이자발생부채, 자본총계, 순부채비율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -217,7 +217,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 순부채비율 계산 완료")
 
     def calc_equity_capital_ratio(self, stock):
-        """자기자본비율 = 자본총계/자산총계"""
+        '''자기자본비율 = 자본총계/자산총계'''
         # 필요항목 가져오기
         sql = f"SELECT date, 자본총계, 자산총계, 자기자본비율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -237,7 +237,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 자기자본비율 계산 완료")
 
     def calc_liquidity_ratio(self, stock):
-        """유동비율 = 유동자산/유동부채"""
+        '''유동비율 = 유동자산/유동부채'''
         # 필요항목 가져오기
         sql = f"SELECT date, 유동자산, 유동부채, 유동비율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -258,7 +258,7 @@ class analyze_fundamental():
 
     # 수익성: GPM, OPM, NPM, ROE, ROA, ROIC, GPA
     def calc_GPM(self, stock):
-        """GPM = 매출총이익TTM/매출액TTM"""
+        '''GPM = 매출총이익TTM/매출액TTM'''
         # 필요항목 가져오기
         sql = f"SELECT date, 매출총이익TTM, 매출액TTM, GPM FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -278,7 +278,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) GPM 계산 완료")
 
     def calc_OPM(self, stock):
-        """OPM = 영업이익TTM/매출액TTM"""
+        '''OPM = 영업이익TTM/매출액TTM'''
         # 필요항목 가져오기
         sql = f"SELECT date, 영업이익TTM, 매출액TTM, OPM FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -298,7 +298,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) OPM 계산 완료")
 
     def calc_NPM(self, stock):
-        """NPM = 순이익TTM/매출액TTM"""
+        '''NPM = 순이익TTM/매출액TTM'''
         # 필요항목 가져오기
         sql = f"SELECT date, 순이익TTM, 매출액TTM, NPM FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -318,7 +318,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) NPM 계산 완료")
 
     def calc_ROE(self, stock):
-        """ROE = 순이익TTM/(전기)자본총계"""
+        '''ROE = 순이익TTM/(전기)자본총계'''
         # 필요항목 가져오기
         sql = f"SELECT date, 순이익TTM, 자본총계, ROE FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -340,7 +340,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) ROE 계산 완료")
 
     def calc_ROA(self, stock):
-        """ROA = 순이익TTM/(전기)자산총계"""
+        '''ROA = 순이익TTM/(전기)자산총계'''
         # 필요항목 가져오기
         sql = f"SELECT date, 순이익TTM, 자산총계, ROA FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -362,7 +362,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) ROA 계산 완료")
 
     def calc_ROIC(self, stock):
-        """ROIC = 세후영업이익TTM/영업투하자본, 세후영업이익TTM=영업이익TTM*(1-법인세율), 법인세율=(세전순이익TTM-순이익TTM)/세전순이익TTM, 영업투하자본=(유동자산-유동부채)+유형자산"""
+        '''ROIC = 세후영업이익TTM/영업투하자본, 세후영업이익TTM=영업이익TTM*(1-법인세율), 법인세율=(세전순이익TTM-순이익TTM)/세전순이익TTM, 영업투하자본=(유동자산-유동부채)+유형자산'''
         # 필요항목 가져오기
         sql = f"SELECT date, 영업이익TTM, 세전순이익TTM, 순이익TTM, 유동자산, 유동부채, 유형자산, ROIC FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -386,7 +386,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) ROIC 계산 완료")
 
     def calc_GPA(self, stock):
-        """GPA = 매출총이익TTM/(전기)자산총계"""
+        '''GPA = 매출총이익TTM/(전기)자산총계'''
         # 필요항목 가져오기
         sql = f"SELECT date, 매출총이익TTM, 자산총계, GPA FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -409,7 +409,7 @@ class analyze_fundamental():
 
     # 활동성: 총자산회전율, 유형자산회전율, 영업자산회전율, 재고자산회전율, 매출채권회전율, 매입채무회전율, 순운전자본회전율
     def calc_assets_turnover(self, stock):
-        """총자산회전율 = 매출액TTM/(전기)자산총계"""
+        '''총자산회전율 = 매출액TTM/(전기)자산총계'''
         # 필요항목 가져오기
         sql = f"SELECT date, 매출액TTM, 자산총계, 총자산회전율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -431,7 +431,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 총자산회전율 계산 완료")
 
     def calc_property_turnover(self, stock):
-        """유형자산회전율 = 매출액TTM/(전기)유형자산"""
+        '''유형자산회전율 = 매출액TTM/(전기)유형자산'''
         # 필요항목 가져오기
         sql = f"SELECT date, 매출액TTM, 유형자산, 유형자산회전율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -453,7 +453,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 유형자산회전율 계산 완료")
 
     def calc_operating_assets_turnover(self, stock):
-        """영업자산회전율 = 매출액TTM/(전기)영업자산, 영업자산=유형자산+운전자본, 운전자본=매출채권+재고자산-매입채무"""
+        '''영업자산회전율 = 매출액TTM/(전기)영업자산, 영업자산=유형자산+운전자본, 운전자본=매출채권+재고자산-매입채무'''
         # 필요항목 가져오기
         sql = f"SELECT date, 매출액TTM, 유형자산, 매출채권, 재고자산, 매입채무, 영업자산회전율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -475,7 +475,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 영업자산회전율 계산 완료")
 
     def calc_inventory_turnover(self, stock):
-        """재고자산회전율 = 매출액TTM/(전기)재고자산"""
+        '''재고자산회전율 = 매출액TTM/(전기)재고자산'''
         # 필요항목 가져오기
         sql = f"SELECT date, 매출액TTM, 재고자산, 재고자산회전율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -497,7 +497,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 재고자산회전율 계산 완료")
 
     def calc_receivables_turnover(self, stock):
-        """매출채권회전율 = 매출액TTM/(전기)매출채권"""
+        '''매출채권회전율 = 매출액TTM/(전기)매출채권'''
         # 필요항목 가져오기
         sql = f"SELECT date, 매출액TTM, 매출채권, 매출채권회전율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -519,7 +519,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 매출채권회전율 계산 완료")
 
     def calc_payables_turnover(self, stock):
-        """매입채무회전율 = 매출액TTM/(전기)매입채무"""
+        '''매입채무회전율 = 매출액TTM/(전기)매입채무'''
         # 필요항목 가져오기
         sql = f"SELECT date, 매출액TTM, 매입채무, 매입채무회전율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -541,7 +541,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 매입채무회전율 계산 완료")
 
     def calc_working_capital_turnover(self, stock):
-        """운전자본회전율 = 매출액(TTM)/(전기)운전자본, 운전자본 = 매출채권+재고자산-매입채무"""
+        '''운전자본회전율 = 매출액(TTM)/(전기)운전자본, 운전자본 = 매출채권+재고자산-매입채무'''
         # 필요항목 가져오기
         sql = f"SELECT date, 매출액TTM, 매출채권, 재고자산, 매입채무, 운전자본회전율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -564,7 +564,7 @@ class analyze_fundamental():
 
     # 성장성: 매출액증가율, 영업이익증가율, 순이익증가율, 유형자산증가율, 총자산증가율, 자기자본증가율
     def calc_sales_growth(self, stock):
-        """매출액증가율 = [매출액TTM-(전분기)매출액TTM]/(전분기)매출액TTM"""
+        '''매출액증가율 = [매출액TTM-(전분기)매출액TTM]/(전분기)매출액TTM'''
         # 필요항목 가져오기
         sql = f"SELECT date, 매출액TTM, 매출액증가율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -586,7 +586,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 매출액증가율 계산 완료")
 
     def calc_operating_profit_growth(self, stock):
-        """영업이익증가율 = [영업이익TTM-(전분기)영업이익TTM]/(전분기)영업이익TTM"""
+        '''영업이익증가율 = [영업이익TTM-(전분기)영업이익TTM]/(전분기)영업이익TTM'''
         # 필요항목 가져오기
         sql = f"SELECT date, 영업이익TTM, 영업이익증가율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -608,7 +608,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 영업이익증가율 계산 완료")
 
     def calc_net_income_growth(self, stock):
-        """순이익증가율 = [순이익TTM-(전분기)순이익TTM]/(전분기)순이익TTM"""
+        '''순이익증가율 = [순이익TTM-(전분기)순이익TTM]/(전분기)순이익TTM'''
         # 필요항목 가져오기
         sql = f"SELECT date, 순이익TTM, 순이익증가율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -630,7 +630,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 순이익증가율 계산 완료")
 
     def calc_property_growth(self, stock):
-        """유형자산증가율 = [유형자산-(전분기)유형자산]/(전분기)유형자산"""
+        '''유형자산증가율 = [유형자산-(전분기)유형자산]/(전분기)유형자산'''
         # 필요항목 가져오기
         sql = f"SELECT date, 유형자산, 유형자산증가율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -652,7 +652,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 유형자산증가율 계산 완료")
 
     def calc_assets_growth(self, stock):
-        """총자산증가율 = [자산총계-(전분기)자산총계]/(전분기)자산총계"""
+        '''총자산증가율 = [자산총계-(전분기)자산총계]/(전분기)자산총계'''
         # 필요항목 가져오기
         sql = f"SELECT date, 자산총계, 총자산증가율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -674,7 +674,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) 총자산증가율 계산 완료")
 
     def calc_capital_growth(self, stock):
-        """자기자본증가율 = [자본총계-(전분기)자본총계]/(전분기)자본총계"""
+        '''자기자본증가율 = [자본총계-(전분기)자본총계]/(전분기)자본총계'''
         # 필요항목 가져오기
         sql = f"SELECT date, 자본총계, 자기자본증가율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -697,7 +697,7 @@ class analyze_fundamental():
 
     # 주당가치: EPS, BPS, SPS, CPS
     def calc_EPS(self, stock):
-        """EPS = 순이익TTM/발행주식수"""
+        '''EPS = 순이익TTM/발행주식수'''
         # 필요항목 가져오기
         sql = f"SELECT date, 순이익TTM, EPS FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -717,7 +717,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) EPS 계산 완료")
 
     def calc_BPS(self, stock):
-        """BPS = 자본총계/발행주식수"""
+        '''BPS = 자본총계/발행주식수'''
         # 필요항목 가져오기
         sql = f"SELECT date, 자본총계, BPS FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -737,7 +737,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) BPS 계산 완료")
 
     def calc_SPS(self, stock):
-        """SPS = 매출액TTM/발행주식수"""
+        '''SPS = 매출액TTM/발행주식수'''
         # 필요항목 가져오기
         sql = f"SELECT date, 매출액TTM, SPS FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -757,7 +757,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) SPS 계산 완료")
 
     def calc_CPS(self, stock):
-        """CPS = 영업현금TTM/발행주식수"""
+        '''CPS = 영업현금TTM/발행주식수'''
         # 필요항목 가져오기
         sql = f"SELECT date, 영업현금TTM, CPS FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -777,7 +777,7 @@ class analyze_fundamental():
         print(f"[{self.now}] ({stock}) CPS 계산 완료")
 
     def calc_EPS_growth(self, stock):
-        """EPS증가율 = (EPS-(전분기)EPS)/(전분기)EPS"""
+        '''EPS증가율 = (EPS-(전분기)EPS)/(전분기)EPS'''
         # 필요항목 가져오기
         sql = f"SELECT date, EPS, EPS증가율 FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -800,7 +800,7 @@ class analyze_fundamental():
 
     # Piotroski f-score
     def calc_f_score(self, stock):
-        """ ROA : 순이익TTM > 0
+        ''' ROA : 순이익TTM > 0
             CFO : 영업현금TTM > 0
             dROA : ROA 증가
             ACCRUAL : 순이익TTM < 영업현금TTM
@@ -808,7 +808,7 @@ class analyze_fundamental():
             dLIQUID : 유동비율 증가
             EQ_OFFER : 발행주식수 x
             dMARGIN : GPM 증가
-            dTURN : 총자산회전율 증가 """
+            dTURN : 총자산회전율 증가 '''
         # 필요항목 가져오기
         sql = f"SELECT date, 비유동부채, 자산총계, 발행주식수, 순이익TTM, 영업현금TTM, 유동비율, 총자산회전율, ROA, GPM, F_SCORE FROM fundamental.`{stock}`"
         self.cur.execute(sql)
@@ -897,8 +897,8 @@ class analyze_fundamental():
         print(f"[{self.now}] (전종목) 펀더멘털 계산 시작")
         for idx in range(len(stock_list)):
             stock = stock_list['stock'][idx]
-            check_analysis = stock_list['fundamental_analyzed'][idx]
             check_scrap = stock_list['financial_statements_scraped'][idx]
+            check_analysis = stock_list['fundamental_analyzed'][idx]
 
             # 종목별, 스크랩 상태별 스크랩 실행
             if check_scrap is None:  # 스크랩이 아직 안된 경우 다음 종목으로 그냥 넘어감
@@ -939,5 +939,4 @@ class analyze_fundamental():
 
 if __name__=="__main__":
     analyze_fundamental = analyze_fundamental()
-    # analyze_fundamental.analyze_fundamental_by_stock(stock='동화약품')
     analyze_fundamental.analyze_fundamental()
