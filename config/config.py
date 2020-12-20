@@ -28,3 +28,7 @@ dart_key = [dart_key1, dart_key2, dart_key3, dart_key4, dart_key5, dart_key6, da
 # User-Agent
 user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Whale/2.8.107.16 Safari/537.36'
 
+# 거래비용 설정
+tax_rate = 0.003  # 0.3%
+fee_rate = 0.00015  # 0.015%
+slippage = 0.003  # 0.3%
