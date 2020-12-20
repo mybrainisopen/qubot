@@ -72,6 +72,6 @@ class db_sql():
 
 if __name__ == "__main__":
     sdb = db_sql()
-    sdb.drop_db(db_name='momentum')
-    sdb.init_db_tbl_col(db_name='status', tbl_name='analyze_stock_status', col_name='momentum_analyzed')
+    sdb.drop_db(db_name='universe')
+    # sdb.init_db_tbl_col(db_name='status', tbl_name='analyze_stock_status', col_name='momentum_analyzed')
     print("테스트 완료")

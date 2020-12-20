@@ -2,7 +2,7 @@ import pymysql
 import time
 import pandas as pd
 import config.config as cf
-from datetime import datetime
+import datetime
 
 class universe_builder():
     def __init__(self):
@@ -15,8 +15,8 @@ class universe_builder():
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor)
         self.cur = self.conn.cursor()
-        self.now = datetime.now().strftime('%Y-%m-%d %H:%M')
-        self.today = datetime.today().strftime('%Y-%m-%d')
+        self.now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+        self.today = datetime.datetime.today().strftime('%Y-%m-%d')
         # DB초기화
         self.initialize_db()
 
@@ -60,16 +60,72 @@ class universe_builder():
             self.conn.commit()
             print(f"[{self.now}] universe.{date} 테이블 생성 완료")
 
-    def universe_builder_by_date(self, date):
-        self.create_table(date)
+    def universe_builder_by_date(self, start_date, end_date):
+        '''일자별로 유니버스 구축'''
+        # 종목 리스트 가져오기
+        sql = f"SELECT code, stock FROM stock_info.stock_info"
+        self.cur.execute(sql)
+        stock_list = self.cur.fetchall()
+        stock_list = pd.DataFrame(stock_list)
 
-        pass
+        # 날짜 리스트 가져오기
+        sql = f"SELECT date FROM market_index.kospi WHERE date BETWEEN '{start_date}' AND '{end_date}'"
+        self.cur.execute(sql)
+        date_list = self.cur.fetchall()
+        date_list = pd.DataFrame(date_list)
 
+        # 날짜별로 유니버스 구축
+        for idx in range(len(date_list)):
+            date = date_list['date'][idx]
+            self.create_table(date)  # 날짜별로 테이블 생성
+            for idx in range(len(stock_list)):
+                code = stock_list['code'][idx]
+                stock = stock_list['stock'][idx]
+                try:
+                    sql = f"SELECT ROE, ROA, GPA, F_SCORE FROM fundamental.`{stock}` WHERE " \
+                          f"date=(SELECT max(date) FROM fundamental.`{stock}` WHERE date<='{date}')"
+                    self.cur.execute(sql)
+                    fundamental = self.cur.fetchone()
+                    sql = f"SELECT PER, PBR, PSR, PCR, PEG, EVEBIT FROM valuation.`{stock}` WHERE date='{date}'"
+                    self.cur.execute(sql)
+                    valuation = self.cur.fetchone()
+                    sql = f"SELECT 1MRM, 3MRM, 6MRM, 12MRM FROM momentum.`{stock}` WHERE date='{date}'"
+                    self.cur.execute(sql)
+                    momentum = self.cur.fetchone()
+                    ROE = fundamental['ROE']
+                    ROA = fundamental['ROA']
+                    GPA = fundamental['GPA']
+                    F_SCORE = fundamental['F_SCORE']
+                    PER = valuation['PER']
+                    PBR = valuation['PBR']
+                    PSR = valuation['PSR']
+                    PCR = valuation['PCR']
+                    PEG = valuation['PEG']
+                    EVEBIT = valuation['EVEBIT']
+                    MRM1 = momentum['1MRM']
+                    MRM3 = momentum['3MRM']
+                    MRM6 = momentum['6MRM']
+                    MRM12 = momentum['12MRM']
+                    sql = f"REPLACE INTO universe.`{date}` (code, stock, ROE, ROA, GPA, F_SCORE, PER, PBR, PSR, PCR, PEG, EVEBIT, 1MRM, 3MRM, 6MRM, 12MRM) " \
+                          f"VALUES ('{code}', '{stock}', {ROE}, {ROA}, {GPA}, {F_SCORE}, {PER}, {PBR}, {PSR}, {PCR}, {PEG}, {EVEBIT}, {MRM1}, {MRM3}, {MRM6}, {MRM12}) "
+                    self.cur.execute(sql)
+                    self.conn.commit()
+                    print(f"[{self.now}] ({date}/{idx+1}/{stock}) 유니버스 구축 성공")
+                except Exception as e:
+                    print(f"[{self.now}] ({date}/{idx+1}/{stock}) 유니버스 구축 실패:", str(e))
+                    continue
+                
     def universe_builder(self):
+        sql = f"SELECT universe_analyzed FROM status.analyze_all_status"
+        self.cur.execute(sql)
+        check = self.cur.fetchone()['universe_analyzed']
+        check = datetime.datetime.strftime(check, '%Y%m%d')
+        if check != self.today:
+            self.universe_builder_by_date(start_date=check, end_date=self.today)
+        elif check == self.today:
+            return
 
-        pass
 
 if __name__=="__main__":
     universe_builder = universe_builder()
-    # universe_builder.universe_builder()
-    universe_builder.universe_builder_by_date('20201201')
+    universe_builder.universe_builder()

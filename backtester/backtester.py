@@ -20,6 +20,9 @@ class backtester():
         pd.options.mode.chained_assignment = None
         # DB초기화
         self.initialize_db()
+        # 변수 설정
+        self.tax = 0.003
+        self.fee = 0.0015
 
     def initialize_db(self):
         '''DB초기화'''
@@ -62,7 +65,7 @@ class backtester():
     def get_universe(self):
         pass
 
-    def backtest_book(self, strategy):
+    def backtest_book(self, strategy, initial_cash):
         pass
 
     def backtest_portfolio(self, strategy):

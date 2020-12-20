@@ -160,7 +160,7 @@ class analyze_all():
             print(f"[{self.now}] universe 분석 시작!")
             # universe 분석 실행
             self.bu.universe_builder()
-            sql = f"UPDATE status.analyze_all_status SET universe_analyzed='20200101'"  #'{self.today}'"
+            sql = f"UPDATE status.analyze_all_status SET universe_analyzed='{self.today}'"
             self.cur.execute(sql)
             self.conn.commit()
             print(f"[{self.now}] universe 분석 완료!")
