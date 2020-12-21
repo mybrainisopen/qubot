@@ -72,6 +72,12 @@ class db_sql():
 
 if __name__ == "__main__":
     sdb = db_sql()
-    sdb.drop_db(db_name='universe')
-    # sdb.init_db_tbl_col(db_name='status', tbl_name='analyze_stock_status', col_name='momentum_analyzed')
+    # sdb.drop_db_tbl(db_name='backtest_book', tbl_name='`per+roe`')
+    # sdb.drop_db_tbl(db_name='backtest_result', tbl_name='evaluation')
+    sdb.drop_db(db_name='backtest_book')
+    sdb.drop_db(db_name='backtest_portfolio')
+    sdb.drop_db(db_name='backtest_result')
+    # sdb.init_db_tbl_col(db_name='status', tbl_name='analyze_all_status', col_name='universe_analyzed')
+    # sdb.init_db_tbl_col(db_name='status', tbl_name='analyze_stock_status', col_name='fundamental_analyzed')
+    # sdb.init_db_tbl_col(db_name='status', tbl_name='analyze_stock_status', col_name='valuation_analyzed')
     print("테스트 완료")

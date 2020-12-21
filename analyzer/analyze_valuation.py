@@ -87,27 +87,27 @@ class analyze_valuation():
             SPS = int(res['SPS'])
             CPS = int(res['CPS'])
             EPSG = float(res['EPS증가율'])
-            if EPS <= 0 :
+            if EPS == 0 :
                 PER = 0
             else:
                 PER = price/EPS
-            if BPS <= 0:
+            if BPS == 0:
                 PBR = 0
             else:
                 PBR = price/BPS
-            if SPS <= 0:
+            if SPS == 0:
                 PSR = 0
             else:
                 PSR = price/SPS
-            if CPS <= 0:
+            if CPS == 0:
                 PCR = 0
             else:
                 PCR = price/CPS
-            if EPSG <= 0:
+            if EPSG == 0:
                 PEG = 0
             else:
                 PEG = PER/(EPSG*100)
-            if op <= 0:
+            if op == 0:
                 EVEBIT = 0
             else:
                 EVEBIT = (price*shares+debt-cash)/op

@@ -16,7 +16,7 @@ class universe_builder():
             cursorclass=pymysql.cursors.DictCursor)
         self.cur = self.conn.cursor()
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
-        self.today = datetime.datetime.today().strftime('%Y-%m-%d')
+        self.today = datetime.datetime.today().strftime('%Y%m%d')
         # DB초기화
         self.initialize_db()
 
@@ -76,7 +76,7 @@ class universe_builder():
 
         # 날짜별로 유니버스 구축
         for idx in range(len(date_list)):
-            date = date_list['date'][idx]
+            date = datetime.datetime.strftime(date_list['date'][idx], '%Y%m%d')
             self.create_table(date)  # 날짜별로 테이블 생성
             for idx in range(len(stock_list)):
                 code = stock_list['code'][idx]
@@ -120,12 +120,14 @@ class universe_builder():
         self.cur.execute(sql)
         check = self.cur.fetchone()['universe_analyzed']
         check = datetime.datetime.strftime(check, '%Y%m%d')
-        if check != self.today:
-            self.universe_builder_by_date(start_date=check, end_date=self.today)
+        if check is None:
+            self.universe_builder_by_date(start_date='20170101', end_date=self.today)
+        elif check < self.today:
+            self.universe_builder_by_date(start_date=datetime.datetime.strftime(check, '%Y%m%d'), end_date=self.today)
         elif check == self.today:
             return
 
 
 if __name__=="__main__":
     universe_builder = universe_builder()
-    universe_builder.universe_builder()
+    universe_builder.universe_builder_by_date(start_date='20170101', end_date=datetime.datetime.today().strftime('%Y%m%d'))

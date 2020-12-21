@@ -114,7 +114,7 @@ class analyze_momentum():
                 print(f"[{self.now}] ({idx+1}/{stock}) 일일주가 스크랩 아직 안됨")
                 continue
             elif check_momentum is None:
-                self.analyze_momentum_by_date_stock(start_date='20171201', end_date=self.today, stock=stock)
+                self.analyze_momentum_by_date_stock(start_date='20170101', end_date=self.today, stock=stock)
                 sql = f"UPDATE status.analyze_stock_status SET momentum_analyzed='{self.today}' WHERE stock='{stock}'"
                 self.cur.execute(sql)
                 self.conn.commit()

@@ -97,8 +97,8 @@ class analyze_all():
             self.cur.execute(sql)
             self.conn.commit()
             # 더미 데이터 세팅
-            sql = """INSERT INTO status.analyze_all_status VALUES 
-                    ('2020-01-02', '2000-01-02', '2000-01-03', '2000-01-04')"""
+            sql = """INSERT INTO status.analyze_all_status VALUES
+                    ('2017-01-01', '2017-01-01', '2017-01-01', '2017-01-01')"""
             self.cur.execute(sql)
             self.conn.commit()
             print(f"[{self.now}] status.analyze_all_status 테이블 생성")
