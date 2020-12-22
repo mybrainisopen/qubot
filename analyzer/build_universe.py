@@ -122,8 +122,16 @@ class universe_builder():
         check = datetime.datetime.strftime(check, '%Y%m%d')
         if check is None:
             self.universe_builder_by_date(start_date='20170101', end_date=self.today)
+            sql = f"UPDATE status.analyze_all_status SET universe_analyzed='{self.today}'"
+            self.cur.execute(sql)
+            self.conn.commit()
+            print(f"[{self.now}] universe 분석 완료!")
         elif check < self.today:
             self.universe_builder_by_date(start_date=datetime.datetime.strftime(check, '%Y%m%d'), end_date=self.today)
+            sql = f"UPDATE status.analyze_all_status SET universe_analyzed='{self.today}'"
+            self.cur.execute(sql)
+            self.conn.commit()
+            print(f"[{self.now}] universe 분석 완료!")
         elif check == self.today:
             return
 

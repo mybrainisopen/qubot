@@ -72,6 +72,7 @@ class backtester():
                   final BIGINT(20),
                   ROI FLOAT,  
                   CAGR FLOAT, 
+                  MEAN FLOAT, 
                   VOL FLOAT, 
                   MDD FLOAT, 
                   Sharpe FLOAT)
@@ -272,13 +273,14 @@ class backtester():
         final = portfolio['total'][len(portfolio)-1]
         ROI = (final-initial)/initial
         CAGR = ROI ** (252/len(portfolio)-1)
+        MEAN = portfolio['daily_return'].mean()
         VOL = np.std(portfolio['daily_return'] * np.sqrt(252))
         MDD = (portfolio['total'].max() - portfolio['total'].min())/portfolio['total'].max()
         Sharpe = np.mean(portfolio['daily_return'])/np.std(portfolio['daily_return']) * np.sqrt(252)
         # DB입력
         # print(strategy, start, end, initial, final, ROI, CAGR, VOL, MDD, Sharpe)
-        sql = f"INSERT INTO backtest_result.evaluation (strategy, start, end, initial, final, ROI, CAGR, VOL, MDD, Sharpe) " \
-              f"VALUES ('{strategy}', {start}, {end}, {initial}, {final}, {ROI}, {CAGR}, {VOL}, {MDD}, {Sharpe})"
+        sql = f"INSERT INTO backtest_result.evaluation (strategy, start, end, initial, final, ROI, CAGR, MEAN, VOL, MDD, Sharpe) " \
+              f"VALUES ('{strategy}', {start}, {end}, {initial}, {final}, {ROI}, {CAGR}, {MEAN}, {VOL}, {MDD}, {Sharpe})"
         self.cur.execute(sql)
         self.conn.commit()
 
