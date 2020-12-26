@@ -29,18 +29,20 @@ class scrap_stock_info():
         # status 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'status'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] status 스키마 존재")
+            # print(f"[{self.now}] status 스키마 존재")
+            pass
         else:
             sql = "CREATE DATABASE status"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] status 스키마 생성")
+            # print(f"[{self.now}] status 스키마 생성")
 
         # status.scrap_all_status 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'status' and table_name = 'scrap_all_status'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] status.scrap_all_status 테이블 존재")
+            # print(f"[{self.now}] status.scrap_all_status 테이블 존재")
+            pass
         else:
             sql = """
                         CREATE TABLE IF NOT EXISTS status.scrap_all_status (
@@ -57,13 +59,14 @@ class scrap_stock_info():
                             ('2020-01-02', '2000-01-02', '2000-01-03', '2000-01-04', '2000-01-05')"""
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] status.scrap_all_status 테이블 생성")
+            # print(f"[{self.now}] status.scrap_all_status 테이블 생성")
 
         # status.scrap_stock_status 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'status' and table_name = 'scrap_stock_status'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] status.scrap_stock_status 테이블 존재")
+            # print(f"[{self.now}] status.scrap_stock_status 테이블 존재")
+            pass
         else:
             sql = """
                         CREATE TABLE IF NOT EXISTS status.scrap_stock_status (
@@ -76,13 +79,14 @@ class scrap_stock_info():
                     """
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] status.scrap_stock_status 테이블 생성")
+            # print(f"[{self.now}] status.scrap_stock_status 테이블 생성")
 
         # status.analyze_all_status 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'status' and table_name = 'analyze_all_status'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] status.analyze_all_status 테이블 존재")
+            # print(f"[{self.now}] status.analyze_all_status 테이블 존재")
+            pass
         else:
             sql = """
                         CREATE TABLE IF NOT EXISTS status.analyze_all_status (
@@ -95,45 +99,48 @@ class scrap_stock_info():
             self.conn.commit()
             # 더미 데이터 세팅
             sql = """INSERT INTO status.analyze_all_status VALUES 
-                            ('2020-01-02', '2000-01-02', '2000-01-03', '2000-01-04')"""
+                     ('2020-01-02', '2000-01-02', '2000-01-03', '2000-01-04')"""
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] status.analyze_all_status 테이블 생성")
+            # print(f"[{self.now}] status.analyze_all_status 테이블 생성")
 
         # status.analyze_stock_status 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'status' and table_name = 'analyze_stock_status'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] status.analyze_stock_status 테이블 존재")
+            # print(f"[{self.now}] status.analyze_stock_status 테이블 존재")
+            pass
         else:
             sql = """
-                        CREATE TABLE IF NOT EXISTS status.analyze_stock_status (
-                        code CHAR(10), 
-                        stock VARCHAR(50), 
-                        fundamental_analyzed DATE, 
-                        valuation_analyzed DATE,
-                        momentum_analyzed DATE, 
-                        PRIMARY KEY (code, stock))
+                  CREATE TABLE IF NOT EXISTS status.analyze_stock_status (
+                  code CHAR(10), 
+                  stock VARCHAR(50), 
+                  fundamental_analyzed DATE, 
+                  valuation_analyzed DATE,
+                  momentum_analyzed DATE, 
+                  PRIMARY KEY (code, stock))
                     """
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] status.analyze_stock_status 테이블 생성")
+            # print(f"[{self.now}] status.analyze_stock_status 테이블 생성")
 
         # stock_info 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'stock_info'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] stock_info 스키마 존재")
+            # print(f"[{self.now}] stock_info 스키마 존재")
+            pass
         else:
             sql = "CREATE DATABASE stock_info"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] stock_info 스키마 생성")
+            # print(f"[{self.now}] stock_info 스키마 생성")
 
         # stock_info.stock_info 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'stock_info' and table_name = 'stock_info'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] stock_info.stock_info 테이블 존재")
+            # print(f"[{self.now}] stock_info.stock_info 테이블 존재")
+            pass
         else:
             sql = """CREATE TABLE stock_info.stock_info (
                      code CHAR(10),
@@ -148,13 +155,14 @@ class scrap_stock_info():
                      PRIMARY KEY (code, stock))"""
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] stock_info.stock_info 테이블 생성")
+            # print(f"[{self.now}] stock_info.stock_info 테이블 생성")
 
         # stock_info.stock_newlisted 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'stock_info' and table_name = 'stock_newlisted'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] stock_info.stock_newlisted 테이블 존재")
+            # print(f"[{self.now}] stock_info.stock_newlisted 테이블 존재")
+            pass
         else:
             sql = """CREATE TABLE IF NOT EXISTS stock_info.stock_newlisted (
                      code CHAR(10),
@@ -164,13 +172,14 @@ class scrap_stock_info():
                      PRIMARY KEY (code, stock))"""
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] stock_info.stock_newlisted 테이블 생성")
+            # print(f"[{self.now}] stock_info.stock_newlisted 테이블 생성")
 
         # stock_info.stock_delisted 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'stock_info' and table_name = 'stock_delisted'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] stock_info.stock_delisted 테이블 존재")
+            # print(f"[{self.now}] stock_info.stock_delisted 테이블 존재")
+            pass
         else:
             sql = """CREATE TABLE IF NOT EXISTS stock_info.stock_delisted (
                      code CHAR(10),
@@ -180,13 +189,14 @@ class scrap_stock_info():
                      PRIMARY KEY (code, stock))"""
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] stock_info.stock_delisted 테이블 생성")
+            # print(f"[{self.now}] stock_info.stock_delisted 테이블 생성")
 
         # stock_info.stock_konex 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'stock_info' and table_name = 'stock_konex'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] stock_info.stock_konex 테이블 존재")
+            # print(f"[{self.now}] stock_info.stock_konex 테이블 존재")
+            pass
         else:
             sql = """CREATE TABLE IF NOT EXISTS stock_info.stock_konex (
                      code CHAR(10),
@@ -198,13 +208,14 @@ class scrap_stock_info():
                      PRIMARY KEY (code, stock))"""
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] stock_info.stock_konex 테이블 생성")
+            # print(f"[{self.now}] stock_info.stock_konex 테이블 생성")
 
         # stock_info.stock_insincerity 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'stock_info' and table_name = 'stock_insincerity'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] stock_info.stock_insincerity 테이블 존재")
+            # print(f"[{self.now}] stock_info.stock_insincerity 테이블 존재")
+            pass
         else:
             sql = """CREATE TABLE IF NOT EXISTS stock_info.stock_insincerity (
                      code CHAR(10),
@@ -212,13 +223,14 @@ class scrap_stock_info():
                      PRIMARY KEY (code, stock))"""
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] stock_info.stock_insincerity 테이블 생성")
+            # print(f"[{self.now}] stock_info.stock_insincerity 테이블 생성")
 
         # stock_info.stock_managing 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'stock_info' and table_name = 'stock_managing'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] stock_info.stock_managing 테이블 존재")
+            # print(f"[{self.now}] stock_info.stock_managing 테이블 존재")
+            pass
         else:
             sql = """CREATE TABLE IF NOT EXISTS stock_info.stock_managing (
                      code CHAR(10),
@@ -226,7 +238,7 @@ class scrap_stock_info():
                      PRIMARY KEY (code, stock))"""
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] stock_info.stock_managing 테이블 생성")
+            # print(f"[{self.now}] stock_info.stock_managing 테이블 생성")
 
     def scrap_stock_info(self):
         '''상장 종목 상세 정보 스크랩'''

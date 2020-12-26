@@ -28,18 +28,20 @@ class scrap_daily_price():
         # daily_price 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'daily_price'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] daily_price 스키마 존재")
+            # print(f"[{self.now}] daily_price 스키마 존재")
+            pass
         else:
             sql = "CREATE DATABASE daily_price"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] daily_price 스키마 생성")
+            # print(f"[{self.now}] daily_price 스키마 생성")
 
     def create_tbl(self, stock):
         '''종목별 주가 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'daily_price' and table_name = '{stock}'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] daily_price.{stock} 테이블 존재함")
+            # print(f"[{self.now}] daily_price.{stock} 테이블 존재함")
+            pass
         else:
             sql = f"CREATE TABLE IF NOT EXISTS daily_price.`{stock}` (" \
                   f"date DATE," \
@@ -52,7 +54,7 @@ class scrap_daily_price():
                   f"PRIMARY KEY (date))"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] daily_price.{stock} 테이블 생성 완료")
+            # print(f"[{self.now}] daily_price.{stock} 테이블 생성 완료")
 
     def scrap_daily_price(self):
         '''daily_price 스크랩'''
@@ -109,7 +111,7 @@ class scrap_daily_price():
                 self.cur.execute(sql)
                 self.conn.commit()
                 time.sleep(0.1)
-                print(f"[{self.now}] ({stock}) daily_price 저장 완료")
+                print(f"[{self.now}] ({stock}) 주가 스크랩 완료")
             except Exception as e:
                 print(f"[{self.now}] ({stock}) 주가 스크랩 에러:", str(e))
 

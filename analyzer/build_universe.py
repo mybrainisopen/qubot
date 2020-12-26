@@ -25,18 +25,20 @@ class universe_builder():
         # universe 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'universe'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] universe 스키마 존재")
+            # print(f"[{self.now}] universe 스키마 존재")
+            pass
         else:
             sql = "CREATE DATABASE universe"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] universe 스키마 생성")
+            # print(f"[{self.now}] universe 스키마 생성")
 
     def create_table(self, date):
         '''종목별 밸류에이션 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'universe' and table_name = '{date}'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] universe.{date} 테이블 존재함")
+            # print(f"[{self.now}] universe.{date} 테이블 존재함")
+            pass
         else:
             sql = f"CREATE TABLE IF NOT EXISTS universe.`{date}` (" \
                   f"code CHAR(10), " \
@@ -58,7 +60,7 @@ class universe_builder():
                   f"PRIMARY KEY (code, stock))"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] universe.{date} 테이블 생성 완료")
+            # print(f"[{self.now}] universe.{date} 테이블 생성 완료")
 
     def universe_builder_by_date(self, start_date, end_date):
         '''일자별로 유니버스 구축'''

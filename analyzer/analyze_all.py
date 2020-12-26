@@ -32,18 +32,20 @@ class analyze_all():
         # status 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'status'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] status 스키마 존재")
+            # print(f"[{self.now}] status 스키마 존재")
+            pass
         else:
             sql = "CREATE DATABASE status"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] status 스키마 생성")
+            # print(f"[{self.now}] status 스키마 생성")
 
         # status.scrap_all_status 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'status' and table_name = 'scrap_all_status'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] status.scrap_all_status 테이블 존재")
+            # print(f"[{self.now}] status.scrap_all_status 테이블 존재")
+            pass
         else:
             sql = """
                     CREATE TABLE IF NOT EXISTS status.scrap_all_status (
@@ -60,13 +62,14 @@ class analyze_all():
                         ('2020-01-02', '2000-01-02', '2000-01-03', '2000-01-04', '2000-01-05')"""
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] status.scrap_all_status 테이블 생성")
+            # print(f"[{self.now}] status.scrap_all_status 테이블 생성")
 
         # status.scrap_stock_status 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'status' and table_name = 'scrap_stock_status'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] status.scrap_stock_status 테이블 존재")
+            # print(f"[{self.now}] status.scrap_stock_status 테이블 존재")
+            pass
         else:
             sql = """
                     CREATE TABLE IF NOT EXISTS status.scrap_stock_status (
@@ -79,13 +82,14 @@ class analyze_all():
                 """
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] status.scrap_stock_status 테이블 생성")
+            # print(f"[{self.now}] status.scrap_stock_status 테이블 생성")
 
         # status.analyze_all_status 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'status' and table_name = 'analyze_all_status'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] status.analyze_all_status 테이블 존재")
+            # print(f"[{self.now}] status.analyze_all_status 테이블 존재")
+            pass
         else:
             sql = """
                 CREATE TABLE IF NOT EXISTS status.analyze_all_status (
@@ -101,13 +105,14 @@ class analyze_all():
                     ('2017-01-01', '2017-01-01', '2017-01-01', '2017-01-01')"""
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] status.analyze_all_status 테이블 생성")
+            # print(f"[{self.now}] status.analyze_all_status 테이블 생성")
 
         # status.analyze_stock_status 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'status' and table_name = 'analyze_stock_status'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] status.analyze_stock_status 테이블 존재")
+            # print(f"[{self.now}] status.analyze_stock_status 테이블 존재")
+            pass
         else:
             sql = """
                 CREATE TABLE IF NOT EXISTS status.analyze_stock_status (
@@ -120,7 +125,7 @@ class analyze_all():
             """
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] status.analyze_stock_status 테이블 생성")
+            # print(f"[{self.now}] status.analyze_stock_status 테이블 생성")
 
     def analysis_check(self):
         '''스크랩 실행'''

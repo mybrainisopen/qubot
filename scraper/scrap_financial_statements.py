@@ -29,18 +29,20 @@ class scrap_financial_statements():
         # financial_statements 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'financial_statements'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] financial_statements 스키마 존재")
+            # print(f"[{self.now}] financial_statements 스키마 존재")
+            pass
         else:
             sql = "CREATE DATABASE financial_statements"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] financial_statements 스키마 생성")
+            # print(f"[{self.now}] financial_statements 스키마 생성")
 
     def create_tbl(self, stock):
         '''종목별 주가 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'financial_statements' and table_name = '{stock}'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] financial_statements.{stock} 테이블 존재함")
+            # print(f"[{self.now}] financial_statements.{stock} 테이블 존재함")
+            pass
         else:
             sql = f"CREATE TABLE IF NOT EXISTS financial_statements.`{stock}` (" \
                   f"date DATE," \
@@ -73,7 +75,7 @@ class scrap_financial_statements():
                   f"PRIMARY KEY (date))"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] financial_statements.{stock} 테이블 생성 완료")
+            # print(f"[{self.now}] financial_statements.{stock} 테이블 생성 완료")
 
     def scrap_financial_statements_by_start_year_stock(self, start_year, stock):
         '''시작연도, 종목명 기준 재무제표 스크랩하여 DB저장'''
@@ -180,83 +182,83 @@ class scrap_financial_statements():
                                 else:
                                     현금 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['매출채권', '매출채권및기타채권', '매출채권및기타유동채권', '장기매출채권및기타비유동채권']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['매출채권', '매출채권및기타채권', '매출채권및기타유동채권', '장기매출채권및기타비유동채권']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     매출채권 += 0
                                 else:
                                     매출채권 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['재고자산']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['재고자산']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     재고자산 += 0
                                 else:
                                     재고자산 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['유동자산']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['유동자산']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     유동자산 += 0
                                 else:
                                     유동자산 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['유형자산']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['유형자산']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     유형자산 += 0
                                 else:
                                     유형자산 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['무형자산', '기타무형자산', '영업권', '영업권이외의무형자산']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['무형자산', '기타무형자산', '영업권', '영업권이외의무형자산']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     무형자산 += 0
                                 else:
                                     무형자산 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['비유동자산']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['비유동자산']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     비유동자산 += 0
                                 else:
                                     비유동자산 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['자산총계']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['자산총계']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     자산총계 += 0
                                 else:
                                     자산총계 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['매입채무', '매입채무및기타채무', '매입채무및기타유동채무', '단기매입채무']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['매입채무', '매입채무및기타채무', '매입채무및기타유동채무', '단기매입채무']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     매입채무 += 0
                                 else:
                                     매입채무 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['유동부채']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['유동부채']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     유동부채 += 0
                                 else:
                                     유동부채 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['이자발생부채', '사채', '차입금', '차입금및사채', '사채및차입금', '단기차입금및사채', '사채및단기차입금', '장기차입금및사채',
-                                                                              '사채및장기차입금', '리스채권', '리스부채', '리스부채(유동)', '리스부채(비유동)', '단기사채', '단기차입금', '차입금(단기)',
-                                                                              '유동성장기차입금', '단기매매금융부채', '당기손익인식(지정)금융부채', '단기상환우선주부채', '장기사채', '장기차입금',
-                                                                              '금융리스부채' '장기상환우선주부채', '장기리스부채', '유동차입금', '비유동차입금', '회사채', '단기차입부채', '장기차입부채',
-                                                                              '유동리스부채', '비유동리스부채']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['이자발생부채', '사채', '차입금', '차입금및사채', '사채및차입금', '단기차입금및사채', '사채및단기차입금', '장기차입금및사채',
+                                                                          '사채및장기차입금', '리스채권', '리스부채', '리스부채(유동)', '리스부채(비유동)', '단기사채', '단기차입금', '차입금(단기)',
+                                                                          '유동성장기차입금', '단기매매금융부채', '당기손익인식(지정)금융부채', '단기상환우선주부채', '장기사채', '장기차입금',
+                                                                          '금융리스부채' '장기상환우선주부채', '장기리스부채', '유동차입금', '비유동차입금', '회사채', '단기차입부채', '장기차입부채',
+                                                                          '유동리스부채', '비유동리스부채']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     이자발생부채 += 0
                                 else:
                                     이자발생부채 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['비유동부채']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['비유동부채']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     비유동부채 += 0
                                 else:
                                     비유동부채 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['부채총계']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['부채총계']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     부채총계 += 0
                                 else:
                                     부채총계 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['자본총계', '분기말자본', '반기말자본']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['자본총계', '분기말자본', '반기말자본']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     자본총계 += 0
                                 else:
@@ -264,62 +266,62 @@ class scrap_financial_statements():
 
                         # IS가 있으면 IS로 / IS가 없으면 CIS로 스크랩 실행
                         elif (('IS' in sheet) & (fs[idx]['sj_div'] == 'IS')) | (('IS' not in sheet) & (fs[idx]['sj_div'] == 'CIS')):
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['매출', '매출액', '매출액(수익)', '수익(매출액)', '수익(매출과지분법손익)']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['매출', '매출액', '매출액(수익)', '수익(매출액)', '수익(매출과지분법손익)']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     매출액 += 0
                                 else:
                                     매출액 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['매출원가', '매출원가(영업비용)']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['매출원가', '매출원가(영업비용)']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     매출원가 += 0
                                 else:
                                     매출원가 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['매출총이익', '매출총이익(손실)', '영업수익']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['매출총이익', '매출총이익(손실)', '영업수익']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     매출총이익 += 0
                                 else:
                                     매출총이익 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['판관비', '판매비와관리비', '판매비', '관리비', '영업비용']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['판관비', '판매비와관리비', '판매비', '관리비', '영업비용']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     판관비 += 0
                                 else:
                                     판관비 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['영업이익', '영업이익(손실)']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['영업이익', '영업이익(손실)']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     영업이익 += 0
                                 else:
                                     영업이익 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['세전순이익', '법인세차감전순이익', '법인세비용차감전순이익', '법인세비용차감전순이익(손실)']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['세전순이익', '법인세차감전순이익', '법인세비용차감전순이익', '법인세비용차감전순이익(손실)']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     세전순이익 += 0
                                 else:
                                     세전순이익 += int(fs[idx]['thstrm_amount'])
 
-                            if fs[idx]['account_nm'].replace(' ', '') in set(['순이익', '당기순이익', '분기순이익', '반기순이익', '당기순이익(손실)', '분기순이익(손실)', '반기순이익(손실)', '당(분)기순이익']):
+                            if fs[idx]['account_nm'].replace(' ', '') in ['순이익', '당기순이익', '분기순이익', '반기순이익', '당기순이익(손실)', '분기순이익(손실)', '반기순이익(손실)', '당(분)기순이익']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     순이익 += 0
                                 else:
                                     순이익 += int(fs[idx]['thstrm_amount'])
 
                         elif fs[idx]['sj_div'] == 'CF':
-                            if re.compile('[가-힣]+').findall(fs[idx]['account_nm'].replace(' ', ''))[0] in set(['영업현금', '영업활동현금흐름', '영업활동으로인한현금흐름']):
+                            if re.compile('[가-힣]+').findall(fs[idx]['account_nm'].replace(' ', ''))[0] in ['영업현금', '영업활동현금흐름', '영업활동으로인한현금흐름']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     영업현금 += 0
                                 else:
                                     영업현금 += int(fs[idx]['thstrm_amount'])
 
-                            if re.compile('[가-힣]+').findall(fs[idx]['account_nm'].replace(' ', ''))[0] in set(['투자현금', '투자활동현금흐름', '투자활동으로인한현금흐름']):
+                            if re.compile('[가-힣]+').findall(fs[idx]['account_nm'].replace(' ', ''))[0] in ['투자현금', '투자활동현금흐름', '투자활동으로인한현금흐름']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     투자현금 += 0
                                 else:
                                     투자현금 += int(fs[idx]['thstrm_amount'])
 
-                            if re.compile('[가-힣]+').findall(fs[idx]['account_nm'].replace(' ', ''))[0] in set(['재무현금', '재무활동현금흐름', '재무활동으로인한현금흐름']):
+                            if re.compile('[가-힣]+').findall(fs[idx]['account_nm'].replace(' ', ''))[0] in ['재무현금', '재무활동현금흐름', '재무활동으로인한현금흐름']:
                                 if fs[idx]['thstrm_amount'] == '':
                                     재무현금 += 0
                                 else:
@@ -334,7 +336,7 @@ class scrap_financial_statements():
                             if eq[idx]['isu_dcrs_de'] == '-':  # 발행일 항목이 없는 경우
                                 발행주식수 += 0
                             elif check_date - relativedelta(months=3) < datetime.datetime.strptime(eq[idx]['isu_dcrs_de'].replace('.', ''), '%Y%m%d').date() < check_date:
-                                if eq[idx]['isu_dcrs_stle'].replace(' ', '') in set(['유상증자', '유상증자(제3자배정)', '유상증자(주주배정)', '전환권행사', '신주인수권행사']):
+                                if eq[idx]['isu_dcrs_stle'].replace(' ', '') in ['유상증자', '유상증자(제3자배정)', '유상증자(주주배정)', '전환권행사', '신주인수권행사']:
                                     if eq[idx]['isu_dcrs_stock_knd'].replace(' ', '') in ['보통주']:
                                         if eq[idx]['isu_dcrs_qy'] == '-':
                                             발행주식수 += 0
@@ -349,7 +351,7 @@ class scrap_financial_statements():
                         for idx in range(len(dd)):
                             if dd[idx]['se'].replace(' ', '') in ['주당현금배당금(원)']:
                                 if 'stock_knd' in list(dd[idx].keys()):  # stock_knd 구분자가 있는 경우는 보통주인 경우만 배당금 입력
-                                    if dd[idx]['stock_knd'].replace(' ', '') in set(['보통주']):
+                                    if dd[idx]['stock_knd'].replace(' ', '') in ['보통주']:
                                         if dd[idx]['thstrm'] == '-':
                                             주당배당금 += 0
                                         else:
@@ -412,8 +414,8 @@ class scrap_financial_statements():
                 print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 완료")
                 continue
             elif check == datetime.date(1000, 1, 1):  # 스크랩 에러가 났던 종목(10000101)은 다시 처음부터 스크랩
-                self.scrap_financial_statements_by_start_year_stock(start_year=2016, stock=stock)
-                print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 완료")
+                # self.scrap_financial_statements_by_start_year_stock(start_year=2016, stock=stock)
+                print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 에러 종목")
                 continue
             elif check.strftime('%Y%m') == datetime.date.today().strftime('%Y%m'):  # 이번달에 스크랩을 이미 했다면 그냥 넘어감
                 print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 이미 완료됨")

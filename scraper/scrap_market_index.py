@@ -28,18 +28,20 @@ class scrap_market_index():
         # market_index 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'market_index'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] market_index 스키마 존재")
+            # print(f"[{self.now}] market_index 스키마 존재")
+            pass
         else:
             sql = "CREATE DATABASE market_index"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] market_index 스키마 생성")
+            # print(f"[{self.now}] market_index 스키마 생성")
 
         # market_index.kospi 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'market_index' and table_name = 'kospi'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] market_index.kospi 테이블 존재")
+            # print(f"[{self.now}] market_index.kospi 테이블 존재")
+            pass
         else:
             sql = """
                         CREATE TABLE IF NOT EXISTS market_index.kospi (
@@ -51,13 +53,14 @@ class scrap_market_index():
                     """
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] market_index.kospi 테이블 생성")
+            # print(f"[{self.now}] market_index.kospi 테이블 생성")
 
         # market_index.kosdaq 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'market_index' and table_name = 'kosdaq'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] market_index.kosdaq 테이블 존재")
+            # print(f"[{self.now}] market_index.kosdaq 테이블 존재")
+            pass
         else:
             sql = """
                         CREATE TABLE IF NOT EXISTS market_index.kosdaq (
@@ -69,7 +72,7 @@ class scrap_market_index():
                     """
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] market_index.kosdaq 테이블 생성")
+            # print(f"[{self.now}] market_index.kosdaq 테이블 생성")
 
 
     def scrap_kospi(self):

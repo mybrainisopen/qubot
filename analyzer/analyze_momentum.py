@@ -28,18 +28,20 @@ class analyze_momentum():
         # momentum 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'momentum'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] momentum 스키마 존재")
+            # print(f"[{self.now}] momentum 스키마 존재")
+            pass
         else:
             sql = "CREATE DATABASE momentum"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] momentum 스키마 생성")
+            # print(f"[{self.now}] momentum 스키마 생성")
 
     def create_table(self, stock):
         '''종목별 모멘텀 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'momentum' and table_name = '{stock}'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] momentum.{stock} 테이블 존재함")
+            # print(f"[{self.now}] momentum.{stock} 테이블 존재함")
+            pass
         else:
             sql = f"CREATE TABLE IF NOT EXISTS momentum.`{stock}` (" \
                   f"date DATE," \
@@ -50,7 +52,7 @@ class analyze_momentum():
                   f"PRIMARY KEY (date))"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] momentum.{stock} 테이블 생성 완료")
+            # print(f"[{self.now}] momentum.{stock} 테이블 생성 완료")
 
     def analyze_momentum_by_date_stock(self, start_date, end_date, stock):
         ''' 1MRM = 1개월 모멘텀 (21거래일)

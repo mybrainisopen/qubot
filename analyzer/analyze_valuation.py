@@ -24,7 +24,8 @@ class analyze_valuation():
         # valuation 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'valuation'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] valuation 스키마 존재")
+            # print(f"[{self.now}] valuation 스키마 존재")
+            pass
         else:
             sql = "CREATE DATABASE valuation"
             self.cur.execute(sql)

@@ -29,12 +29,13 @@ class scrap_macro_economics():
         # macro_economics 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'macro_economics'"
         if self.cur.execute(sql):
-            print(f"[{self.now}] macro_economics 스키마 존재")
+            # print(f"[{self.now}] macro_economics 스키마 존재")
+            pass
         else:
             sql = "CREATE DATABASE macro_economics"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] macro_economics 스키마 생성")
+            # print(f"[{self.now}] macro_economics 스키마 생성")
 
     def scrap_macro_economics(self):
         pass
