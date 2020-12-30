@@ -2,8 +2,9 @@ import pymysql
 import pandas as pd
 import numpy as np
 import math
-import config.config as cf
 import datetime
+import config.config as cf
+import config.db_sql as dbl
 from matplotlib import pyplot as plt
 
 class backtester():
@@ -411,15 +412,15 @@ if __name__=="__main__":
     set_date_list = ['20170403', '20170601', '20170901', '20171201',
                      '20180402', '20180601', '20180903', '20181203',
                      '20190401', '20190603', '20190902', '20191202',
-                     '20200401', '20200601', '20200901']
+                     '20200401', '20200601', '20200901', '20201201']
     buy_date_list = ['20170404', '20170602', '20170904', '20171204',
                      '20180403', '20180604', '20180904', '20181204',
                      '20190402', '20190604', '20190903', '20191203',
-                     '20200402', '20200602', '20200902']
+                     '20200402', '20200602', '20200902', '20201202']
     sell_date_list = ['20170601', '20170901', '20171201', '20180402',
                       '20180601', '20180903', '20181203', '20190401',
                       '20190603', '20190902', '20191202', '20200401',
-                      '20200601', '20200901', '20201224']
+                      '20200601', '20200901', '20201201', '20201224']
     # set_date_list = ['20200401', '20200601', '20200901']
     # buy_date_list = ['20200402', '20200602', '20200902']
     # sell_date_list = ['20200601', '20200901', '20201218']
@@ -431,7 +432,7 @@ if __name__=="__main__":
                      'PER+ROE+1MRM+F_SCORE>=9+20', 'PER+ROA+1MRM+F_SCORE>=9+20', 'PER+GPA+1MRM+F_SCORE>=9+20', 'PBR+ROE+1MRM+F_SCORE>=9+20', 'PBR+ROA+1MRM+F_SCORE>=9+20', 'PBR+GPA+1MRM+F_SCORE>=9+20', 'PSR+ROE+1MRM+F_SCORE>=9+20', 'PSR+ROA+1MRM+F_SCORE>=9+20', 'PSR+GPA+1MRM+F_SCORE>=9+20', 'EVEBIT+ROE+1MRM+F_SCORE>=9+20', 'EVEBIT+ROA+1MRM+F_SCORE>=9+20', 'EVEBIT+GPA+1MRM+F_SCORE>=9+20',
                      'PER+ROE+3MRM+F_SCORE>=9+20', 'PER+ROA+3MRM+F_SCORE>=9+20', 'PER+GPA+3MRM+F_SCORE>=9+20', 'PBR+ROE+3MRM+F_SCORE>=9+20', 'PBR+ROA+3MRM+F_SCORE>=9+20', 'PBR+GPA+3MRM+F_SCORE>=9+20', 'PSR+ROE+3MRM+F_SCORE>=9+20', 'PSR+ROA+3MRM+F_SCORE>=9+20', 'PSR+GPA+3MRM+F_SCORE>=9+20', 'EVEBIT+ROE+3MRM+F_SCORE>=9+20', 'EVEBIT+ROA+3MRM+F_SCORE>=9+20', 'EVEBIT+GPA+3MRM+F_SCORE>=9+20',
                      'PER+ROE+6MRM+F_SCORE>=9+20', 'PER+ROA+6MRM+F_SCORE>=9+20', 'PER+GPA+6MRM+F_SCORE>=9+20', 'PBR+ROE+6MRM+F_SCORE>=9+20', 'PBR+ROA+6MRM+F_SCORE>=9+20', 'PBR+GPA+6MRM+F_SCORE>=9+20', 'PSR+ROE+6MRM+F_SCORE>=9+20', 'PSR+ROA+6MRM+F_SCORE>=9+20', 'PSR+GPA+6MRM+F_SCORE>=9+20', 'EVEBIT+ROE+6MRM+F_SCORE>=9+20', 'EVEBIT+ROA+6MRM+F_SCORE>=9+20', 'EVEBIT+GPA+6MRM+F_SCORE>=9+20',
-                     'PER+ROE+12MRM+F_SCORE>=9+20', 'PER+ROA+12MRM+F_SCORE>=9+20', 'PER+GPA+12MRM+F_SCORE>=9+20', 'PBR+ROE+12MRM+F_SCORE>=9+20', 'PBR+ROA+12MRM+F_SCORE>=9+20', 'PBR+GPA+12MRM+F_SCORE>=9+20', 'PSR+ROE+12MRM+F_SCORE>=9+20', 'PSR+ROA+12MRM+F_SCORE>=9+20', 'PSR+GPA+12MRM+F_SCORE>=9+20' 'EVEBIT+ROE+12MRM+F_SCORE>=9+20', 'EVEBIT+ROA+12MRM+F_SCORE>=9+20', 'EVEBIT+GPA+12MRM+F_SCORE>=9+20'
+                     'PER+ROE+12MRM+F_SCORE>=9+20', 'PER+ROA+12MRM+F_SCORE>=9+20', 'PER+GPA+12MRM+F_SCORE>=9+20', 'PBR+ROE+12MRM+F_SCORE>=9+20', 'PBR+ROA+12MRM+F_SCORE>=9+20', 'PBR+GPA+12MRM+F_SCORE>=9+20', 'PSR+ROE+12MRM+F_SCORE>=9+20', 'PSR+ROA+12MRM+F_SCORE>=9+20', 'PSR+GPA+12MRM+F_SCORE>=9+20', 'EVEBIT+ROE+12MRM+F_SCORE>=9+20', 'EVEBIT+ROA+12MRM+F_SCORE>=9+20', 'EVEBIT+GPA+12MRM+F_SCORE>=9+20'
                      ]
     # for strategy in strategy_list:
     #     backtester.backtest(strategy=strategy, initial=10000000, set_date_list=set_date_list, buy_date_list=buy_date_list, sell_date_list=sell_date_list)
@@ -440,6 +441,11 @@ if __name__=="__main__":
     backtester.backtest_graph('PSR+GPA+1MRM+F_SCORE>=9+10')
     backtester.backtest_graph('PSR+GPA+3MRM+F_SCORE>=9+10')
     backtester.backtest_graph('PBR+ROE+12MRM+F_SCORE>=9+20')
+
+    # 초기화
+    # dbl.drop_db(db_name='backtest_book')
+    # dbl.drop_db(db_name='backtest_portfolio')
+    # dbl.drop_db(db_name='backtest_result')
 
 
     # backtester.backtest_check(strategy)

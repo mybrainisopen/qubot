@@ -46,7 +46,7 @@ class scrap_market_index():
             sql = """
                         CREATE TABLE IF NOT EXISTS market_index.kospi (
                         date DATE, 
-                        close BIGINT(20), 
+                        close FLOAT, 
                         volume BIGINT(20), 
                         transaction BIGINT(20),  
                         PRIMARY KEY (date))
@@ -65,7 +65,7 @@ class scrap_market_index():
             sql = """
                         CREATE TABLE IF NOT EXISTS market_index.kosdaq (
                         date DATE, 
-                        close BIGINT(20), 
+                        close FLOAT, 
                         volume BIGINT(20), 
                         transaction BIGINT(20),  
                         PRIMARY KEY (date))

@@ -1,6 +1,5 @@
 import pymysql
 import config as cf
-
 pymysql.install_as_MySQLdb()
 
 

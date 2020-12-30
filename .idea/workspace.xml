@@ -2,25 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fe5df4b0-3be7-42b5-ac85-31d96f15a87f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/documents/trader.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/trader/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/trader/auto_connect.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/trader/auto_trader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/trader/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/qubot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/qubot.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyzer/analyze_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_all.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyzer/analyze_fundamental.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_fundamental.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyzer/analyze_momentum.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_momentum.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyzer/analyze_valuation.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_valuation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyzer/build_universe.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/build_universe.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backtester/backtester.py" beforeDir="false" afterPath="$PROJECT_DIR$/backtester/backtester.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/db_sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/db_sql.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/config/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/documents/qubot.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/documents/qubot.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/scrap_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_all.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/scrap_daily_price.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_daily_price.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/scrap_financial_statements.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_financial_statements.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scraper/scrap_macro_economics.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_macro_economics.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scraper/scrap_market_index.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_market_index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/scrap_stock_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_stock_info.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +47,16 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../study" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="PyConsoleConfigurable.Python Console" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;!chcp 65001" module-name="study" is-module-sdk="true">
+        <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;!chcp 65001" />
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="study" />
+      </console-settings>
+    </option>
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -63,62 +67,20 @@
       <recent name="C:\Project\study\book2\src" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.backtester">
-    <configuration name="3_6_scrap_stock_price" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="study" />
+  <component name="RunManager" selected="Python.qubot">
+    <configuration name="AutoConnect" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="qubot-trader" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../study/book1/practice" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../qubot-trader" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../study/book1/practice/3_6_scrap_stock_price.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="4_test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="study" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../study/book1/practice" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../study/book1/practice/4_test.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Scrape" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="study" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../study/book1/src" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../study/book1/src/Scrape.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../qubot-trader/AutoConnect.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -169,13 +131,55 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="qubot" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="qubot" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/qubot.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scrap_macro_economics" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="qubot" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scraper" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scraper/scrap_macro_economics.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.qubot" />
         <item itemvalue="Python.backtester" />
         <item itemvalue="Python.db_sql" />
-        <item itemvalue="Python.Scrape" />
-        <item itemvalue="Python.3_6_scrap_stock_price" />
-        <item itemvalue="Python.4_test" />
+        <item itemvalue="Python.scrap_macro_economics" />
+        <item itemvalue="Python.AutoConnect" />
       </list>
     </recent_temporary>
   </component>
@@ -237,7 +241,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608629351848</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="20201227">
+      <created>1609007544138</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1609007544139</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -262,6 +273,18 @@
     <MESSAGE value="20201220 analyzer done" />
     <MESSAGE value="20201220 2" />
     <MESSAGE value="20201220 backtester done" />
-    <option name="LAST_COMMIT_MESSAGE" value="20201220 backtester done" />
+    <MESSAGE value="20201227" />
+    <option name="LAST_COMMIT_MESSAGE" value="20201227" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/trader/auto_connect.py</url>
+          <line>1</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
