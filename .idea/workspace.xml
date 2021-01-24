@@ -2,20 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fe5df4b0-3be7-42b5-ac85-31d96f15a87f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/documents/trader.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trader/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trader/auto_connect.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trader/auto_trader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trader/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/qubot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/qubot.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backup/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backtester/backtester.py" beforeDir="false" afterPath="$PROJECT_DIR$/backtester/backtester.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyzer/analyze_fundamental.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_fundamental.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyzer/analyze_valuation.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_valuation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/db_sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/db_sql.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/config/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/documents/qubot.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/documents/qubot.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/scrap_macro_economics.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_macro_economics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/scrap_market_index.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_market_index.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/documents/qubot.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/documents/qubot.pptx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scraper/scrap_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_all.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scraper/scrap_daily_price.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_daily_price.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +29,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedIndex" value="1" />
   </component>
   <component name="ProjectId" id="1lp13u9F7tdiSKKbmEAWKO7nxGK" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -67,29 +66,8 @@
       <recent name="C:\Project\study\book2\src" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.qubot">
-    <configuration name="AutoConnect" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="qubot-trader" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../qubot-trader" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../qubot-trader/AutoConnect.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="backtester" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.analyze_all">
+    <configuration name="analyze_all" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="qubot" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -97,11 +75,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/backtester" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/analyzer" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/backtester/backtester.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/analyzer/analyze_all.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -110,49 +88,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="db_sql" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="qubot" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/config" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/config/db_sql.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="qubot" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="qubot" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/qubot.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="scrap_macro_economics" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="scrap_daily_price" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="qubot" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -164,7 +100,70 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scraper/scrap_macro_economics.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scraper/scrap_daily_price.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scrap_financial_statements" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="qubot" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scraper" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scraper/scrap_financial_statements.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scrap_market_index" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="qubot" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scraper" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scraper/scrap_market_index.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scrap_stock_info" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="qubot" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scraper" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scraper/scrap_stock_info.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -175,11 +174,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.qubot" />
-        <item itemvalue="Python.backtester" />
-        <item itemvalue="Python.db_sql" />
-        <item itemvalue="Python.scrap_macro_economics" />
-        <item itemvalue="Python.AutoConnect" />
+        <item itemvalue="Python.analyze_all" />
+        <item itemvalue="Python.scrap_daily_price" />
+        <item itemvalue="Python.scrap_financial_statements" />
+        <item itemvalue="Python.scrap_market_index" />
+        <item itemvalue="Python.scrap_stock_info" />
       </list>
     </recent_temporary>
   </component>
@@ -248,7 +247,14 @@
       <option name="project" value="LOCAL" />
       <updated>1609007544139</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="20201230">
+      <created>1609333570154</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1609333570155</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -274,7 +280,8 @@
     <MESSAGE value="20201220 2" />
     <MESSAGE value="20201220 backtester done" />
     <MESSAGE value="20201227" />
-    <option name="LAST_COMMIT_MESSAGE" value="20201227" />
+    <MESSAGE value="20201230" />
+    <option name="LAST_COMMIT_MESSAGE" value="20201230" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

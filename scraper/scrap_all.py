@@ -172,7 +172,7 @@ class scrap_all():
         if checklist[3] != self.today:
             print(f"[{self.now}] daily_price 스크랩 시작!")
             # daily_price 스크랩 실행
-            self.sdp.scrap_daily_price()
+            self.sdp.scrap_daily_price_naver_chart()
             sql = f"UPDATE status.scrap_all_status SET daily_price_scraped='{self.today}'"
             self.cur.execute(sql)
             self.conn.commit()

@@ -88,7 +88,7 @@ class analyze_valuation():
             SPS = int(res['SPS'])
             CPS = int(res['CPS'])
             EPSG = float(res['EPS증가율'])
-            if EPS == 0 :
+            if EPS == 0:
                 PER = 0
             else:
                 PER = price/EPS

@@ -831,7 +831,7 @@ class analyze_fundamental():
                     dROA = 1
                 if fs['순이익TTM'][idx] < fs['영업현금TTM'][idx]:
                     ACCRUAL = 1
-                if fs['비유동부채'][idx]/fs['자산총계'][idx] < fs['비유동부채'][idx-1]/fs['자산총계'][idx-1]:
+                if (fs['비유동부채'][idx]/fs['자산총계'][idx] < fs['비유동부채'][idx-1]/fs['자산총계'][idx-1]) and (fs['자산총계'][idx] != 0) and (fs['자산총계'][idx-1] != 0):
                     dLEVER = 1
                 if fs['유동비율'][idx] > fs['유동비율'][idx-1]:
                     dLIQUID = 1
