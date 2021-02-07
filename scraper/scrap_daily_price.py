@@ -136,7 +136,7 @@ class scrap_daily_price():
     def scrap_daily_price_naver_chart(self):
         '''네이버 차트에서 daily_price 스크랩'''
         # 종목 리스트 가져오기
-        sql = "SELECT code, stock from status.scrap_stock_status"
+        sql = "SELECT code, stock, daily_price_scraped from status.scrap_stock_status"
         self.cur.execute(sql)
         stock_list = self.cur.fetchall()
         stock_list = pd.DataFrame(stock_list)
