@@ -1,8 +1,8 @@
 # local DB 접속 정보
-db_ip='localhost'
-db_port='3306'
-db_id='root'
-db_pw='MBiO85!!'
+db_ip = 'localhost'
+db_port = '3306'
+db_id = 'root'
+db_pw = 'MBiO85!!'
 
 # # NAS DB 접속 정보
 # db_ip='mybrainisopen.synology.me'

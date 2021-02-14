@@ -398,17 +398,49 @@ class backtester():
         print('min_risk:', min_risk['strategy'].iloc[0], '| ROI:', min_risk['ROI'].iloc[0], '| VOL:', min_risk['VOL'].iloc[0], '| Sharpe', min_risk['Sharpe'].iloc[0])
         plt.show()
 
+    def initialize_db(self):
+        dbl.drop_db(db_name='backtest_book')
+        dbl.drop_db(db_name='backtest_portfolio')
+        dbl.drop_db(db_name='backtest_result')
 
-
+    def executor(self):
+        today = datetime.datetime.today().strftime('%Y%m%d')
+        set_date_list = ['20170403', '20170601', '20170901', '20171201',
+                         '20180402', '20180601', '20180903', '20181203',
+                         '20190401', '20190603', '20190902', '20191202',
+                         '20200401', '20200601', '20200901', '20201201']
+        buy_date_list = ['20170404', '20170602', '20170904', '20171204',
+                         '20180403', '20180604', '20180904', '20181204',
+                         '20190402', '20190604', '20190903', '20191203',
+                         '20200402', '20200602', '20200902', '20201202']
+        sell_date_list = ['20170601', '20170901', '20171201', '20180402',
+                          '20180601', '20180903', '20181203', '20190401',
+                          '20190603', '20190902', '20191202', '20200401',
+                          '20200601', '20200901', '20201201', today]
+        strategy_list = [
+            'PER+ROE+1MRM+F_SCORE>=9+10', 'PER+ROA+1MRM+F_SCORE>=9+10', 'PER+GPA+1MRM+F_SCORE>=9+10', 'PBR+ROE+1MRM+F_SCORE>=9+10', 'PBR+ROA+1MRM+F_SCORE>=9+10', 'PBR+GPA+1MRM+F_SCORE>=9+10', 'PSR+ROE+1MRM+F_SCORE>=9+10', 'PSR+ROA+1MRM+F_SCORE>=9+10', 'PSR+GPA+1MRM+F_SCORE>=9+10', 'EVEBIT+ROE+1MRM+F_SCORE>=9+10', 'EVEBIT+ROA+1MRM+F_SCORE>=9+10', 'EVEBIT+GPA+1MRM+F_SCORE>=9+10',
+            'PER+ROE+3MRM+F_SCORE>=9+10', 'PER+ROA+3MRM+F_SCORE>=9+10', 'PER+GPA+3MRM+F_SCORE>=9+10', 'PBR+ROE+3MRM+F_SCORE>=9+10', 'PBR+ROA+3MRM+F_SCORE>=9+10', 'PBR+GPA+3MRM+F_SCORE>=9+10', 'PSR+ROE+3MRM+F_SCORE>=9+10', 'PSR+ROA+3MRM+F_SCORE>=9+10', 'PSR+GPA+3MRM+F_SCORE>=9+10', 'EVEBIT+ROE+3MRM+F_SCORE>=9+10', 'EVEBIT+ROA+3MRM+F_SCORE>=9+10', 'EVEBIT+GPA+3MRM+F_SCORE>=9+10',
+            'PER+ROE+6MRM+F_SCORE>=9+10', 'PER+ROA+6MRM+F_SCORE>=9+10', 'PER+GPA+6MRM+F_SCORE>=9+10', 'PBR+ROE+6MRM+F_SCORE>=9+10', 'PBR+ROA+6MRM+F_SCORE>=9+10', 'PBR+GPA+6MRM+F_SCORE>=9+10', 'PSR+ROE+6MRM+F_SCORE>=9+10', 'PSR+ROA+6MRM+F_SCORE>=9+10', 'PSR+GPA+6MRM+F_SCORE>=9+10', 'EVEBIT+ROE+6MRM+F_SCORE>=9+10', 'EVEBIT+ROA+6MRM+F_SCORE>=9+10', 'EVEBIT+GPA+6MRM+F_SCORE>=9+10',
+            'PER+ROE+12MRM+F_SCORE>=9+10', 'PER+ROA+12MRM+F_SCORE>=9+10', 'PER+GPA+12MRM+F_SCORE>=9+10', 'PBR+ROE+12MRM+F_SCORE>=9+10', 'PBR+ROA+12MRM+F_SCORE>=9+10', 'PBR+GPA+12MRM+F_SCORE>=9+10', 'PSR+ROE+12MRM+F_SCORE>=9+10', 'PSR+ROA+12MRM+F_SCORE>=9+10', 'PSR+GPA+12MRM+F_SCORE>=9+10', 'EVEBIT+ROE+12MRM+F_SCORE>=9+10', 'EVEBIT+ROA+12MRM+F_SCORE>=9+10', 'EVEBIT+GPA+12MRM+F_SCORE>=9+10',
+            'PER+ROE+1MRM+F_SCORE>=9+20', 'PER+ROA+1MRM+F_SCORE>=9+20', 'PER+GPA+1MRM+F_SCORE>=9+20', 'PBR+ROE+1MRM+F_SCORE>=9+20', 'PBR+ROA+1MRM+F_SCORE>=9+20', 'PBR+GPA+1MRM+F_SCORE>=9+20', 'PSR+ROE+1MRM+F_SCORE>=9+20', 'PSR+ROA+1MRM+F_SCORE>=9+20', 'PSR+GPA+1MRM+F_SCORE>=9+20', 'EVEBIT+ROE+1MRM+F_SCORE>=9+20', 'EVEBIT+ROA+1MRM+F_SCORE>=9+20', 'EVEBIT+GPA+1MRM+F_SCORE>=9+20',
+            'PER+ROE+3MRM+F_SCORE>=9+20', 'PER+ROA+3MRM+F_SCORE>=9+20', 'PER+GPA+3MRM+F_SCORE>=9+20', 'PBR+ROE+3MRM+F_SCORE>=9+20', 'PBR+ROA+3MRM+F_SCORE>=9+20', 'PBR+GPA+3MRM+F_SCORE>=9+20', 'PSR+ROE+3MRM+F_SCORE>=9+20', 'PSR+ROA+3MRM+F_SCORE>=9+20', 'PSR+GPA+3MRM+F_SCORE>=9+20', 'EVEBIT+ROE+3MRM+F_SCORE>=9+20', 'EVEBIT+ROA+3MRM+F_SCORE>=9+20', 'EVEBIT+GPA+3MRM+F_SCORE>=9+20',
+            'PER+ROE+6MRM+F_SCORE>=9+20', 'PER+ROA+6MRM+F_SCORE>=9+20', 'PER+GPA+6MRM+F_SCORE>=9+20', 'PBR+ROE+6MRM+F_SCORE>=9+20', 'PBR+ROA+6MRM+F_SCORE>=9+20', 'PBR+GPA+6MRM+F_SCORE>=9+20', 'PSR+ROE+6MRM+F_SCORE>=9+20', 'PSR+ROA+6MRM+F_SCORE>=9+20', 'PSR+GPA+6MRM+F_SCORE>=9+20', 'EVEBIT+ROE+6MRM+F_SCORE>=9+20', 'EVEBIT+ROA+6MRM+F_SCORE>=9+20', 'EVEBIT+GPA+6MRM+F_SCORE>=9+20',
+            'PER+ROE+12MRM+F_SCORE>=9+20', 'PER+ROA+12MRM+F_SCORE>=9+20', 'PER+GPA+12MRM+F_SCORE>=9+20', 'PBR+ROE+12MRM+F_SCORE>=9+20', 'PBR+ROA+12MRM+F_SCORE>=9+20', 'PBR+GPA+12MRM+F_SCORE>=9+20', 'PSR+ROE+12MRM+F_SCORE>=9+20', 'PSR+ROA+12MRM+F_SCORE>=9+20', 'PSR+GPA+12MRM+F_SCORE>=9+20', 'EVEBIT+ROE+12MRM+F_SCORE>=9+20', 'EVEBIT+ROA+12MRM+F_SCORE>=9+20', 'EVEBIT+GPA+12MRM+F_SCORE>=9+20'
+            ]
+        for strategy in strategy_list:
+            self.backtest(strategy=strategy, initial=10000000, set_date_list=set_date_list, buy_date_list=buy_date_list, sell_date_list=sell_date_list)
 
 
 if __name__=="__main__":
+
+    # 초기화
+    dbl = dbl.db_sql()
+    dbl.drop_db(db_name='backtest_book')
+    dbl.drop_db(db_name='backtest_portfolio')
+    dbl.drop_db(db_name='backtest_result')
+
     backtester = backtester()
-    # backtester.get_universe('PER+ROE+1MRM+F_SCORE>=9+5', '20180102')
-    # backtester.backtest_book(strategy=strategy, initial=10000000, universe=stock_list, start=buy_date, end=sell_date)
-    # backtester.backtest_portfolio(strategy=strategy, initial=10000000)
-    # backtester.backtest_evaluation(strategy=strategy, initial=10000000)
-    # strategy = 'PER+ROE+1MRM+F_SCORE>=9+10'
+    today = datetime.datetime.today().strftime('%Y%m%d')
     set_date_list = ['20170403', '20170601', '20170901', '20171201',
                      '20180402', '20180601', '20180903', '20181203',
                      '20190401', '20190603', '20190902', '20191202',
@@ -420,10 +452,7 @@ if __name__=="__main__":
     sell_date_list = ['20170601', '20170901', '20171201', '20180402',
                       '20180601', '20180903', '20181203', '20190401',
                       '20190603', '20190902', '20191202', '20200401',
-                      '20200601', '20200901', '20201201', '20201224']
-    # set_date_list = ['20200401', '20200601', '20200901']
-    # buy_date_list = ['20200402', '20200602', '20200902']
-    # sell_date_list = ['20200601', '20200901', '20201218']
+                      '20200601', '20200901', '20201201', '20210210']
     strategy_list = [
                      'PER+ROE+1MRM+F_SCORE>=9+10', 'PER+ROA+1MRM+F_SCORE>=9+10', 'PER+GPA+1MRM+F_SCORE>=9+10', 'PBR+ROE+1MRM+F_SCORE>=9+10', 'PBR+ROA+1MRM+F_SCORE>=9+10', 'PBR+GPA+1MRM+F_SCORE>=9+10', 'PSR+ROE+1MRM+F_SCORE>=9+10', 'PSR+ROA+1MRM+F_SCORE>=9+10', 'PSR+GPA+1MRM+F_SCORE>=9+10', 'EVEBIT+ROE+1MRM+F_SCORE>=9+10', 'EVEBIT+ROA+1MRM+F_SCORE>=9+10', 'EVEBIT+GPA+1MRM+F_SCORE>=9+10',
                      'PER+ROE+3MRM+F_SCORE>=9+10', 'PER+ROA+3MRM+F_SCORE>=9+10', 'PER+GPA+3MRM+F_SCORE>=9+10', 'PBR+ROE+3MRM+F_SCORE>=9+10', 'PBR+ROA+3MRM+F_SCORE>=9+10', 'PBR+GPA+3MRM+F_SCORE>=9+10', 'PSR+ROE+3MRM+F_SCORE>=9+10', 'PSR+ROA+3MRM+F_SCORE>=9+10', 'PSR+GPA+3MRM+F_SCORE>=9+10', 'EVEBIT+ROE+3MRM+F_SCORE>=9+10', 'EVEBIT+ROA+3MRM+F_SCORE>=9+10', 'EVEBIT+GPA+3MRM+F_SCORE>=9+10',
@@ -434,70 +463,16 @@ if __name__=="__main__":
                      'PER+ROE+6MRM+F_SCORE>=9+20', 'PER+ROA+6MRM+F_SCORE>=9+20', 'PER+GPA+6MRM+F_SCORE>=9+20', 'PBR+ROE+6MRM+F_SCORE>=9+20', 'PBR+ROA+6MRM+F_SCORE>=9+20', 'PBR+GPA+6MRM+F_SCORE>=9+20', 'PSR+ROE+6MRM+F_SCORE>=9+20', 'PSR+ROA+6MRM+F_SCORE>=9+20', 'PSR+GPA+6MRM+F_SCORE>=9+20', 'EVEBIT+ROE+6MRM+F_SCORE>=9+20', 'EVEBIT+ROA+6MRM+F_SCORE>=9+20', 'EVEBIT+GPA+6MRM+F_SCORE>=9+20',
                      'PER+ROE+12MRM+F_SCORE>=9+20', 'PER+ROA+12MRM+F_SCORE>=9+20', 'PER+GPA+12MRM+F_SCORE>=9+20', 'PBR+ROE+12MRM+F_SCORE>=9+20', 'PBR+ROA+12MRM+F_SCORE>=9+20', 'PBR+GPA+12MRM+F_SCORE>=9+20', 'PSR+ROE+12MRM+F_SCORE>=9+20', 'PSR+ROA+12MRM+F_SCORE>=9+20', 'PSR+GPA+12MRM+F_SCORE>=9+20', 'EVEBIT+ROE+12MRM+F_SCORE>=9+20', 'EVEBIT+ROA+12MRM+F_SCORE>=9+20', 'EVEBIT+GPA+12MRM+F_SCORE>=9+20'
                      ]
-    # for strategy in strategy_list:
-    #     backtester.backtest(strategy=strategy, initial=10000000, set_date_list=set_date_list, buy_date_list=buy_date_list, sell_date_list=sell_date_list)
+    for strategy in strategy_list:
+        backtester.backtest(strategy=strategy, initial=10000000, set_date_list=set_date_list, buy_date_list=buy_date_list, sell_date_list=sell_date_list)
 
-    backtester.meta_analysis()
-    backtester.backtest_graph('PSR+GPA+1MRM+F_SCORE>=9+10')
-    backtester.backtest_graph('PSR+GPA+3MRM+F_SCORE>=9+10')
-    backtester.backtest_graph('PBR+ROE+12MRM+F_SCORE>=9+20')
+    # 메타분석
+    # backtester.meta_analysis()
+    # backtester.backtest_graph('PSR+GPA+1MRM+F_SCORE>=9+10')
+    # backtester.backtest_graph('PSR+GPA+3MRM+F_SCORE>=9+10')
+    # backtester.backtest_graph('PBR+ROE+12MRM+F_SCORE>=9+20')
 
-    # 초기화
-    # dbl.drop_db(db_name='backtest_book')
-    # dbl.drop_db(db_name='backtest_portfolio')
-    # dbl.drop_db(db_name='backtest_result')
+    # 종목 출력
+    # print()
 
 
-    # backtester.backtest_check(strategy)
-
-    # ['PER', 'PBR', 'PSR', 'PCR', 'PEG', 'EVEBIT', 'ROE', 'ROA', 'GPA', '1MRM', '3MRM', '6MRM', '12MRM']:
-
-    # strategy_list = ['PER+10', 'PBR+10', 'PSR+10', 'PCR+10', 'PEG+10', 'EVEBIT+10',
-    #                  'PER+20', 'PBR+20', 'PSR+20', 'PCR+20', 'PEG+20', 'EVEBIT+20',
-    #                  'ROE+10', 'ROA+10', 'GPA+10',
-    #                  'ROE+20', 'ROA+20', 'GPA+20',
-    #                  '1MRM+10', '3MRM+10', '6MRM+10', '10MRM+10',
-    #                  '1MRM+20', '3MRM+20', '6MRM+20', '10MRM+20',
-    #                  'PER+ROE+10', 'PER+ROA+10', 'PER+GPA+10', 'PBR+ROE+10', 'PBR+ROA+10', 'PBR+GPA+10', 'PSR+ROE+10', 'PSR+ROA+10', 'PSR+GPA+10',
-    #                  'PCR+ROE+10', 'PCR+ROA+10', 'PCR+GPA+10', 'PEG+ROE+10', 'PEG+ROA+10', 'PEG+GPA+10', 'EVEBIT+ROE+10', 'EVEBIT+ROA+10', 'EVEBIT+GPA+10',
-    #                  'PER+ROE+20', 'PER+ROA+20', 'PER+GPA+20', 'PBR+ROE+20', 'PBR+ROA+20', 'PBR+GPA+20', 'PSR+ROE+20', 'PSR+ROA+20', 'PSR+GPA+20',
-    #                  'PCR+ROE+20', 'PCR+ROA+20', 'PCR+GPA+20', 'PEG+ROE+20', 'PEG+ROA+20', 'PEG+GPA+20', 'EVEBIT+ROE+20', 'EVEBIT+ROA+20', 'EVEBIT+GPA+20',
-    #                  'PER+1MRM+10', 'PER+3MRM+10', 'PER+6MRM+10', 'PER+12MRM+10', 'PBR+1MRM+10', 'PBR+3MRM+10', 'PBR+6MRM+10', 'PBR+12MRM+10', 'PSR+1MRM+10', 'PSR+3MRM+10', 'PSR+6MRM+10', 'PSR+12MRM+10',
-    #                  'PCR+1MRM+10', 'PCR+3MRM+10', 'PCR+6MRM+10', 'PCR+12MRM+10', 'PEG+1MRM+10', 'PEG+3MRM+10', 'PEG+6MRM+10', 'PEG+12MRM+10', 'EVEBIT+1MRM+10', 'EVEBIT+3MRM+10', 'EVEBIT+6MRM+10', 'EVEBIT+12MRM+10',
-    #                  'PER+1MRM+20', 'PER+3MRM+20', 'PER+6MRM+20', 'PER+12MRM+10', 'PBR+1MRM+20', 'PBR+3MRM+20', 'PBR+6MRM+20', 'PBR+12MRM+20', 'PSR+1MRM+20', 'PSR+3MRM+20', 'PSR+6MRM+20', 'PSR+12MRM+10',
-    #                  'PCR+1MRM+20', 'PCR+3MRM+20', 'PCR+6MRM+20', 'PCR+12MRM+10', 'PEG+1MRM+20', 'PEG+3MRM+20', 'PEG+6MRM+20', 'PEG+12MRM+20', 'EVEBIT+1MRM+20', 'EVEBIT+3MRM+20', 'EVEBIT+6MRM+20', 'EVEBIT+12MRM+10',
-    #                  'ROE+1MRM+10', 'ROE+3MRM+10', 'ROE+6MRM+10', 'ROE+12MRM+10', 'ROA+1MRM+10', 'ROA+3MRM+10', 'ROA+6MRM+10', 'ROA+12MRM+10', 'GPA+1MRM+10', 'GPA+3MRM+10', 'GPA+6MRM+10', 'GPA+12MRM+10',
-    #                  'ROE+1MRM+20', 'ROE+3MRM+20', 'ROE+6MRM+20', 'ROE+12MRM+20', 'ROA+1MRM+20', 'ROA+3MRM+20', 'ROA+6MRM+20', 'ROA+12MRM+20', 'GPA+1MRM+20', 'GPA+3MRM+20', 'GPA+6MRM+20', 'GPA+12MRM+20',
-    #                  'PER+ROE+1MRM+10', 'PER+ROA+1MRM+10', 'PER+GPA+1MRM+10', 'PBR+ROE+1MRM+10', 'PBR+ROA+1MRM+10', 'PBR+GPA+1MRM+10', 'PSR+ROE+1MRM+10', 'PSR+ROA+1MRM+10', 'PSR+GPA+1MRM+10',
-    #                  'PER+ROE+3MRM+10', 'PER+ROA+3MRM+10', 'PER+GPA+3MRM+10', 'PBR+ROE+3MRM+10', 'PBR+ROA+3MRM+10', 'PBR+GPA+3MRM+10', 'PSR+ROE+3MRM+10', 'PSR+ROA+3MRM+10', 'PSR+GPA+3MRM+10',
-    #                  'PER+ROE+6MRM+10', 'PER+ROA+6MRM+10', 'PER+GPA+6MRM+10', 'PBR+ROE+6MRM+10', 'PBR+ROA+6MRM+10', 'PBR+GPA+6MRM+10', 'PSR+ROE+6MRM+10', 'PSR+ROA+6MRM+10', 'PSR+GPA+6MRM+10',
-    #                  'PER+ROE+12MRM+10', 'PER+ROA+12MRM+10', 'PER+GPA+12MRM+10', 'PBR+ROE+12MRM+10', 'PBR+ROA+12MRM+10', 'PBR+GPA+12MRM+10', 'PSR+ROE+12MRM+10', 'PSR+ROA+12MRM+10', 'PSR+GPA+12MRM+10',
-    #                  'PER+ROE+1MRM+20', 'PER+ROA+1MRM+20', 'PER+GPA+1MRM+20', 'PBR+ROE+1MRM+20', 'PBR+ROA+1MRM+20', 'PBR+GPA+1MRM+20', 'PSR+ROE+1MRM+20', 'PSR+ROA+1MRM+20', 'PSR+GPA+1MRM+20',
-    #                  'PER+ROE+3MRM+20', 'PER+ROA+3MRM+20', 'PER+GPA+3MRM+20', 'PBR+ROE+3MRM+20', 'PBR+ROA+3MRM+20', 'PBR+GPA+3MRM+20', 'PSR+ROE+3MRM+20', 'PSR+ROA+3MRM+20', 'PSR+GPA+3MRM+20',
-    #                  'PER+ROE+6MRM+20', 'PER+ROA+6MRM+20', 'PER+GPA+6MRM+20', 'PBR+ROE+6MRM+20', 'PBR+ROA+6MRM+20', 'PBR+GPA+6MRM+20', 'PSR+ROE+6MRM+20', 'PSR+ROA+6MRM+20', 'PSR+GPA+6MRM+20',
-    #                  'PER+ROE+12MRM+20', 'PER+ROA+12MRM+20', 'PER+GPA+12MRM+20', 'PBR+ROE+12MRM+20', 'PBR+ROA+12MRM+20', 'PBR+GPA+12MRM+20', 'PSR+ROE+12MRM+20', 'PSR+ROA+12MRM+20', 'PSR+GPA+12MRM+20',
-    #                  'PER+F_SCORE>=9+10', 'PBR+F_SCORE>=9+10', 'PSR+F_SCORE>=9+10', 'PCR+F_SCORE>=9+10', 'PEG+F_SCORE>=9+10', 'EVEBIT+F_SCORE>=9+10',
-    #                  'PER+F_SCORE>=9+20', 'PBR+F_SCORE>=9+20', 'PSR+F_SCORE>=9+20', 'PCR+F_SCORE>=9+20', 'PEG+F_SCORE>=9+20', 'EVEBIT+F_SCORE>=9+20',
-    #                  'ROE+F_SCORE>=9+10', 'ROA+F_SCORE>=9+10', 'GPA+F_SCORE>=9+10',
-    #                  'ROE+F_SCORE>=9+20', 'ROA+F_SCORE>=9+20', 'GPA+F_SCORE>=9+20',
-    #                  '1MRM+F_SCORE>=9+10', '3MRM+F_SCORE>=9+10', '6MRM+F_SCORE>=9+10', '10MRM+F_SCORE>=9+10',
-    #                  '1MRM+F_SCORE>=9+20', '3MRM+F_SCORE>=9+20', '6MRM+F_SCORE>=9+20', '10MRM+F_SCORE>=9+20',
-    #                  'PER+ROE+F_SCORE>=9+10', 'PER+ROA+F_SCORE>=9+10', 'PER+GPA+F_SCORE>=9+10', 'PBR+ROE+F_SCORE>=9+10', 'PBR+ROA+F_SCORE>=9+10', 'PBR+GPA+F_SCORE>=9+10', 'PSR+ROE+F_SCORE>=9+10', 'PSR+ROA+F_SCORE>=9+10', 'PSR+GPA+F_SCORE>=9+10',
-    #                  'PCR+ROE+F_SCORE>=9+10', 'PCR+ROA+F_SCORE>=9+10', 'PCR+GPA+F_SCORE>=9+10', 'PEG+ROE+F_SCORE>=9+10', 'PEG+ROA+F_SCORE>=9+10', 'PEG+GPA+F_SCORE>=9+10', 'EVEBIT+ROE+F_SCORE>=9+10', 'EVEBIT+ROA+F_SCORE>=9+10', 'EVEBIT+GPA+F_SCORE>=9+10',
-    #                  'PER+ROE+F_SCORE>=9+20', 'PER+ROA+F_SCORE>=9+20', 'PER+GPA+F_SCORE>=9+20', 'PBR+ROE+F_SCORE>=9+20', 'PBR+ROA+F_SCORE>=9+20', 'PBR+GPA+F_SCORE>=9+20', 'PSR+ROE+F_SCORE>=9+20', 'PSR+ROA+F_SCORE>=9+20', 'PSR+GPA+F_SCORE>=9+20',
-    #                  'PCR+ROE+F_SCORE>=9+20', 'PCR+ROA+F_SCORE>=9+20', 'PCR+GPA+F_SCORE>=9+20', 'PEG+ROE+F_SCORE>=9+20', 'PEG+ROA+F_SCORE>=9+20', 'PEG+GPA+F_SCORE>=9+20', 'EVEBIT+ROE+F_SCORE>=9+20', 'EVEBIT+ROA+F_SCORE>=9+20', 'EVEBIT+GPA+F_SCORE>=9+20',
-    #                  'PER+1MRM+F_SCORE>=9+10', 'PER+3MRM+F_SCORE>=9+10', 'PER+6MRM+F_SCORE>=9+10', 'PER+12MRM+F_SCORE>=9+10', 'PBR+1MRM+F_SCORE>=9+10', 'PBR+3MRM+F_SCORE>=9+10', 'PBR+6MRM+F_SCORE>=9+10', 'PBR+12MRM+F_SCORE>=9+10', 'PSR+1MRM+F_SCORE>=9+10', 'PSR+3MRM+F_SCORE>=9+10', 'PSR+6MRM+F_SCORE>=9+10', 'PSR+12MRM+F_SCORE>=9+10',
-    #                  'PCR+1MRM+F_SCORE>=9+10', 'PCR+3MRM+F_SCORE>=9+10', 'PCR+6MRM+F_SCORE>=9+10', 'PCR+12MRM+F_SCORE>=9+10', 'PEG+1MRM+F_SCORE>=9+10', 'PEG+3MRM+F_SCORE>=9+10', 'PEG+6MRM+F_SCORE>=9+10', 'PEG+12MRM+F_SCORE>=9+10', 'EVEBIT+1MRM+F_SCORE>=9+10', 'EVEBIT+3MRM+F_SCORE>=9+10', 'EVEBIT+6MRM+F_SCORE>=9+10', 'EVEBIT+12MRM+F_SCORE>=9+10',
-    #                  'PER+1MRM+F_SCORE>=9+20', 'PER+3MRM+F_SCORE>=9+20', 'PER+6MRM+F_SCORE>=9+20', 'PER+12MRM+F_SCORE>=9+10', 'PBR+1MRM+F_SCORE>=9+20', 'PBR+3MRM+F_SCORE>=9+20', 'PBR+6MRM+F_SCORE>=9+20', 'PBR+12MRM+F_SCORE>=9+20', 'PSR+1MRM+F_SCORE>=9+20', 'PSR+3MRM+F_SCORE>=9+20', 'PSR+6MRM+F_SCORE>=9+20', 'PSR+12MRM+F_SCORE>=9+10',
-    #                  'PCR+1MRM+F_SCORE>=9+20', 'PCR+3MRM+F_SCORE>=9+20', 'PCR+6MRM+F_SCORE>=9+20', 'PCR+12MRM+F_SCORE>=9+10', 'PEG+1MRM+F_SCORE>=9+20', 'PEG+3MRM+F_SCORE>=9+20', 'PEG+6MRM+F_SCORE>=9+20', 'PEG+12MRM+F_SCORE>=9+20', 'EVEBIT+1MRM+F_SCORE>=9+20', 'EVEBIT+3MRM+F_SCORE>=9+20', 'EVEBIT+6MRM+F_SCORE>=9+20', 'EVEBIT+12MRM+F_SCORE>=9+10',
-    #                  'ROE+1MRM+F_SCORE>=9+10', 'ROE+3MRM+F_SCORE>=9+10', 'ROE+6MRM+F_SCORE>=9+10', 'ROE+12MRM+F_SCORE>=9+10', 'ROA+1MRM+F_SCORE>=9+10', 'ROA+3MRM+F_SCORE>=9+10', 'ROA+6MRM+F_SCORE>=9+10', 'ROA+12MRM+F_SCORE>=9+10', 'GPA+1MRM+F_SCORE>=9+10', 'GPA+3MRM+F_SCORE>=9+10', 'GPA+6MRM+F_SCORE>=9+10', 'GPA+12MRM+F_SCORE>=9+10',
-    #                  'ROE+1MRM+F_SCORE>=9+20', 'ROE+3MRM+F_SCORE>=9+20', 'ROE+6MRM+F_SCORE>=9+20', 'ROE+12MRM+F_SCORE>=9+20', 'ROA+1MRM+F_SCORE>=9+20', 'ROA+3MRM+F_SCORE>=9+20', 'ROA+6MRM+F_SCORE>=9+20', 'ROA+12MRM+F_SCORE>=9+20', 'GPA+1MRM+F_SCORE>=9+20', 'GPA+3MRM+F_SCORE>=9+20', 'GPA+6MRM+F_SCORE>=9+20', 'GPA+12MRM+F_SCORE>=9+20',
-    #                  'PER+ROE+1MRM+F_SCORE>=9+10', 'PER+ROA+1MRM+F_SCORE>=9+10', 'PER+GPA+1MRM+F_SCORE>=9+10', 'PBR+ROE+1MRM+F_SCORE>=9+10', 'PBR+ROA+1MRM+F_SCORE>=9+10', 'PBR+GPA+1MRM+F_SCORE>=9+10', 'PSR+ROE+1MRM+F_SCORE>=9+10', 'PSR+ROA+1MRM+F_SCORE>=9+10', 'PSR+GPA+1MRM+F_SCORE>=9+10',
-    #                  'PER+ROE+3MRM+F_SCORE>=9+10', 'PER+ROA+3MRM+F_SCORE>=9+10', 'PER+GPA+3MRM+F_SCORE>=9+10', 'PBR+ROE+3MRM+F_SCORE>=9+10', 'PBR+ROA+3MRM+F_SCORE>=9+10', 'PBR+GPA+3MRM+F_SCORE>=9+10', 'PSR+ROE+3MRM+F_SCORE>=9+10', 'PSR+ROA+3MRM+F_SCORE>=9+10', 'PSR+GPA+3MRM+F_SCORE>=9+10',
-    #                  'PER+ROE+6MRM+F_SCORE>=9+10', 'PER+ROA+6MRM+F_SCORE>=9+10', 'PER+GPA+6MRM+F_SCORE>=9+10', 'PBR+ROE+6MRM+F_SCORE>=9+10', 'PBR+ROA+6MRM+F_SCORE>=9+10', 'PBR+GPA+6MRM+F_SCORE>=9+10', 'PSR+ROE+6MRM+F_SCORE>=9+10', 'PSR+ROA+6MRM+F_SCORE>=9+10', 'PSR+GPA+6MRM+F_SCORE>=9+10',
-    #                  'PER+ROE+12MRM+F_SCORE>=9+10', 'PER+ROA+12MRM+F_SCORE>=9+10', 'PER+GPA+12MRM+F_SCORE>=9+10', 'PBR+ROE+12MRM+F_SCORE>=9+10', 'PBR+ROA+12MRM+F_SCORE>=9+10', 'PBR+GPA+12MRM+F_SCORE>=9+10', 'PSR+ROE+12MRM+F_SCORE>=9+10', 'PSR+ROA+12MRM+F_SCORE>=9+10', 'PSR+GPA+12MRM+F_SCORE>=9+10',
-    #                  'PER+ROE+1MRM+F_SCORE>=9+20', 'PER+ROA+1MRM+F_SCORE>=9+20', 'PER+GPA+1MRM+F_SCORE>=9+20', 'PBR+ROE+1MRM+F_SCORE>=9+20', 'PBR+ROA+1MRM+F_SCORE>=9+20', 'PBR+GPA+1MRM+F_SCORE>=9+20', 'PSR+ROE+1MRM+F_SCORE>=9+20', 'PSR+ROA+1MRM+F_SCORE>=9+20', 'PSR+GPA+1MRM+F_SCORE>=9+20',
-    #                  'PER+ROE+3MRM+F_SCORE>=9+20', 'PER+ROA+3MRM+F_SCORE>=9+20', 'PER+GPA+3MRM+F_SCORE>=9+20', 'PBR+ROE+3MRM+F_SCORE>=9+20', 'PBR+ROA+3MRM+F_SCORE>=9+20', 'PBR+GPA+3MRM+F_SCORE>=9+20', 'PSR+ROE+3MRM+F_SCORE>=9+20', 'PSR+ROA+3MRM+F_SCORE>=9+20', 'PSR+GPA+3MRM+F_SCORE>=9+20',
-    #                  'PER+ROE+6MRM+F_SCORE>=9+20', 'PER+ROA+6MRM+F_SCORE>=9+20', 'PER+GPA+6MRM+F_SCORE>=9+20', 'PBR+ROE+6MRM+F_SCORE>=9+20', 'PBR+ROA+6MRM+F_SCORE>=9+20', 'PBR+GPA+6MRM+F_SCORE>=9+20', 'PSR+ROE+6MRM+F_SCORE>=9+20', 'PSR+ROA+6MRM+F_SCORE>=9+20', 'PSR+GPA+6MRM+F_SCORE>=9+20',
-    #                  'PER+ROE+12MRM+F_SCORE>=9+20', 'PER+ROA+12MRM+F_SCORE>=9+20', 'PER+GPA+12MRM+F_SCORE>=9+20', 'PBR+ROE+12MRM+F_SCORE>=9+20', 'PBR+ROA+12MRM+F_SCORE>=9+20', 'PBR+GPA+12MRM+F_SCORE>=9+20', 'PSR+ROE+12MRM+F_SCORE>=9+20', 'PSR+ROA+12MRM+F_SCORE>=9+20', 'PSR+GPA+12MRM+F_SCORE>=9+20'
-    #                  ]

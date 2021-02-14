@@ -2,7 +2,7 @@ import pymysql
 import config as cf
 import pandas as pd
 pymysql.install_as_MySQLdb()
-
+cf = cf.config
 
 class db_sql():
     def __init__(self):
@@ -14,10 +14,6 @@ class db_sql():
                                     charset='utf8mb4',
                                     cursorclass=pymysql.cursors.DictCursor)
         self.cur = self.conn.cursor()
-
-    def __del__(self):
-        '''소멸자 : DB 접속 해제'''
-        self.conn.close()
 
     def exist_db(self, db_name):
         '''DB SCHEMA 존재 확인 '''

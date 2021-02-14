@@ -133,6 +133,7 @@ class scrap_daily_price():
         # print(price_df)
         return price_df
 
+
     def scrap_daily_price_naver_chart(self):
         '''네이버 차트에서 daily_price 스크랩'''
         # 종목 리스트 가져오기
