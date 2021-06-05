@@ -2,13 +2,16 @@ import pymysql
 import requests
 import time
 import pandas as pd
-import config.config as cf
+from config import setting as cf
+from config import logger as logger
 from datetime import datetime
 from bs4 import BeautifulSoup
+
 
 class scrap_daily_price():
     def __init__(self):
         '''생성자'''
+        self.logger = logger.logger
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -28,19 +31,19 @@ class scrap_daily_price():
         # daily_price 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'daily_price'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] daily_price 스키마 존재")
+            self.logger.info("daily_price 스키마 존재")
             pass
         else:
             sql = "CREATE DATABASE daily_price"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] daily_price 스키마 생성")
+            self.logger.info("daily_price 스키마 생성")
 
     def create_tbl(self, stock):
         '''종목별 주가 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'daily_price' and table_name = '{stock}'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] daily_price.{stock} 테이블 존재함")
+            self.logger.info(f"daily_price.{stock} 테이블 존재함")
             pass
         else:
             sql = f"CREATE TABLE IF NOT EXISTS daily_price.`{stock}` (" \
@@ -53,7 +56,7 @@ class scrap_daily_price():
                   f"PRIMARY KEY (date))"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] daily_price.{stock} 테이블 생성 완료")
+            self.logger.info(f"daily_price.{stock} 테이블 생성 완료")
 
     def scrap_daily_price_naver(self):
         '''daily_price 스크랩'''
@@ -111,9 +114,9 @@ class scrap_daily_price():
                 self.cur.execute(sql)
                 self.conn.commit()
                 time.sleep(0.1)
-                print(f"[{self.now}] ({stock}) 주가 스크랩 완료")
+                self.logger.info(f"({stock}) 주가 스크랩 완료")
             except Exception as e:
-                print(f"[{self.now}] ({stock}) 주가 스크랩 에러:", str(e))
+                self.logger.error(f"({stock}) 주가 스크랩 에러:" + str(e))
 
 
     def scrap_price_naver_chart(self, code, timeframe, count):
@@ -130,7 +133,6 @@ class scrap_daily_price():
             price_df = price_df.append({'date': date, 'open': datas[1], 'high': datas[2], 'low': datas[3], 'close': datas[4], 'volume': datas[5]}, ignore_index=True)
             # 데이터 : 시가, 고가, 저가, 종가, 거래량 순서
             # 테이블 : 시가, 고가, 저가, 종가, 거래량 순서
-        # print(price_df)
         return price_df
 
 
@@ -144,13 +146,12 @@ class scrap_daily_price():
 
         # 종목별 스크랩
         for idx in range(len(stock_list)):
-            # for idx in range(5):
             code = stock_list['code'][idx]
             stock = stock_list['stock'][idx]
             self.create_tbl(stock=stock)  # 종목별 테이블 생성
 
             try:
-                df = self.scrap_price_naver_chart(code=code, timeframe='day', count=20)
+                df = self.scrap_price_naver_chart(code=code, timeframe='day', count=20)  # 20일치만 스크랩
                 for r in df.itertuples():
                     sql = f"REPLACE INTO daily_price.`{stock}` VALUES ('{r.date}','{r.open}','{r.high}','{r.low}','{r.close}','{r.volume}')"
                     self.cur.execute(sql)
@@ -158,16 +159,11 @@ class scrap_daily_price():
                 self.cur.execute(sql)
                 self.conn.commit()
                 time.sleep(0.1)
-                print(f"[{self.now}] ({idx}/{stock}) 주가 스크랩 완료")
+                self.logger.info(f"({idx}/{stock}) 주가 스크랩 완료")
             except Exception as e:
-                print(f"[{self.now}] ({idx}/{stock}) 주가 스크랩 실패:", str(e))
-
-
-
+                self.logger.error(f"({idx}/{stock}) 주가 스크랩 실패:" + str(e))
 
 
 if __name__ == "__main__":
     scrap_daily_price = scrap_daily_price()
-    # scrap_daily_price.scrap_daily_price_naver()
-    # scrap_daily_price.scrap_daily_price_naver_chart(code='005930', timeframe='day', count='10')
     scrap_daily_price.scrap_daily_price_naver_chart()

@@ -2,13 +2,15 @@ import pymysql
 import requests
 import time
 import pandas as pd
-import config.config as cf
+from config import setting as cf
 import datetime
 from bs4 import BeautifulSoup
+from config import logger as logger
 
 class scrap_market_index():
     def __init__(self):
         '''생성자'''
+        self.logger = logger.logger
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -28,19 +30,19 @@ class scrap_market_index():
         # market_index 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'market_index'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] market_index 스키마 존재")
+            self.logger.info("market_index 스키마 존재")
             pass
         else:
             sql = "CREATE DATABASE market_index"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] market_index 스키마 생성")
+            self.logger.info("market_index 스키마 생성")
 
         # market_index.kospi 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'market_index' and table_name = 'kospi'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] market_index.kospi 테이블 존재")
+            self.logger.info("market_index.kospi 테이블 존재")
             pass
         else:
             sql = """
@@ -53,13 +55,13 @@ class scrap_market_index():
                     """
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] market_index.kospi 테이블 생성")
+            self.logger.info("market_index.kospi 테이블 생성")
 
         # market_index.kosdaq 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'market_index' and table_name = 'kosdaq'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] market_index.kosdaq 테이블 존재")
+            self.logger.info("market_index.kosdaq 테이블 존재")
             pass
         else:
             sql = """
@@ -72,12 +74,12 @@ class scrap_market_index():
                     """
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] market_index.kosdaq 테이블 생성")
+            self.logger.info("market_index.kosdaq 테이블 생성")
 
 
     def scrap_kospi(self):
         '''코스피 지수 스크랩'''
-        print(f"[{self.now}] (KOSPI지수) 스크랩 시작")
+        self.logger.info("(KOSPI지수) 스크랩 시작")
         sql = "SELECT max(date) FROM market_index.kospi"
         self.cur.execute(sql)
         max_date = self.cur.fetchone()['max(date)']
@@ -103,7 +105,7 @@ class scrap_market_index():
             pg_url = '{}&page={}'.format(url, page)
             df = df.append(pd.read_html(pg_url, header=0)[0])
             time.sleep(0.01)
-            print(f'[{self.now}] (KOSPI지수) {page}/{pages} pages are now downloading')
+            self.logger.info(f"(KOSPI지수) {page}/{pages} pages are now downloading")
         df = df.rename(columns={'날짜': 'date', '체결가': 'close', '거래량(천주)': 'volume', '거래대금(백만)': 'transaction'})
         df = df.dropna()
         df = df.reset_index(drop=True)
@@ -116,11 +118,11 @@ class scrap_market_index():
             sql = f"REPLACE INTO market_index.`kospi` VALUES ('{r.date.replace('.', '-')}','{r.close}','{r.volume}','{r.transaction}')"
             self.cur.execute(sql)
             self.conn.commit()
-        print(f"[{self.now}] (KOSPI지수) 스크랩 완료")
+        self.logger.info("(KOSPI) 스크랩 완료")
 
     def scrap_kosdaq(self):
         '''코스닥 지수 스크랩'''
-        print(f"[{self.now}] (KOSDAQ지수) 스크랩 시작")
+        self.logger.info("(KOSDAQ) 스크랩 시작")
         sql = "SELECT max(date) FROM market_index.kosdaq"
         self.cur.execute(sql)
         max_date = self.cur.fetchone()['max(date)']
@@ -146,7 +148,7 @@ class scrap_market_index():
             pg_url = '{}&page={}'.format(url, page)
             df = df.append(pd.read_html(pg_url, header=0)[0])
             time.sleep(0.01)
-            print(f'[{self.now}] (KOSDAQ지수) {page}/{pages} pages are now downloading')
+            self.logger.info(f"(KOSDAQ) {page}/{pages} pages are now downloading")
         df = df.rename(columns={'날짜': 'date', '체결가': 'close', '거래량(천주)': 'volume', '거래대금(백만)': 'transaction'})
         df = df.dropna()
         df = df.reset_index(drop=True)
@@ -159,7 +161,7 @@ class scrap_market_index():
             sql = f"REPLACE INTO market_index.`kosdaq` VALUES ('{r.date.replace('.', '-')}','{r.close}','{r.volume}','{r.transaction}')"
             self.cur.execute(sql)
             self.conn.commit()
-        print(f"[{self.now}] (KOSDAQ지수) 스크랩 완료")
+        self.logger.info("(KOSDAQ) 스크랩 완료")
 
 if __name__ == '__main__':
     scrap_market_index = scrap_market_index()

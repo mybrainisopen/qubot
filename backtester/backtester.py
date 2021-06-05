@@ -3,13 +3,15 @@ import pandas as pd
 import numpy as np
 import math
 import datetime
-import config.config as cf
+import config.setting as cf
 import config.db_sql as dbl
 from matplotlib import pyplot as plt
+from config import logger as logger
 
 class backtester():
     def __init__(self):
         '''생성자'''
+        self.logger = logger.logger
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -34,41 +36,41 @@ class backtester():
         # backtest_book 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'backtest_book'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] backtest_book 스키마 존재")
+            self.logger.info("backtest_book 스키마 존재")
             pass
         else:
             sql = "CREATE DATABASE backtest_book"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] backtest_book 스키마 생성")
+            self.logger.info("backtest_book 스키마 생성")
 
         # backtest_portfolio 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'backtest_portfolio'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] backtest_portfolio 스키마 존재")
+            self.logger.info("backtest_portfolio 스키마 존재")
             pass
         else:
             sql = "CREATE DATABASE backtest_portfolio"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] backtest_portfolio 스키마 생성")
+            self.logger.info("backtest_portfolio 스키마 생성")
 
         # backtest_result 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'backtest_result'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] backtest_result 스키마 존재")
+            self.logger.info("backtest_result 스키마 존재")
             pass
         else:
             sql = "CREATE DATABASE backtest_result"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] backtest_result 스키마 생성")
+            self.logger.info("backtest_result 스키마 생성")
 
         # backtest_result.evaluation 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'backtest_result' and table_name = 'evaluation'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] backtest_result.evaluation 테이블 존재")
+            self.logger.info("backtest_result.evaluation 테이블 존재")
             pass
         else:
             sql = """
@@ -87,13 +89,13 @@ class backtester():
             """
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] backtest_result.evaluation 테이블 생성")
+            self.logger.info("backtest_result.evaluation 테이블 생성")
 
     def create_book_table(self, strategy):
         '''종목별 모멘텀 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'backtest_book' and table_name = '{strategy}'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] backtest_book.{strategy} 테이블 존재함")
+            self.logger.info(f"backtest_book.{strategy} 테이블 존재함")
             pass
         else:
             sql = f"CREATE TABLE IF NOT EXISTS backtest_book.`{strategy}` (" \
@@ -108,13 +110,13 @@ class backtester():
                   f"slippage BIGINT(20))"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] backtest_book.{strategy} 테이블 생성 완료")
+            self.logger.info(f"backtest_book.{strategy} 테이블 생성 완료")
 
     def create_portfolio_table(self, strategy):
         '''종목별 모멘텀 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'backtest_portfolio' and table_name = '{strategy}'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] backtest_portfolio.{strategy} 테이블 존재함")
+            self.logger.info(f"backtest_portfolio.{strategy} 테이블 존재함")
             pass
         else:
             sql = f"CREATE TABLE IF NOT EXISTS backtest_portfolio.`{strategy}` (" \
@@ -127,7 +129,7 @@ class backtester():
                   f"PRIMARY KEY (date))"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] backtest_portfolio.{strategy} 테이블 생성 완료")
+            self.logger.info(f"backtest_portfolio.{strategy} 테이블 생성 완료")
 
     def get_universe(self, strategy, date):
         '''전략에 해당하는 종목 리스트를 반환
@@ -306,14 +308,13 @@ class backtester():
         if ROI < 0:
             CAGR = 0
         else:
-            CAGR = ROI ** ((252./len(portfolio))-1)
+            CAGR = (ROI ** (252./len(portfolio))) - 1
         MEAN = portfolio['daily_return'].mean()
         VOL = np.std(portfolio['daily_return'] * np.sqrt(252.))
         MDD = (portfolio['total'].max() - portfolio['total'].min())/portfolio['total'].max()
         Sharpe = np.mean(portfolio['daily_return'])/np.std(portfolio['daily_return']) * np.sqrt(252.)
 
         # DB입력
-        # print(strategy, start, end, initial, final, ROI, CAGR, VOL, MDD, Sharpe)
         sql = f"INSERT INTO backtest_result.evaluation (strategy, start, end, initial, final, ROI, CAGR, MEAN, VOL, MDD, Sharpe) " \
               f"VALUES ('{strategy}', {start}, {end}, {initial}, {final}, {ROI}, {CAGR}, {MEAN}, {VOL}, {MDD}, {Sharpe})"
         self.cur.execute(sql)
@@ -327,10 +328,9 @@ class backtester():
             else:
                 initial_cash = portfolio['total'][len(portfolio)-1]
             universe = self.get_universe(strategy=strategy, date=set_date_list[i])
-            # print(buy_date_list[i], universe)
             book = self.backtest_book(strategy=strategy, initial=initial_cash, universe=universe, start=buy_date_list[i], end=sell_date_list[i])
             portfolio = self.backtest_portfolio(strategy=strategy, initial=initial_cash, book=book)
-            print(f"[{self.now}] ({i+1}/{len(set_date_list)}) {strategy} 포트폴리오 생성중")
+            self.logger.info(f"({i+1}/{len(set_date_list)}) {strategy} 포트폴리오 생성중")
         self.backtest_evaluation(strategy=strategy, initial=initial)
 
     def backtest_check(self, strategy):
@@ -387,7 +387,7 @@ class backtester():
         max_return = meta.loc[meta['ROI'] == meta['ROI'].max()]
         max_sharpe = meta.loc[meta['Sharpe'] == meta['Sharpe'].max()]
         min_risk = meta.loc[meta['VOL'] == meta['VOL'].min()]  # VOL 또는 MDD
-        meta.plot.scatter(x='VOL', y='ROI', c='Sharpe', cmap='viridis', edgecolors='k', figsize=(11, 6), grid=True)  # 컬러맵 vidiris, 테두리는 rjawjd(k)로 표시
+        meta.plot.scatter(x='VOL', y='ROI', c='Sharpe', cmap='viridis', edgecolors='k', figsize=(11, 6), grid=True)  # 컬러맵 vidiris, 테두리는 검정(k)로 표시
         plt.scatter(x=max_sharpe['VOL'], y=max_sharpe['ROI'], c='r', marker='*', s=300)  # 샤프지수가 가장 큰 포트폴리오를 300크기 붉은 별표로 표시
         plt.scatter(x=min_risk['VOL'], y=min_risk['ROI'], c='r', marker='X', s=200)  # 리스크가 가장 작은 포트폴리오를 200크기 붉은 X표로 표시
         plt.title('Portfolio Optimization')
@@ -397,82 +397,78 @@ class backtester():
         print('max_sharpe:', max_sharpe['strategy'].iloc[0], '| ROI:', max_sharpe['ROI'].iloc[0], '| VOL:', max_sharpe['VOL'].iloc[0], '| Sharpe', max_sharpe['Sharpe'].iloc[0])
         print('min_risk:', min_risk['strategy'].iloc[0], '| ROI:', min_risk['ROI'].iloc[0], '| VOL:', min_risk['VOL'].iloc[0], '| Sharpe', min_risk['Sharpe'].iloc[0])
         plt.show()
-
-    def initialize_db(self):
-        dbl.drop_db(db_name='backtest_book')
-        dbl.drop_db(db_name='backtest_portfolio')
-        dbl.drop_db(db_name='backtest_result')
+        self.backtest_graph(max_return['strategy'].iloc[0])
+        self.backtest_graph(max_sharpe['strategy'].iloc[0])
+        self.backtest_graph(min_risk['strategy'].iloc[0])
 
     def executor(self):
         today = datetime.datetime.today().strftime('%Y%m%d')
+        # 4, 6, 9, 12월 거래
         set_date_list = ['20170403', '20170601', '20170901', '20171201',
                          '20180402', '20180601', '20180903', '20181203',
                          '20190401', '20190603', '20190902', '20191202',
-                         '20200401', '20200601', '20200901', '20201201']
+                         '20200401', '20200601', '20200901', '20201201',
+                         '20210331', '20210531']
         buy_date_list = ['20170404', '20170602', '20170904', '20171204',
                          '20180403', '20180604', '20180904', '20181204',
                          '20190402', '20190604', '20190903', '20191203',
-                         '20200402', '20200602', '20200902', '20201202']
+                         '20200402', '20200602', '20200902', '20201202',
+                         '20210401', '20210601']
         sell_date_list = ['20170601', '20170901', '20171201', '20180402',
                           '20180601', '20180903', '20181203', '20190401',
                           '20190603', '20190902', '20191202', '20200401',
-                          '20200601', '20200901', '20201201', today]
-        strategy_list = [
-            'PER+ROE+1MRM+F_SCORE>=9+10', 'PER+ROA+1MRM+F_SCORE>=9+10', 'PER+GPA+1MRM+F_SCORE>=9+10', 'PBR+ROE+1MRM+F_SCORE>=9+10', 'PBR+ROA+1MRM+F_SCORE>=9+10', 'PBR+GPA+1MRM+F_SCORE>=9+10', 'PSR+ROE+1MRM+F_SCORE>=9+10', 'PSR+ROA+1MRM+F_SCORE>=9+10', 'PSR+GPA+1MRM+F_SCORE>=9+10', 'EVEBIT+ROE+1MRM+F_SCORE>=9+10', 'EVEBIT+ROA+1MRM+F_SCORE>=9+10', 'EVEBIT+GPA+1MRM+F_SCORE>=9+10',
-            'PER+ROE+3MRM+F_SCORE>=9+10', 'PER+ROA+3MRM+F_SCORE>=9+10', 'PER+GPA+3MRM+F_SCORE>=9+10', 'PBR+ROE+3MRM+F_SCORE>=9+10', 'PBR+ROA+3MRM+F_SCORE>=9+10', 'PBR+GPA+3MRM+F_SCORE>=9+10', 'PSR+ROE+3MRM+F_SCORE>=9+10', 'PSR+ROA+3MRM+F_SCORE>=9+10', 'PSR+GPA+3MRM+F_SCORE>=9+10', 'EVEBIT+ROE+3MRM+F_SCORE>=9+10', 'EVEBIT+ROA+3MRM+F_SCORE>=9+10', 'EVEBIT+GPA+3MRM+F_SCORE>=9+10',
-            'PER+ROE+6MRM+F_SCORE>=9+10', 'PER+ROA+6MRM+F_SCORE>=9+10', 'PER+GPA+6MRM+F_SCORE>=9+10', 'PBR+ROE+6MRM+F_SCORE>=9+10', 'PBR+ROA+6MRM+F_SCORE>=9+10', 'PBR+GPA+6MRM+F_SCORE>=9+10', 'PSR+ROE+6MRM+F_SCORE>=9+10', 'PSR+ROA+6MRM+F_SCORE>=9+10', 'PSR+GPA+6MRM+F_SCORE>=9+10', 'EVEBIT+ROE+6MRM+F_SCORE>=9+10', 'EVEBIT+ROA+6MRM+F_SCORE>=9+10', 'EVEBIT+GPA+6MRM+F_SCORE>=9+10',
-            'PER+ROE+12MRM+F_SCORE>=9+10', 'PER+ROA+12MRM+F_SCORE>=9+10', 'PER+GPA+12MRM+F_SCORE>=9+10', 'PBR+ROE+12MRM+F_SCORE>=9+10', 'PBR+ROA+12MRM+F_SCORE>=9+10', 'PBR+GPA+12MRM+F_SCORE>=9+10', 'PSR+ROE+12MRM+F_SCORE>=9+10', 'PSR+ROA+12MRM+F_SCORE>=9+10', 'PSR+GPA+12MRM+F_SCORE>=9+10', 'EVEBIT+ROE+12MRM+F_SCORE>=9+10', 'EVEBIT+ROA+12MRM+F_SCORE>=9+10', 'EVEBIT+GPA+12MRM+F_SCORE>=9+10',
-            'PER+ROE+1MRM+F_SCORE>=9+20', 'PER+ROA+1MRM+F_SCORE>=9+20', 'PER+GPA+1MRM+F_SCORE>=9+20', 'PBR+ROE+1MRM+F_SCORE>=9+20', 'PBR+ROA+1MRM+F_SCORE>=9+20', 'PBR+GPA+1MRM+F_SCORE>=9+20', 'PSR+ROE+1MRM+F_SCORE>=9+20', 'PSR+ROA+1MRM+F_SCORE>=9+20', 'PSR+GPA+1MRM+F_SCORE>=9+20', 'EVEBIT+ROE+1MRM+F_SCORE>=9+20', 'EVEBIT+ROA+1MRM+F_SCORE>=9+20', 'EVEBIT+GPA+1MRM+F_SCORE>=9+20',
-            'PER+ROE+3MRM+F_SCORE>=9+20', 'PER+ROA+3MRM+F_SCORE>=9+20', 'PER+GPA+3MRM+F_SCORE>=9+20', 'PBR+ROE+3MRM+F_SCORE>=9+20', 'PBR+ROA+3MRM+F_SCORE>=9+20', 'PBR+GPA+3MRM+F_SCORE>=9+20', 'PSR+ROE+3MRM+F_SCORE>=9+20', 'PSR+ROA+3MRM+F_SCORE>=9+20', 'PSR+GPA+3MRM+F_SCORE>=9+20', 'EVEBIT+ROE+3MRM+F_SCORE>=9+20', 'EVEBIT+ROA+3MRM+F_SCORE>=9+20', 'EVEBIT+GPA+3MRM+F_SCORE>=9+20',
-            'PER+ROE+6MRM+F_SCORE>=9+20', 'PER+ROA+6MRM+F_SCORE>=9+20', 'PER+GPA+6MRM+F_SCORE>=9+20', 'PBR+ROE+6MRM+F_SCORE>=9+20', 'PBR+ROA+6MRM+F_SCORE>=9+20', 'PBR+GPA+6MRM+F_SCORE>=9+20', 'PSR+ROE+6MRM+F_SCORE>=9+20', 'PSR+ROA+6MRM+F_SCORE>=9+20', 'PSR+GPA+6MRM+F_SCORE>=9+20', 'EVEBIT+ROE+6MRM+F_SCORE>=9+20', 'EVEBIT+ROA+6MRM+F_SCORE>=9+20', 'EVEBIT+GPA+6MRM+F_SCORE>=9+20',
-            'PER+ROE+12MRM+F_SCORE>=9+20', 'PER+ROA+12MRM+F_SCORE>=9+20', 'PER+GPA+12MRM+F_SCORE>=9+20', 'PBR+ROE+12MRM+F_SCORE>=9+20', 'PBR+ROA+12MRM+F_SCORE>=9+20', 'PBR+GPA+12MRM+F_SCORE>=9+20', 'PSR+ROE+12MRM+F_SCORE>=9+20', 'PSR+ROA+12MRM+F_SCORE>=9+20', 'PSR+GPA+12MRM+F_SCORE>=9+20', 'EVEBIT+ROE+12MRM+F_SCORE>=9+20', 'EVEBIT+ROA+12MRM+F_SCORE>=9+20', 'EVEBIT+GPA+12MRM+F_SCORE>=9+20'
-            ]
+                          '20200601', '20200901', '20201201', '20210331',
+                          '20210528', '20210604']
+
+        # strategy_list 생성
+        # strategy = 'PER+PBR+PSR+ROE+ROA+GPA+1MRM+3MRM+6MRM+F_SCORE>=9+10'
+        val_list = ['', 'PER', 'PBR', 'PSR']
+        profit_list = ['', 'ROE', 'ROA', 'GPA']
+        mrm_list = ['', '1MRM', '3MRM', '6MRM']
+        amt_list = ['10']
+        strategy_list = ['PER+PBR+PSR+ROE+ROA+GPA+1MRM+3MRM+6MRM+F_SCORE>=9+10']
+        # for i in val_list:
+        #     for j in profit_list:
+        #         for k in mrm_list:
+        #             for l in amt_list:
+        #                 if i == '':
+        #                     if j == '':
+        #                         if k == '':
+        #                             item = 'F_SCORE>=9' + '+' + l
+        #                         else:
+        #                             item = k + '+' + 'F_SCORE>=9' + '+' + l
+        #                     else:
+        #                         if k == '':
+        #                             item = j + '+' + 'F_SCORE>=9' + '+' + l
+        #                         else:
+        #                             item = j + '+' + k + '+' + 'F_SCORE>=9' + '+' + l
+        #                 else:
+        #                     if j == '':
+        #                         if k == '':
+        #                             item = i + '+' + 'F_SCORE>=9' + '+' + l
+        #                         else:
+        #                             item = i + '+' + k + '+' + 'F_SCORE>=9' + '+' + l
+        #                     else:
+        #                         if k == '':
+        #                             item = i + '+' + j + '+' + 'F_SCORE>=9' + '+' + l
+        #                         else:
+        #                             item = i + '+' + j + '+' + k + '+' + 'F_SCORE>=9' + '+' + l
+        #                 strategy_list.append(item)
+
         for strategy in strategy_list:
             self.backtest(strategy=strategy, initial=10000000, set_date_list=set_date_list, buy_date_list=buy_date_list, sell_date_list=sell_date_list)
 
 
 if __name__=="__main__":
-
     # 초기화
     dbl = dbl.db_sql()
     dbl.drop_db(db_name='backtest_book')
     dbl.drop_db(db_name='backtest_portfolio')
     dbl.drop_db(db_name='backtest_result')
 
-    backtester = backtester()
-    today = datetime.datetime.today().strftime('%Y%m%d')
-    set_date_list = ['20170403', '20170601', '20170901', '20171201',
-                     '20180402', '20180601', '20180903', '20181203',
-                     '20190401', '20190603', '20190902', '20191202',
-                     '20200401', '20200601', '20200901', '20201201']
-    buy_date_list = ['20170404', '20170602', '20170904', '20171204',
-                     '20180403', '20180604', '20180904', '20181204',
-                     '20190402', '20190604', '20190903', '20191203',
-                     '20200402', '20200602', '20200902', '20201202']
-    sell_date_list = ['20170601', '20170901', '20171201', '20180402',
-                      '20180601', '20180903', '20181203', '20190401',
-                      '20190603', '20190902', '20191202', '20200401',
-                      '20200601', '20200901', '20201201', '20210210']
-    strategy_list = [
-                     'PER+ROE+1MRM+F_SCORE>=9+10', 'PER+ROA+1MRM+F_SCORE>=9+10', 'PER+GPA+1MRM+F_SCORE>=9+10', 'PBR+ROE+1MRM+F_SCORE>=9+10', 'PBR+ROA+1MRM+F_SCORE>=9+10', 'PBR+GPA+1MRM+F_SCORE>=9+10', 'PSR+ROE+1MRM+F_SCORE>=9+10', 'PSR+ROA+1MRM+F_SCORE>=9+10', 'PSR+GPA+1MRM+F_SCORE>=9+10', 'EVEBIT+ROE+1MRM+F_SCORE>=9+10', 'EVEBIT+ROA+1MRM+F_SCORE>=9+10', 'EVEBIT+GPA+1MRM+F_SCORE>=9+10',
-                     'PER+ROE+3MRM+F_SCORE>=9+10', 'PER+ROA+3MRM+F_SCORE>=9+10', 'PER+GPA+3MRM+F_SCORE>=9+10', 'PBR+ROE+3MRM+F_SCORE>=9+10', 'PBR+ROA+3MRM+F_SCORE>=9+10', 'PBR+GPA+3MRM+F_SCORE>=9+10', 'PSR+ROE+3MRM+F_SCORE>=9+10', 'PSR+ROA+3MRM+F_SCORE>=9+10', 'PSR+GPA+3MRM+F_SCORE>=9+10', 'EVEBIT+ROE+3MRM+F_SCORE>=9+10', 'EVEBIT+ROA+3MRM+F_SCORE>=9+10', 'EVEBIT+GPA+3MRM+F_SCORE>=9+10',
-                     'PER+ROE+6MRM+F_SCORE>=9+10', 'PER+ROA+6MRM+F_SCORE>=9+10', 'PER+GPA+6MRM+F_SCORE>=9+10', 'PBR+ROE+6MRM+F_SCORE>=9+10', 'PBR+ROA+6MRM+F_SCORE>=9+10', 'PBR+GPA+6MRM+F_SCORE>=9+10', 'PSR+ROE+6MRM+F_SCORE>=9+10', 'PSR+ROA+6MRM+F_SCORE>=9+10', 'PSR+GPA+6MRM+F_SCORE>=9+10', 'EVEBIT+ROE+6MRM+F_SCORE>=9+10', 'EVEBIT+ROA+6MRM+F_SCORE>=9+10', 'EVEBIT+GPA+6MRM+F_SCORE>=9+10',
-                     'PER+ROE+12MRM+F_SCORE>=9+10', 'PER+ROA+12MRM+F_SCORE>=9+10', 'PER+GPA+12MRM+F_SCORE>=9+10', 'PBR+ROE+12MRM+F_SCORE>=9+10', 'PBR+ROA+12MRM+F_SCORE>=9+10', 'PBR+GPA+12MRM+F_SCORE>=9+10', 'PSR+ROE+12MRM+F_SCORE>=9+10', 'PSR+ROA+12MRM+F_SCORE>=9+10', 'PSR+GPA+12MRM+F_SCORE>=9+10', 'EVEBIT+ROE+12MRM+F_SCORE>=9+10', 'EVEBIT+ROA+12MRM+F_SCORE>=9+10', 'EVEBIT+GPA+12MRM+F_SCORE>=9+10',
-                     'PER+ROE+1MRM+F_SCORE>=9+20', 'PER+ROA+1MRM+F_SCORE>=9+20', 'PER+GPA+1MRM+F_SCORE>=9+20', 'PBR+ROE+1MRM+F_SCORE>=9+20', 'PBR+ROA+1MRM+F_SCORE>=9+20', 'PBR+GPA+1MRM+F_SCORE>=9+20', 'PSR+ROE+1MRM+F_SCORE>=9+20', 'PSR+ROA+1MRM+F_SCORE>=9+20', 'PSR+GPA+1MRM+F_SCORE>=9+20', 'EVEBIT+ROE+1MRM+F_SCORE>=9+20', 'EVEBIT+ROA+1MRM+F_SCORE>=9+20', 'EVEBIT+GPA+1MRM+F_SCORE>=9+20',
-                     'PER+ROE+3MRM+F_SCORE>=9+20', 'PER+ROA+3MRM+F_SCORE>=9+20', 'PER+GPA+3MRM+F_SCORE>=9+20', 'PBR+ROE+3MRM+F_SCORE>=9+20', 'PBR+ROA+3MRM+F_SCORE>=9+20', 'PBR+GPA+3MRM+F_SCORE>=9+20', 'PSR+ROE+3MRM+F_SCORE>=9+20', 'PSR+ROA+3MRM+F_SCORE>=9+20', 'PSR+GPA+3MRM+F_SCORE>=9+20', 'EVEBIT+ROE+3MRM+F_SCORE>=9+20', 'EVEBIT+ROA+3MRM+F_SCORE>=9+20', 'EVEBIT+GPA+3MRM+F_SCORE>=9+20',
-                     'PER+ROE+6MRM+F_SCORE>=9+20', 'PER+ROA+6MRM+F_SCORE>=9+20', 'PER+GPA+6MRM+F_SCORE>=9+20', 'PBR+ROE+6MRM+F_SCORE>=9+20', 'PBR+ROA+6MRM+F_SCORE>=9+20', 'PBR+GPA+6MRM+F_SCORE>=9+20', 'PSR+ROE+6MRM+F_SCORE>=9+20', 'PSR+ROA+6MRM+F_SCORE>=9+20', 'PSR+GPA+6MRM+F_SCORE>=9+20', 'EVEBIT+ROE+6MRM+F_SCORE>=9+20', 'EVEBIT+ROA+6MRM+F_SCORE>=9+20', 'EVEBIT+GPA+6MRM+F_SCORE>=9+20',
-                     'PER+ROE+12MRM+F_SCORE>=9+20', 'PER+ROA+12MRM+F_SCORE>=9+20', 'PER+GPA+12MRM+F_SCORE>=9+20', 'PBR+ROE+12MRM+F_SCORE>=9+20', 'PBR+ROA+12MRM+F_SCORE>=9+20', 'PBR+GPA+12MRM+F_SCORE>=9+20', 'PSR+ROE+12MRM+F_SCORE>=9+20', 'PSR+ROA+12MRM+F_SCORE>=9+20', 'PSR+GPA+12MRM+F_SCORE>=9+20', 'EVEBIT+ROE+12MRM+F_SCORE>=9+20', 'EVEBIT+ROA+12MRM+F_SCORE>=9+20', 'EVEBIT+GPA+12MRM+F_SCORE>=9+20'
-                     ]
-    for strategy in strategy_list:
-        backtester.backtest(strategy=strategy, initial=10000000, set_date_list=set_date_list, buy_date_list=buy_date_list, sell_date_list=sell_date_list)
-
     # 메타분석
-    # backtester.meta_analysis()
-    # backtester.backtest_graph('PSR+GPA+1MRM+F_SCORE>=9+10')
-    # backtester.backtest_graph('PSR+GPA+3MRM+F_SCORE>=9+10')
-    # backtester.backtest_graph('PBR+ROE+12MRM+F_SCORE>=9+20')
-
-    # 종목 출력
-    # print()
+    backtester = backtester()
+    backtester.executor()
+    backtester.meta_analysis()
 
 

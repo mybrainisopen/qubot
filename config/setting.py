@@ -10,9 +10,6 @@ db_pw = 'MBiO85!!'
 # db_id='jslee'
 # db_pw='Genius85!!'
 
-# 모의투자 계좌번호
-simul_account = '8146112811'
-
 # Open-DART API Key
 dart_key1 = '4f134a1717d81bfa47aff61e06c0bba489e906c6'  # brainopen@naver.com
 dart_key2 = '9074f410d12c8a74ec0a67e84588147bcf8c985f'  # mybrainisopen@naver.com
@@ -32,3 +29,6 @@ user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 tax_rate = 0.003  # 0.3%
 fee_rate = 0.00015  # 0.015%
 slippage = 0.003  # 0.3%
+
+# 로그 출력레벨 설정 (DEBUG < INFO < WARNING < ERROR < CRITICAL)
+log_lv = "INFO"

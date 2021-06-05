@@ -3,13 +3,15 @@ import requests
 import re
 import time
 import pandas as pd
-import config.config as cf
+from config import setting as cf
 from datetime import datetime
 from bs4 import BeautifulSoup
+from config import logger as logger
 
 class scrap_stock_info():
     def __init__(self):
         '''생성자'''
+        self.logger = logger.logger
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -29,19 +31,19 @@ class scrap_stock_info():
         # status 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'status'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] status 스키마 존재")
+            self.logger.info("status 스키마 존재")
             pass
         else:
             sql = "CREATE DATABASE status"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] status 스키마 생성")
+            self.logger.info("status 스키마 생성")
 
         # status.scrap_all_status 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'status' and table_name = 'scrap_all_status'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] status.scrap_all_status 테이블 존재")
+            self.logger.info("status.scrap_all_status 테이블 존재")
             pass
         else:
             sql = """
@@ -59,13 +61,13 @@ class scrap_stock_info():
                             ('2020-01-02', '2000-01-02', '2000-01-03', '2000-01-04', '2000-01-05')"""
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] status.scrap_all_status 테이블 생성")
+            self.logger.info("status.scrap_all_status 테이블 생성")
 
         # status.scrap_stock_status 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'status' and table_name = 'scrap_stock_status'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] status.scrap_stock_status 테이블 존재")
+            self.logger.info("status.scrap_stock_status 테이블 존재")
             pass
         else:
             sql = """
@@ -79,13 +81,13 @@ class scrap_stock_info():
                     """
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] status.scrap_stock_status 테이블 생성")
+            self.logger.info("status.scrap_stock_status 테이블 생성")
 
         # status.analyze_all_status 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'status' and table_name = 'analyze_all_status'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] status.analyze_all_status 테이블 존재")
+            self.logger.info("status.analyze_all_status 테이블 존재")
             pass
         else:
             sql = """
@@ -102,13 +104,13 @@ class scrap_stock_info():
                      ('2020-01-02', '2000-01-02', '2000-01-03', '2000-01-04')"""
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] status.analyze_all_status 테이블 생성")
+            self.logger.info("status.analyze_all_status 테이블 생성")
 
         # status.analyze_stock_status 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'status' and table_name = 'analyze_stock_status'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] status.analyze_stock_status 테이블 존재")
+            self.logger.info("status.analyze_stock_status 테이블 존재")
             pass
         else:
             sql = """
@@ -122,24 +124,24 @@ class scrap_stock_info():
                     """
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] status.analyze_stock_status 테이블 생성")
+            self.logger.info("status.analyze_stock_status 테이블 생성")
 
         # stock_info 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'stock_info'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] stock_info 스키마 존재")
+            self.logger.info("stock_info 스키마 존재")
             pass
         else:
             sql = "CREATE DATABASE stock_info"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] stock_info 스키마 생성")
+            self.logger.info("stock_info 스키마 생성")
 
         # stock_info.stock_info 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'stock_info' and table_name = 'stock_info'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] stock_info.stock_info 테이블 존재")
+            self.logger.info("stock_info.stock_info 테이블 존재")
             pass
         else:
             sql = """CREATE TABLE stock_info.stock_info (
@@ -155,13 +157,13 @@ class scrap_stock_info():
                      PRIMARY KEY (code, stock))"""
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] stock_info.stock_info 테이블 생성")
+            self.logger.info("stock_info.stock_info 테이블 생성")
 
         # stock_info.stock_newlisted 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'stock_info' and table_name = 'stock_newlisted'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] stock_info.stock_newlisted 테이블 존재")
+            self.logger.info("stock_info.stock_newlisted 테이블 존재")
             pass
         else:
             sql = """CREATE TABLE IF NOT EXISTS stock_info.stock_newlisted (
@@ -172,13 +174,13 @@ class scrap_stock_info():
                      PRIMARY KEY (code, stock))"""
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] stock_info.stock_newlisted 테이블 생성")
+            self.logger.info("stock_info.stock_newlisted 테이블 생성")
 
         # stock_info.stock_delisted 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'stock_info' and table_name = 'stock_delisted'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] stock_info.stock_delisted 테이블 존재")
+            self.logger.info("stock_info.stock_delisted 테이블 존재")
             pass
         else:
             sql = """CREATE TABLE IF NOT EXISTS stock_info.stock_delisted (
@@ -189,13 +191,13 @@ class scrap_stock_info():
                      PRIMARY KEY (code, stock))"""
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] stock_info.stock_delisted 테이블 생성")
+            self.logger.info("stock_info.stock_delisted 테이블 생성")
 
         # stock_info.stock_konex 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'stock_info' and table_name = 'stock_konex'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] stock_info.stock_konex 테이블 존재")
+            self.logger.info("stock_info.stock_konex 테이블 존재")
             pass
         else:
             sql = """CREATE TABLE IF NOT EXISTS stock_info.stock_konex (
@@ -208,13 +210,13 @@ class scrap_stock_info():
                      PRIMARY KEY (code, stock))"""
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] stock_info.stock_konex 테이블 생성")
+            self.logger.info("stock_info.stock_konex 테이블 생성")
 
         # stock_info.stock_insincerity 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'stock_info' and table_name = 'stock_insincerity'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] stock_info.stock_insincerity 테이블 존재")
+            self.logger.info("stock_info.stock_insincerity 테이블 존재")
             pass
         else:
             sql = """CREATE TABLE IF NOT EXISTS stock_info.stock_insincerity (
@@ -223,13 +225,13 @@ class scrap_stock_info():
                      PRIMARY KEY (code, stock))"""
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] stock_info.stock_insincerity 테이블 생성")
+            self.logger.info("stock_info.stock_insincerity 테이블 생성")
 
         # stock_info.stock_managing 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'stock_info' and table_name = 'stock_managing'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] stock_info.stock_managing 테이블 존재")
+            self.logger.info("stock_info.stock_managing 테이블 존재")
             pass
         else:
             sql = """CREATE TABLE IF NOT EXISTS stock_info.stock_managing (
@@ -238,7 +240,7 @@ class scrap_stock_info():
                      PRIMARY KEY (code, stock))"""
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] stock_info.stock_managing 테이블 생성")
+            self.logger.info("stock_info.stock_managing 테이블 생성")
 
     def scrap_stock_info(self):
         '''상장 종목 상세 정보 스크랩'''
@@ -274,11 +276,27 @@ class scrap_stock_info():
 
         # 신규상장종목/상장폐지종목 체크
         if stock_list.empty:  # 첫 실행시 패스 (DB 테이블이 비어있는 경우)
-            print(f"[{self.now}] (KRX) 데이터베이스 신규 구축 시작")
+            self.logger.info("(KRX) 데이터베이스 신규 구축 시작")
+            for idx in range(len(krx)):
+                code = krx['code'][idx]
+                stock = krx['stock'][idx]
+                market = krx['market'][idx]
+                sql = f"INSERT IGNORE INTO stock_info.stock_info (code, stock, market) " \
+                      f"VALUES ('{code}', '{stock}', '{market}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+                sql = f"INSERT IGNORE INTO status.scrap_stock_status (code, stock) " \
+                      f"VALUES ('{code}', '{stock}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+                sql = f"INSERT IGNORE INTO status.analyze_stock_status (code, stock) " \
+                      f"VALUES ('{code}', '{stock}')"
+                self.cur.execute(sql)
+                self.conn.commit()
             pass
         else:  # 재실행시 krx(KIND)와 stock_list(DB)를 비교하여 신규상장종목/상장폐지종목 체크하여 업데이트
             # krx(KIND)에는 있지만 stock_list(DB)에는 없는 신규상장종목 stock_info(추가) / stock_newlisted(추가) 업데이트
-            print(f"[{self.now}] (KRX신규상장종목) 업데이트 체크 시작")
+            self.logger.info("(KRX신규상장종목) 업데이트 체크 시작")
             for idx in range(len(krx)):
                 code = krx['code'][idx]
                 stock = krx['stock'][idx]
@@ -310,11 +328,11 @@ class scrap_stock_info():
                     self.cur.execute(sql)
                     self.conn.commit()
                     time.sleep(0.1)
-                    print(f"[{self.now}] (KRX신규상장종목) {stock} 스크랩 완료")
-            print(f"[{self.now}] (KRX신규상장종목) 업데이트 체크 종료")
+                    self.logger.info(f"(KRX신규상장종목) {stock} 스크랩 완료")
+            self.logger.info("(KRX신규상장종목) 업데이트 체크 종료")
 
             # stock_list(DB)에는 있지만 krx(KIND)에는 없는 상장폐지종목 stock_info(삭제) / stock_delisted(추가) 업데이트
-            print(f"[{self.now}] (KRX상장폐지종목) 업데이트 체크 시작")
+            self.logger.info("(KRX상장폐지종목) 업데이트 체크 시작")
             for idx in range(len(stock_list)):
                 code = stock_list['code'][idx]
                 stock = stock_list['stock'][idx]
@@ -341,8 +359,8 @@ class scrap_stock_info():
                     self.cur.execute(sql)
                     self.conn.commit()
                     time.sleep(0.1)
-                    print(f"[{self.now}] (KRX상장폐지종목) {stock} 스크랩 완료")
-            print(f"[{self.now}] (KRX상장폐지종목) 업데이트 체크 종료")
+                    self.logger.info(f"(KRX상장폐지종목) {stock} 스크랩 완료")
+            self.logger.info("(KRX상장폐지종목) 업데이트 체크 종료")
         # 참고 : 변경상장(회사명 변경)은 테이블만 새로 만들며 별도 처리 안함
 
         # krx 종목 정보 스크랩
@@ -357,7 +375,7 @@ class scrap_stock_info():
             check_date = self.cur.fetchone()
             check_date = list(check_date.values())[0]
             if str(check_date) == self.today:
-                print(f"[{self.now}] ({idx:04d}/{len(krx)}) {stock} 이미 스크랩 완료됨")
+                self.logger.info(f"({idx:04d}/{len(krx)}) {stock} 이미 스크랩 완료됨")
             else:
                 try:
                     # 스크랩 세팅
@@ -388,9 +406,10 @@ class scrap_stock_info():
                     self.cur.execute(sql)
                     self.conn.commit()
                     time.sleep(0.1)
-                    print(f"[{self.now}] ({idx:04d}/{len(krx)}) {stock} 스크랩 완료")
+                    self.logger.info(f"({idx:04d}/{len(krx)}) {stock} 스크랩 완료")
+
                 except Exception as e:
-                    print(f"[{self.now}] ({idx:04d}/{len(krx)}) {stock} 스크랩 에러: {str(e)}")
+                    self.logger.error(f"({idx:04d}/{len(krx)}) {stock} 스크랩 에러:" + str(e))
 
     def scrap_stock_konex(self):
         '''코스피 종목 정보 스크랩'''
@@ -410,10 +429,10 @@ class scrap_stock_info():
 
         # 신규상장종목/상장폐지종목 체크
         if stock_list.empty:  # 첫 실행시 DB 테이블이 비어있는 경우
-            print(f"[{self.now}] (KONEX) 데이터베이스 신규 구축 시작")
+            self.logger.info("(KONEX) 데이터베이스 신규 구축 시작")
         else:  # 재실행시 konex(KIND)와 stock_list(DB)를 비교하여 신규상장종목/상장폐지종목 체크하여 업데이트
             # konex(KIND)에는 있지만 stock_list(DB)에는 없는 신규상장종목 stock_konex(추가) / stock_newlisted(추가) 업데이트
-            print(f"[{self.now}] (KONEX신규상장종목) 업데이트 체크 시작")
+            self.logger.info("(KONEX신규상장종목) 업데이트 체크 시작")
             for idx in range(len(konex)):
                 code = konex['code'][idx]
                 sql = f"SELECT code FROM stock_info.stock_konex WHERE code='{code}'"
@@ -438,10 +457,10 @@ class scrap_stock_info():
                     self.cur.execute(sql)
                     self.conn.commit()
                     time.sleep(0.1)
-                    print(f"[{self.now}] (KONEX신규상장종목) {stock} 스크랩 완료")
-            print(f"[{self.now}] (KONEX신규상장종목) 업데이트 체크 종료")
+                    self.logger.info(f"(KONEX신규상장종목) {stock} 스크랩 완료")
+            self.logger.info("(KONEX신규상장종목) 업데이트 체크 종료")
             # stock_list(DB)에는 있지만 krx(KIND)에는 없는 상장폐지종목 stock_konex(삭제) / stock_delisted(추가) 업데이트
-            print(f"[{self.now}] (KONEX상장폐지종목) 업데이트 체크 시작")
+            self.logger.info("(KONEX상장폐지종목) 업데이트 체크 시작")
             for idx in range(len(stock_list)):
                 code = stock_list['code'][idx]
                 res = konex[konex['code'] == code]
@@ -460,8 +479,8 @@ class scrap_stock_info():
                     self.cur.execute(sql)
                     self.conn.commit()
                     time.sleep(0.1)
-                    print(f"[{self.now}] (KONEX상장폐지 종목) {stock} 스크랩 완료")
-            print(f"[{self.now}] (KONEX상장폐지종목) 업데이트 체크 종료")
+                    self.logger.info(f"(KONEX상장폐지 종목) {stock} 스크랩 완료")
+            self.logger.info("(KONEX상장폐지종목) 업데이트 체크 종료")
 
         # konex 종목 정보 스크렙
         for idx in range(len(konex)):
@@ -476,7 +495,7 @@ class scrap_stock_info():
             self.cur.execute(sql)
             self.conn.commit()
             time.sleep(0.1)
-            print(f"[{self.now}] ({idx:03d}/{len(konex)}) {stock} 스크랩 완료")
+            self.logger.info(f"({idx:03d}/{len(konex)}) {stock} 스크랩 완료")
 
     def scrap_stock_insincerity(self):
         '''불성실공시법인 스크랩'''
@@ -494,8 +513,7 @@ class scrap_stock_info():
                   f"VALUES ('{code}', '{stock}')"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] ({idx+1:02d}/{len(insincerity)}) 불성실공시법인 스크랩 완료")
-
+            self.logger.info(f"({idx+1:02d}/{len(insincerity)}) 불성실공시법인 스크랩 완료")
 
     def scrap_stock_managing(self):
         '''관리종목 스크랩'''
@@ -513,7 +531,7 @@ class scrap_stock_info():
                   f"VALUES ('{code}', '{stock}')"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] ({idx+1:03d}/{len(managing)}) 관리종목 스크랩 완료")
+            self.logger.info(f"({idx+1:03d}/{len(managing)}) 관리종목 스크랩 완료")
 
 
 if __name__ == '__main__':

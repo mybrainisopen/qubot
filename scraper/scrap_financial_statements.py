@@ -4,11 +4,13 @@ import re
 import pandas as pd
 import dart_fss as dart
 from dateutil.relativedelta import relativedelta
-import config.config as cf
+from config import setting as cf
+from config import logger as logger
 
 class scrap_financial_statements():
     def __init__(self):
         '''생성자'''
+        self.logger = logger.logger
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -29,19 +31,19 @@ class scrap_financial_statements():
         # financial_statements 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'financial_statements'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] financial_statements 스키마 존재")
+            self.logger.info("financial_statements 스키마 존재")
             pass
         else:
             sql = "CREATE DATABASE financial_statements"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] financial_statements 스키마 생성")
+            self.logger.info("financial_statements 스키마 생성")
 
     def create_tbl(self, stock):
         '''종목별 주가 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'financial_statements' and table_name = '{stock}'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] financial_statements.{stock} 테이블 존재함")
+            self.logger.info(f"financial_statements.{stock} 테이블 존재함")
             pass
         else:
             sql = f"CREATE TABLE IF NOT EXISTS financial_statements.`{stock}` (" \
@@ -75,7 +77,7 @@ class scrap_financial_statements():
                   f"PRIMARY KEY (date))"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] financial_statements.{stock} 테이블 생성 완료")
+            self.logger.info(f"financial_statements.{stock} 테이블 생성 완료")
 
     def scrap_financial_statements_by_start_year_stock(self, start_year, stock):
         '''시작연도, 종목명 기준 재무제표 스크랩하여 DB저장'''
@@ -112,7 +114,7 @@ class scrap_financial_statements():
                 corp_code = dart.get_corp_list().find_by_stock_code(stock_code).to_dict()['corp_code']
                 break
             except Exception as e:
-                print(f"[{self.now}] Dart 접속 에러:", str(e))
+                self.logger.error("Dart 접속 에러:" + str(e))
                 continue
 
         # 스크랩 실행
@@ -137,24 +139,25 @@ class scrap_financial_statements():
             else:
                 try:
                     fs = dart.api.finance.get_single_fs(corp_code=corp_code, bsns_year=year, reprt_code=report_code, fs_div='CFS')['list']
-                    print(f"[{self.now}] ({stock}/{year}/{report_code}) 연결재무제표 스크랩 성공")
+                    self.logger.info(f"({stock}/{year}/{report_code}) 연결재무제표 스크랩 성공")
                 except Exception as e:
-                    print(f"[{self.now}] ({stock}/{year}/{report_code}) 연결재무제표 스크랩 실패:", str(e))
+                    self.logger.error(f"({stock}/{year}/{report_code}) 연결재무제표 스크랩 실패:" + str(e))
                     try:
                         fs = dart.api.finance.get_single_fs(corp_code=corp_code, bsns_year=year, reprt_code=report_code, fs_div='OFS')['list']
-                        print(f"[{self.now}] ({stock}/{year}/{report_code}) 개별재무제표 스크랩 성공")
+                        self.logger.info(f"({stock}/{year}/{report_code}) 개별재무제표 스크랩 성공")
                     except Exception as e:
-                        print(f"[{self.now}] ({stock}/{year}/{report_code}) 개별재무제표 스크랩 실패:", str(e))
+                        self.logger.error(f"({stock}/{year}/{report_code}) 개별재무제표 스크랩 실패:" + str(e))
                 try:
                     eq = dart.api.info.get_capital_increase(corp_code=corp_code, bsns_year=year, reprt_code=report_code)['list']
-                    print(f"[{self.now}] ({stock}/{year}/{report_code}) 주식발행내역 스크랩 성공")
+                    self.logger.info(f"({stock}/{year}/{report_code}) 주식발행내역 스크랩 성공")
                 except Exception as e:
-                    print(f"[{self.now}] ({stock}/{year}/{report_code}) 주식발행내역 스크랩 실패:", str(e))
+                    self.logger.error(f"({stock}/{year}/{report_code}) 주식발행내역 스크랩 실패:" + str(e))
+
                 try:
                     dd = dart.api.info.get_dividend(corp_code=corp_code, bsns_year=year, reprt_code=report_code)['list']
-                    print(f"[{self.now}] ({stock}/{year}/{report_code}) 배당내역 스크랩 성공")
+                    self.logger.info(f"({stock}/{year}/{report_code}) 배당내역 스크랩 성공")
                 except Exception as e:
-                    print(f"[{self.now}] ({stock}/{year}/{report_code}) 배당내역 스크랩 실패:", str(e))
+                    self.logger.error(f"({stock}/{year}/{report_code}) 배당내역 스크랩 실패:" + str(e))
 
                 if len(fs) == 0:  # 재무제표 스크랩이 제대로 안된 경우 에러코드 삽입
                     sql = f"UPDATE status.scrap_stock_status SET financial_statements_scraped='10000101' WHERE stock='{stock}'"
@@ -384,7 +387,7 @@ class scrap_financial_statements():
             sql = f"UPDATE status.scrap_stock_status SET financial_statements_scraped='{self.today}' WHERE stock='{stock}'"
             self.cur.execute(sql)
             self.conn.commit()
-        print(f"[{self.now}] ({stock}) 재무제표 스크랩 완료")
+        self.logger.info(f"({stock}) 재무제표 스크랩 완료")
 
     def scrap_financial_statements(self):
         '''전종목 재무제표 스크랩하여 DB저장'''
@@ -396,7 +399,7 @@ class scrap_financial_statements():
         stock_list = self.cur.fetchall()
         stock_list = pd.DataFrame(stock_list)
 
-        print(f"[{self.now}] (전종목) 재무제표 스크랩 시작")
+        self.logger.info("(전종목) 재무제표 스크랩 시작")
         for idx in range(len(stock_list)):
             stock = stock_list['stock'][idx]
             wics = stock_list['wics'][idx]
@@ -407,25 +410,22 @@ class scrap_financial_statements():
                 sql = f"UPDATE status.scrap_stock_status SET financial_statements_scraped='90000101' WHERE stock='{stock}'"
                 self.cur.execute(sql)
                 self.conn.commit()
-                print(f"[{self.now}] ({idx+1}/{stock}/{wics}) 재무제표 스크랩 비대상 종목")
+                self.logger.info(f"({idx+1}/{stock}/{wics}) 재무제표 스크랩 비대상 종목")
                 continue
             elif check is None:  # 스크랩이 아직 안된 경우 전체 스크랩 실행
                 self.scrap_financial_statements_by_start_year_stock(start_year=2016, stock=stock)
-                print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 완료")
+                self.logger.info(f"({idx+1}/{stock}) 재무제표 스크랩 완료")
                 continue
             elif check == datetime.date(1000, 1, 1):  # 스크랩 에러가 났던 종목(10000101)은 다시 처음부터 스크랩
-                # self.scrap_financial_statements_by_start_year_stock(start_year=2016, stock=stock)
-                print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 에러 종목")
+                self.scrap_financial_statements_by_start_year_stock(start_year=2016, stock=stock)
+                self.logger.info(f"({idx+1}/{stock}) 재무제표 스크랩 에러 종목")
                 continue
-            elif check.strftime('%Y%m') == datetime.date.today().strftime('%Y%m'):  # 이번달에 스크랩을 이미 했다면 그냥 넘어감
-                print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 이미 완료됨")
-                continue
-            elif check.strftime('%Y%m') < datetime.date.today().strftime('%Y%m'):  # 스크랩한지 한 달이 지난 종목은 1년치만 다시 스크랩
+            else:
                 this_year = datetime.date.today().year
-                self.scrap_financial_statements_by_start_year_stock(start_year=this_year, stock=stock)
-                print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 완료")
+                self.scrap_financial_statements_by_start_year_stock(start_year=this_year-1, stock=stock)
+                self.logger.info(f"({idx+1}/{stock}) 재무제표 스크랩 완료")
                 continue
-        print(f"[{self.now}] (전종목) 재무제표 스크랩 완료")
+        self.logger.info("(전종목) 재무제표 스크랩 완료")
 
     def scrap_bug_fix(self):
         sql_list = [
@@ -435,7 +435,7 @@ class scrap_financial_statements():
             self.cur.execute(sql)
             self.conn.commit()
         pass
-        print(f"[{self.now}] (전종목) 재무제표 스크랩 버그 픽스 완료")
+        self.logger.info("(전종목) 재무제표 스크랩 버그 픽스 완료")
 
 
 if __name__ == '__main__':

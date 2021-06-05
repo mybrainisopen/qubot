@@ -1,12 +1,13 @@
 import pymysql
-import time
 import pandas as pd
-import config.config as cf
+import config.setting as cf
 import datetime
+from config import logger as logger
 
 class universe_builder():
     def __init__(self):
         '''생성자'''
+        self.logger = logger.logger
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -25,19 +26,19 @@ class universe_builder():
         # universe 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'universe'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] universe 스키마 존재")
+            self.logger.info("universe 스키마 존재")
             pass
         else:
             sql = "CREATE DATABASE universe"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] universe 스키마 생성")
+            self.logger.info("universe 스키마 생성")
 
     def create_table(self, date):
         '''종목별 밸류에이션 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'universe' and table_name = '{date}'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] universe.{date} 테이블 존재함")
+            self.logger.info(f"universe.{date} 테이블 존재함")
             pass
         else:
             sql = f"CREATE TABLE IF NOT EXISTS universe.`{date}` (" \
@@ -60,7 +61,7 @@ class universe_builder():
                   f"PRIMARY KEY (code, stock))"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] universe.{date} 테이블 생성 완료")
+            self.logger.info(f"universe.{date} 테이블 생성 완료")
 
     def universe_builder_by_date(self, start_date, end_date):
         '''일자별로 유니버스 구축'''
@@ -112,9 +113,9 @@ class universe_builder():
                           f"VALUES ('{code}', '{stock}', {ROE}, {ROA}, {GPA}, {F_SCORE}, {PER}, {PBR}, {PSR}, {PCR}, {PEG}, {EVEBIT}, {MRM1}, {MRM3}, {MRM6}, {MRM12}) "
                     self.cur.execute(sql)
                     self.conn.commit()
-                    print(f"[{self.now}] ({date}/{idx+1}/{stock}) 유니버스 구축 성공")
+                    self.logger.info(f"({date}/{idx+1}/{stock}) 유니버스 구축 성공")
                 except Exception as e:
-                    print(f"[{self.now}] ({date}/{idx+1}/{stock}) 유니버스 구축 실패:", str(e))
+                    self.logger.error(f"({date}/{idx+1}/{stock}) 유니버스 구축 실패:" + str(e))
                     continue
                 
     def universe_builder(self):
@@ -127,17 +128,17 @@ class universe_builder():
             sql = f"UPDATE status.analyze_all_status SET universe_analyzed='{self.today}'"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] universe 분석 완료!")
+            self.logger.info("universe 분석 완료!")
         elif check < self.today:
             self.universe_builder_by_date(start_date=check, end_date=self.today)
             sql = f"UPDATE status.analyze_all_status SET universe_analyzed='{self.today}'"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] universe 분석 완료!")
+            self.logger.info("universe 분석 완료!")
         elif check == self.today:
             return
 
 
 if __name__=="__main__":
     universe_builder = universe_builder()
-    universe_builder.universe_builder_by_date(start_date='20170101', end_date=datetime.datetime.today().strftime('%Y%m%d'))
+    universe_builder.universe_builder_by_date(start_date='20210601', end_date=datetime.datetime.today().strftime('%Y%m%d'))

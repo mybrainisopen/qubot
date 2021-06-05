@@ -1,11 +1,13 @@
 import pymysql
 import pandas as pd
-import config.config as cf
+import config.setting as cf
 import datetime
+from config import logger as logger
 
 class analyze_valuation():
     def __init__(self):
         '''생성자'''
+        self.logger = logger.logger
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -24,19 +26,19 @@ class analyze_valuation():
         # valuation 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'valuation'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] valuation 스키마 존재")
+            self.logger.info("valuation 스키마 존재")
             pass
         else:
             sql = "CREATE DATABASE valuation"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] valuation 스키마 생성")
+            self.logger.info("valuation 스키마 생성")
 
     def create_table(self, stock):
         '''종목별 밸류에이션 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'valuation' and table_name = '{stock}'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] valuation.{stock} 테이블 존재함")
+            self.logger.info(f"valuation.{stock} 테이블 존재함")
             pass
         else:
             sql = f"CREATE TABLE IF NOT EXISTS valuation.`{stock}` (" \
@@ -50,7 +52,7 @@ class analyze_valuation():
                   f"PRIMARY KEY (date))"
             self.cur.execute(sql)
             self.conn.commit()
-            print(f"[{self.now}] valuation.{stock} 테이블 생성 완료")
+            self.logger.info(f"valuation.{stock} 테이블 생성 완료")
 
     def analyze_valuation_by_date_stock(self, start_date, end_date, stock):
         ''' PER = 주가/EPS
@@ -128,6 +130,7 @@ class analyze_valuation():
         stock_list = self.cur.fetchall()
         stock_list = pd.DataFrame(stock_list)
 
+        self.logger.info("")
         print(f"[{self.now}] (전종목) 밸류에이션 계산 시작")
         for idx in range(len(stock_list)):
             stock = stock_list['stock'][idx]
@@ -138,30 +141,30 @@ class analyze_valuation():
 
             # 종목별, 스크랩 상태별 스크랩 실행
             if check_price is None:
-                print(f"[{self.now}] ({idx+1}/{stock}) 일일주가 스크랩 아직 안됨")
+                self.logger.info(f"({idx+1}/{stock}) 일일주가 스크랩 아직 안됨")
                 continue
             elif check_financial is None:
-                print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 아직 안됨")
+                self.logger.info(f"({idx+1}/{stock}) 재무제표 스크랩 아직 안됨")
                 continue
             elif check_fundamental is None:
-                print(f"[{self.now}] ({idx+1}/{stock}) 펀더멘털 계산 아직 안됨")
+                self.logger.info(f"({idx+1}/{stock}) 펀더멘털 계산 아직 안됨")
                 continue
             elif check_fundamental == datetime.date(9000, 1, 1):  # 펀더멘털 계산 비대상 종목(90000101)은 밸류에이션 계산 비대상 종목(90000101)으로 처리
                 sql = f"UPDATE status.analyze_stock_status SET valuation_analyzed='90000101' WHERE stock='{stock}'"
                 self.cur.execute(sql)
                 self.conn.commit()
-                print(f"[{self.now}] ({idx+1}/{stock}) 밸류에이션 계산 비대상 종목")
+                self.logger.info(f"({idx+1}/{stock}) 밸류에이션 계산 비대상 종목")
                 continue
             elif (check_valuation is None) & (check_fundamental == datetime.date(1000, 1, 1)):
                 # 아직 밸류에이션 계산이 안됐고, 펀더멘털 계산 에러가 났던 종목(10000101)은 밸류에이션 계산하되 밸류에이션 계산 에러 종목(10000101)로 처리
                 try:
                     self.analyze_valuation_by_date_stock(start_date='20170101', end_date=self.today, stock=stock)
                 except Exception as e:
-                    print(f"[{self.now}] ({idx+1}/{stock}) 밸류에이션 계산 미완료:", str(e))
+                    self.logger.error(f"({idx+1}/{stock}) 밸류에이션 계산 미완료:" + str(e))
                 sql = f"UPDATE status.analyze_stock_status SET valuation_analyzed='10000101' WHERE stock='{stock}'"
                 self.cur.execute(sql)
                 self.conn.commit()
-                print(f"[{self.now}] ({idx+1}/{stock}) 밸류에이션 계산 미완료")
+                self.logger.info(f"({idx+1}/{stock}) 밸류에이션 계산 미완료")
                 continue
             elif (check_valuation is None) & (check_fundamental != datetime.date(1000, 1, 1)):
                 # 아직 밸류에이션 계산이 안됐고, 에러나지 않은 종목은 정상적으로 처리
@@ -170,15 +173,15 @@ class analyze_valuation():
                     sql = f"UPDATE status.analyze_stock_status SET valuation_analyzed='{self.today}' WHERE stock='{stock}'"
                     self.cur.execute(sql)
                     self.conn.commit()
-                    print(f"[{self.now}] ({idx + 1}/{stock}) 밸류에이션 계산 완료")
+                    self.logger.info(f"({idx + 1}/{stock}) 밸류에이션 계산 완료")
                 except Exception as e:
                     sql = f"UPDATE status.analyze_stock_status SET valuation_analyzed='10000101' WHERE stock='{stock}'"
                     self.cur.execute(sql)
                     self.conn.commit()
-                    print(f"[{self.now}] ({idx + 1}/{stock}) 밸류에이션 계산 미완료:", str(e))
+                    self.logger.error(f"({idx + 1}/{stock}) 밸류에이션 계산 미완료:" + str(e))
                 continue
             elif check_valuation.strftime('%Y%m') == self.today:  # 오늘 계산이 이미 됐다면 그냥 넘어감
-                print(f"[{self.now}] ({idx+1}/{stock}) 밸류에이션 계산 이미 완료됨")
+                self.logger.info(f"({idx+1}/{stock}) 밸류에이션 계산 이미 완료됨")
                 continue
             elif check_valuation.strftime('%Y%m') != self.today:  # 마지막 계산이 오늘이 아니면 마지막 계산일 이후로 다시 계산함
                 try:
@@ -186,15 +189,17 @@ class analyze_valuation():
                     sql = f"UPDATE status.analyze_stock_status SET valuation_analyzed='{self.today}' WHERE stock='{stock}'"
                     self.cur.execute(sql)
                     self.conn.commit()
-                    print(f"[{self.now}] ({idx+1}/{stock}) 밸류에이션 계산 완료")
+                    self.logger.info(f"{idx+1}/{stock}) 밸류에이션 계산 완료")
                 except Exception as e:
                     sql = f"UPDATE status.analyze_stock_status SET valuation_analyzed='10000101' WHERE stock='{stock}'"
                     self.cur.execute(sql)
                     self.conn.commit()
-                    print(f"[{self.now}] ({idx + 1}/{stock}) 밸류에이션 계산 미완료:", str(e))
+                    self.logger.error(f"({idx + 1}/{stock}) 밸류에이션 계산 미완료:" + str(e))
                 continue
-        print(f"[{self.now}] (전종목) 밸류에이션 계산 완료")
+        self.logger.info("(전종목) 밸류에이션 계산 완료")
+
 
 if __name__=="__main__":
     analyze_valuation = analyze_valuation()
     analyze_valuation.analyze_valuation()
+

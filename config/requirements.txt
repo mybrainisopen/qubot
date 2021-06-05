@@ -8,3 +8,4 @@ lxml
 dart_fss
 matplotlib==3.2.2
 pywinauto
+selenium

@@ -2,11 +2,13 @@ import pymysql
 import pandas as pd
 import datetime
 from dateutil.relativedelta import relativedelta
-import config.config as cf
+import config.setting as cf
+from config import logger as logger
 
 class analyze_fundamental():
     def __init__(self):
         '''생성자 : 기본 변수 생성'''
+        self.logger = logger.logger
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -27,13 +29,13 @@ class analyze_fundamental():
         # fundamental 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'fundamental'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] fundamental 스키마 존재")
+            self.logger.info("fundamental 스키마 존재")
             pass
         else:
             sql = "CREATE DATABASE fundamental"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] fundamental 스키마 생성")
+            self.logger.info("fundamental 스키마 생성")
 
     def drop_table(self, stock):
         '''해당 종목의 fundamental 테이블이 존재하면 삭제'''
@@ -42,9 +44,9 @@ class analyze_fundamental():
             sql = f"DROP TABLE fundamental.`{stock}`"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] fundamental.{stock} 테이블 삭제 완료")
+            self.logger.info(f"fundamental.{stock} 테이블 삭제 완료")
         else:
-            # print(f"[{self.now}] fundamental.{stock} 테이블 존재하지 않음")
+            self.logger.info(f"fundamental.{stock} 테이블 존재하지 않음")
             pass
 
     def copy_table(self, stock):
@@ -52,13 +54,13 @@ class analyze_fundamental():
         # 테이블 복사
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'fundamental' and table_name = '{stock}'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] fundamental.{stock} 테이블 이미 존재함")
+            self.logger.info(f"fundamental.{stock} 테이블 이미 존재함")
             pass
         else:
             sql = f"CREATE TABLE fundamental.`{stock}` SELECT * FROM financial_statements.`{stock}`"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] fundamental.{stock} 테이블 복사 완료")
+            self.logger.info(f"fundamental.{stock} 테이블 복사 완료")
         # PK지정
         sql = f"ALTER TABLE fundamental.`{stock}` MODIFY COLUMN date DATE PRIMARY KEY"
         self.cur.execute(sql)
@@ -77,7 +79,7 @@ class analyze_fundamental():
             sql = f"ALTER TABLE fundamental.`{stock}` ADD {col_name} {col_list[col_name]}"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 테이블 컬럼 추가 완료")
+        self.logger.info(f"({stock}) 테이블 컬럼 추가 완료")
 
     def calc_quarter(self, stock):
         '''사업보고서 재무제표를 분기화'''
@@ -138,7 +140,7 @@ class analyze_fundamental():
                       f"WHERE date='{date}'"
                 self.cur.execute(sql)
                 self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 재무제표 분기화 완료")
+        self.logger.info(f"({stock}) 재무제표 분기화 완료")
 
     def calc_TTM(self, stock):
         '''TTM 자료를 계산'''
@@ -176,7 +178,7 @@ class analyze_fundamental():
                   f"WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        print(f"[{self.now}] ({stock}) 재무제표 분기화 완료")
+        self.logger.info(f"({stock}) 재무제표 분기화 완료")
 
     # 안정성: 부채비율, 순부채비율, 자기자본비율, 유동비율
     def calc_debt_ratio(self, stock):
@@ -197,7 +199,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 부채비율={row.부채비율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 부채비율 계산 완료")
+        self.logger.info(f"({stock}) 부채비율 계산 완료")
 
     def calc_net_debt_ratio(self, stock):
         '''순부채비율 = (이자발생부채-현금)/자본총계'''
@@ -217,7 +219,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 순부채비율={row.순부채비율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 순부채비율 계산 완료")
+        self.logger.info(f"({stock}) 순부채비율 계산 완료")
 
     def calc_equity_capital_ratio(self, stock):
         '''자기자본비율 = 자본총계/자산총계'''
@@ -237,7 +239,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 자기자본비율={row.자기자본비율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 자기자본비율 계산 완료")
+        self.logger.info(f"({stock}) 자기자본비율 계산 완료")
 
     def calc_liquidity_ratio(self, stock):
         '''유동비율 = 유동자산/유동부채'''
@@ -257,7 +259,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 유동비율={row.유동비율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 유동비율 계산 완료")
+        self.logger.info(f"({stock}) 유동비율 계산 완료")
 
     # 수익성: GPM, OPM, NPM, ROE, ROA, ROIC, GPA
     def calc_GPM(self, stock):
@@ -278,7 +280,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET GPM={row.GPM} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) GPM 계산 완료")
+        self.logger.info(f"({stock}) GPM 계산 완료")
 
     def calc_OPM(self, stock):
         '''OPM = 영업이익TTM/매출액TTM'''
@@ -298,7 +300,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET OPM={row.OPM} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) OPM 계산 완료")
+        self.logger.info(f"({stock}) OPM 계산 완료")
 
     def calc_NPM(self, stock):
         '''NPM = 순이익TTM/매출액TTM'''
@@ -318,7 +320,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET NPM={row.NPM} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) NPM 계산 완료")
+        self.logger.info(f"({stock}) NPM 계산 완료")
 
     def calc_ROE(self, stock):
         '''ROE = 순이익TTM/(전기)자본총계'''
@@ -340,7 +342,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET ROE={row.ROE} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) ROE 계산 완료")
+        self.logger.info(f"({stock}) ROE 계산 완료")
 
     def calc_ROA(self, stock):
         '''ROA = 순이익TTM/(전기)자산총계'''
@@ -362,7 +364,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET ROA={row.ROA} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) ROA 계산 완료")
+        self.logger.info(f"({stock}) ROA 계산 완료")
 
     def calc_ROIC(self, stock):
         '''ROIC = 세후영업이익TTM/영업투하자본, 세후영업이익TTM=영업이익TTM*(1-법인세율), 법인세율=(세전순이익TTM-순이익TTM)/세전순이익TTM, 영업투하자본=(유동자산-유동부채)+유형자산'''
@@ -386,7 +388,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET ROIC={row.ROIC} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) ROIC 계산 완료")
+        self.logger.info(f"({stock}) ROIC 계산 완료")
 
     def calc_GPA(self, stock):
         '''GPA = 매출총이익TTM/(전기)자산총계'''
@@ -408,7 +410,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET GPA={row.GPA} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) GPA 계산 완료")
+        self.logger.info(f"({stock}) GPA 계산 완료")
 
     # 활동성: 총자산회전율, 유형자산회전율, 영업자산회전율, 재고자산회전율, 매출채권회전율, 매입채무회전율, 순운전자본회전율
     def calc_assets_turnover(self, stock):
@@ -431,7 +433,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 총자산회전율={row.총자산회전율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 총자산회전율 계산 완료")
+        self.logger.info(f"({stock}) 총자산회전율 계산 완료")
 
     def calc_property_turnover(self, stock):
         '''유형자산회전율 = 매출액TTM/(전기)유형자산'''
@@ -453,7 +455,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 유형자산회전율={row.유형자산회전율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 유형자산회전율 계산 완료")
+        self.logger.info(f"({stock}) 유형자산회전율 계산 완료")
 
     def calc_operating_assets_turnover(self, stock):
         '''영업자산회전율 = 매출액TTM/(전기)영업자산, 영업자산=유형자산+운전자본, 운전자본=매출채권+재고자산-매입채무'''
@@ -475,7 +477,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 영업자산회전율={row.영업자산회전율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 영업자산회전율 계산 완료")
+        self.logger.info(f"({stock}) 영업자산회전율 계산 완료")
 
     def calc_inventory_turnover(self, stock):
         '''재고자산회전율 = 매출액TTM/(전기)재고자산'''
@@ -497,7 +499,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 재고자산회전율={row.재고자산회전율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 재고자산회전율 계산 완료")
+        self.logger.info(f"({stock}) 재고자산회전율 계산 완료")
 
     def calc_receivables_turnover(self, stock):
         '''매출채권회전율 = 매출액TTM/(전기)매출채권'''
@@ -519,7 +521,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 매출채권회전율={row.매출채권회전율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 매출채권회전율 계산 완료")
+        self.logger.info(f"({stock}) 매출채권회전율 계산 완료")
 
     def calc_payables_turnover(self, stock):
         '''매입채무회전율 = 매출액TTM/(전기)매입채무'''
@@ -541,7 +543,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 매입채무회전율={row.매입채무회전율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 매입채무회전율 계산 완료")
+        self.logger.info(f"({stock}) 매입채무회전율 계산 완료")
 
     def calc_working_capital_turnover(self, stock):
         '''운전자본회전율 = 매출액(TTM)/(전기)운전자본, 운전자본 = 매출채권+재고자산-매입채무'''
@@ -563,7 +565,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 운전자본회전율={row.운전자본회전율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 운전자본회전율 계산 완료")
+        self.logger.info(f"({stock}) 운전자본회전율 계산 완료")
 
     # 성장성: 매출액증가율, 영업이익증가율, 순이익증가율, 유형자산증가율, 총자산증가율, 자기자본증가율
     def calc_sales_growth(self, stock):
@@ -586,7 +588,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 매출액증가율={row.매출액증가율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 매출액증가율 계산 완료")
+        self.logger.info(f"({stock}) 운전자본회전율 계산 완료")
 
     def calc_operating_profit_growth(self, stock):
         '''영업이익증가율 = [영업이익TTM-(전분기)영업이익TTM]/(전분기)영업이익TTM'''
@@ -608,7 +610,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 영업이익증가율={row.영업이익증가율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 영업이익증가율 계산 완료")
+        self.logger.info(f"({stock}) 영업이익증가율 계산 완료")
 
     def calc_net_income_growth(self, stock):
         '''순이익증가율 = [순이익TTM-(전분기)순이익TTM]/(전분기)순이익TTM'''
@@ -630,7 +632,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 순이익증가율={row.순이익증가율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 순이익증가율 계산 완료")
+        self.logger.info(f"({stock}) 순이익증가율 계산 완료")
 
     def calc_property_growth(self, stock):
         '''유형자산증가율 = [유형자산-(전분기)유형자산]/(전분기)유형자산'''
@@ -652,7 +654,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 유형자산증가율={row.유형자산증가율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 유형자산증가율 계산 완료")
+        self.logger.info(f"({stock}) 유형자산증가율 계산 완료")
 
     def calc_assets_growth(self, stock):
         '''총자산증가율 = [자산총계-(전분기)자산총계]/(전분기)자산총계'''
@@ -674,7 +676,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 총자산증가율={row.총자산증가율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 총자산증가율 계산 완료")
+        self.logger.info(f"({stock}) 총자산증가율 계산 완료")
 
     def calc_capital_growth(self, stock):
         '''자기자본증가율 = [자본총계-(전분기)자본총계]/(전분기)자본총계'''
@@ -696,7 +698,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET 자기자본증가율={row.자기자본증가율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) 자기자본증가율 계산 완료")
+        self.logger.info(f"({stock}) 자기자본증가율 계산 완료")
 
     # 주당가치: EPS, BPS, SPS, CPS
     def calc_EPS(self, stock):
@@ -717,7 +719,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET EPS={row.EPS} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) EPS 계산 완료")
+        self.logger.info(f"({stock}) EPS 계산 완료")
 
     def calc_BPS(self, stock):
         '''BPS = 자본총계/발행주식수'''
@@ -737,7 +739,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET BPS={row.BPS} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) BPS 계산 완료")
+        self.logger.info(f"({stock}) BPS 계산 완료")
 
     def calc_SPS(self, stock):
         '''SPS = 매출액TTM/발행주식수'''
@@ -757,7 +759,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET SPS={row.SPS} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) SPS 계산 완료")
+        self.logger.info(f"({stock}) SPS 계산 완료")
 
     def calc_CPS(self, stock):
         '''CPS = 영업현금TTM/발행주식수'''
@@ -777,7 +779,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET CPS={row.CPS} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) CPS 계산 완료")
+        self.logger.info(f"({stock}) CPS 계산 완료")
 
     def calc_EPS_growth(self, stock):
         '''EPS증가율 = (EPS-(전분기)EPS)/(전분기)EPS'''
@@ -799,7 +801,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET EPS증가율={row.EPS증가율} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) EPS증가율 계산 완료")
+        self.logger.info(f"({stock}) EPS증가율 계산 완료")
 
     # Piotroski f-score
     def calc_f_score(self, stock):
@@ -847,7 +849,7 @@ class analyze_fundamental():
             sql = f"UPDATE fundamental.`{stock}` SET F_SCORE={row.F_SCORE} WHERE date='{row.date}'"
             self.cur.execute(sql)
             self.conn.commit()
-        # print(f"[{self.now}] ({stock}) F_SCORE 계산 완료")
+        self.logger.info(f"({stock}) F_SCORE 계산 완료")
 
     def analyze_fundamental_by_stock(self, stock):
         '''종목별로 재무분석 실행'''
@@ -897,7 +899,7 @@ class analyze_fundamental():
         stock_list = self.cur.fetchall()
         stock_list = pd.DataFrame(stock_list)
 
-        print(f"[{self.now}] (전종목) 펀더멘털 계산 시작")
+        self.logger.info("(전종목) 펀더멘털 계산 시작")
         for idx in range(len(stock_list)):
             stock = stock_list['stock'][idx]
             check_scrap = stock_list['financial_statements_scraped'][idx]
@@ -905,39 +907,39 @@ class analyze_fundamental():
 
             # 종목별, 스크랩 상태별 스크랩 실행
             if check_scrap is None:  # 스크랩이 아직 안된 경우 다음 종목으로 그냥 넘어감
-                print(f"[{self.now}] ({idx+1}/{stock}) 재무제표 스크랩 아직 안됨")
+                self.logger.info(f"({idx+1}/{stock}) 재무제표 스크랩 아직 안됨")
                 continue
             elif check_scrap == datetime.date(9000, 1, 1):  # 스크랩 비대상 종목(90000101)은 펀더멘털 계산 비대상 종목(90000101)으로 처리
                 sql = f"UPDATE status.analyze_stock_status SET fundamental_analyzed='90000101' WHERE stock='{stock}'"
                 self.cur.execute(sql)
                 self.conn.commit()
-                print(f"[{self.now}] ({idx+1}/{stock}) 펀더멘털 계산 비대상 종목")
+                self.logger.info("({idx+1}/{stock}) 펀더멘털 계산 비대상 종목")
                 continue
             elif check_scrap == datetime.date(1000, 1, 1):  # 스크랩 에러가 났던 종목(10000101)은 펀더멘털 계산하되 펀더멘털 계산 에러 종목(10000101)로 처리
                 try:
                     self.analyze_fundamental_by_stock(stock=stock)
                 except Exception as e:
-                    print(f"[{self.now}] ({idx+1}/{stock}) 펀더멘털 계산 미완료:", str(e))
+                    self.logger.error(f"({idx+1}/{stock}) 펀더멘털 계산 미완료:" + str(e))
                 sql = f"UPDATE status.analyze_stock_status SET fundamental_analyzed='10000101' WHERE stock='{stock}'"
                 self.cur.execute(sql)
                 self.conn.commit()
-                print(f"[{self.now}] ({idx+1}/{stock}) 펀더멘털 계산 미완료")
+                self.logger.info(f"({idx+1}/{stock}) 펀더멘털 계산 미완료")
                 continue
-            elif check_analysis is None:
+            elif check_analysis is None:  # 펀더멘털 계산 안된 종목 계산 실행
                 self.analyze_fundamental_by_stock(stock=stock)
                 sql = f"UPDATE status.analyze_stock_status SET fundamental_analyzed='{self.today}' WHERE stock='{stock}'"
                 self.cur.execute(sql)
                 self.conn.commit()
-                print(f"[{self.now}] ({idx+1}/{stock}) 펀더멘털 계산 완료")
+                self.logger.info(f"({idx+1}/{stock}) 펀더멘털 계산 완료")
                 continue
             elif check_analysis.strftime('%Y%m') == datetime.date.today().strftime('%Y%m'):  # 이번달에 펀더멘털 계산을 이미 했다면 그냥 넘어감
-                print(f"[{self.now}] ({idx+1}/{stock}) 펀더멘털 계산 이미 완료됨")
+                self.logger.info(f"({idx+1}/{stock}) 펀더멘털 계산 이미 완료됨")
                 continue
             elif check_analysis.strftime('%Y%m') < datetime.date.today().strftime('%Y%m'):  # 펀더멘털 계산한지 한 달이 지난 종목은 다시 계산
                 self.analyze_fundamental_by_stock(stock=stock)
-                print(f"[{self.now}] ({idx+1}/{stock}) 펀더멘털 계산 완료")
+                self.logger.info(f"({idx+1}/{stock}) 펀더멘털 계산 완료")
                 continue
-        print(f"[{self.now}] (전종목) 펀더멘털 계산 완료")
+        self.logger.info("(전종목) 펀더멘털 계산 완료")
 
 
 if __name__=="__main__":

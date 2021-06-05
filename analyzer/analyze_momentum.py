@@ -1,13 +1,15 @@
 import pymysql
 import pandas as pd
-import config.config as cf
+import config.setting as cf
 import datetime
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
+from config import logger as logger
 
 class analyze_momentum():
     def __init__(self):
         '''생성자'''
+        self.logger = logger.logger
         self.conn = pymysql.connect(
             host=cf.db_ip,
             port=int(cf.db_port),
@@ -28,19 +30,19 @@ class analyze_momentum():
         # momentum 스키마 생성
         sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'momentum'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] momentum 스키마 존재")
+            self.logger.info("momentum 스키마 존재")
             pass
         else:
             sql = "CREATE DATABASE momentum"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] momentum 스키마 생성")
+            self.logger.info("momentum 스키마 생성")
 
     def create_table(self, stock):
         '''종목별 모멘텀 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'momentum' and table_name = '{stock}'"
         if self.cur.execute(sql):
-            # print(f"[{self.now}] momentum.{stock} 테이블 존재함")
+            self.logger.info(f"momentum.{stock} 테이블 존재함")
             pass
         else:
             sql = f"CREATE TABLE IF NOT EXISTS momentum.`{stock}` (" \
@@ -52,7 +54,7 @@ class analyze_momentum():
                   f"PRIMARY KEY (date))"
             self.cur.execute(sql)
             self.conn.commit()
-            # print(f"[{self.now}] momentum.{stock} 테이블 생성 완료")
+            self.logger.info(f"momentum.{stock} 테이블 생성 완료")
 
     def analyze_momentum_by_date_stock(self, start_date, end_date, stock):
         ''' 1MRM = 1개월 모멘텀 (21거래일)
@@ -105,7 +107,7 @@ class analyze_momentum():
         stock_list = self.cur.fetchall()
         stock_list = pd.DataFrame(stock_list)
 
-        print(f"[{self.now}] (전종목) 모멘텀 계산 시작")
+        self.logger.info("(전종목) 모멘텀 계산 시작")
         for idx in range(len(stock_list)):
             stock = stock_list['stock'][idx]
             check_price = stock_list['daily_price_scraped'][idx]
@@ -113,22 +115,22 @@ class analyze_momentum():
 
             # 종목별, 스크랩 상태별 스크랩 실행
             if check_price is None:
-                print(f"[{self.now}] ({idx+1}/{stock}) 일일주가 스크랩 아직 안됨")
+                self.logger.info(f"({idx+1}/{stock}) 일일주가 스크랩 아직 안됨")
                 continue
             elif check_momentum is None:
                 self.analyze_momentum_by_date_stock(start_date='20170101', end_date=self.today, stock=stock)
                 sql = f"UPDATE status.analyze_stock_status SET momentum_analyzed='{self.today}' WHERE stock='{stock}'"
                 self.cur.execute(sql)
                 self.conn.commit()
-                print(f"[{self.now}] ({idx+1}/{stock}) 모멘텀 계산 완료")
+                self.logger.info(f"({idx+1}/{stock}) 모멘텀 계산 완료")
             elif check_momentum != self.today:
                 start_date = datetime.datetime.strftime(check_momentum, '%Y%m%d')
                 self.analyze_momentum_by_date_stock(start_date=start_date, end_date=self.today, stock=stock)
                 sql = f"UPDATE status.analyze_stock_status SET momentum_analyzed='{self.today}' WHERE stock='{stock}'"
                 self.cur.execute(sql)
                 self.conn.commit()
-                print(f"[{self.now}] ({idx+1}/{stock}) 모멘텀 계산 완료")
-        print(f"[{self.now}] (전종목) 모멘텀 계산 완료")
+                self.logger.info(f"({idx+1}/{stock}) 모멘텀 계산 완료")
+        self.logger.info("(전종목) 모멘텀 계산 완료")
 
 if __name__=="__main__":
     analyze_momentum = analyze_momentum()
