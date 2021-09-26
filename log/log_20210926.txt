@@ -1,0 +1,141 @@
+[2021-09-26 03:25][INFO] run start
+[2021-09-26 03:25][INFO] have not file : data\csv_file\doller.csv 
+[2021-09-26 03:25][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+[2021-09-26 03:25][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=11
+[2021-09-26 03:25][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=12
+[2021-09-26 03:25][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=13
+[2021-09-26 03:25][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=14
+[2021-09-26 03:25][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=15
+[2021-09-26 03:25][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=16
+[2021-09-26 03:25][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=17
+[2021-09-26 03:25][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=18
+[2021-09-26 03:25][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=19
+[2021-09-26 03:25][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=20
+[2021-09-26 03:27][INFO] run start
+[2021-09-26 03:27][INFO] have not file : data\csv_file\doller.csv 
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=11
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=12
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=13
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=14
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=15
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=16
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=17
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=18
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=19
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=20
+[2021-09-26 03:27][INFO] run start
+[2021-09-26 03:27][INFO] have not file : data\csv_file\doller.csv 
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=11
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=12
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=13
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=14
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=15
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=16
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=17
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=18
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=19
+[2021-09-26 03:27][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=20
+[2021-09-26 03:28][INFO] run start
+[2021-09-26 03:28][INFO] have not file : C:\Project\qubot\test 
+[2021-09-26 03:28][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+[2021-09-26 03:28][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=11
+[2021-09-26 03:28][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=12
+[2021-09-26 03:28][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=13
+[2021-09-26 03:28][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=14
+[2021-09-26 03:28][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=15
+[2021-09-26 03:28][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=16
+[2021-09-26 03:28][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=17
+[2021-09-26 03:28][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=18
+[2021-09-26 03:28][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=19
+[2021-09-26 03:28][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=20
+[2021-09-26 03:29][INFO] run start
+[2021-09-26 03:29][INFO] have not file : C:\Project\qubot\csv 
+[2021-09-26 03:29][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+[2021-09-26 03:29][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=11
+[2021-09-26 03:29][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=12
+[2021-09-26 03:29][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=13
+[2021-09-26 03:29][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=14
+[2021-09-26 03:29][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=15
+[2021-09-26 03:29][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=16
+[2021-09-26 03:29][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=17
+[2021-09-26 03:29][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=18
+[2021-09-26 03:29][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=19
+[2021-09-26 03:29][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=20
+[2021-09-26 03:30][INFO] run start
+[2021-09-26 03:30][INFO] have not file : C:\Project\qubot\csv 
+[2021-09-26 03:30][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+[2021-09-26 03:30][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=11
+[2021-09-26 03:30][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=12
+[2021-09-26 03:30][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=13
+[2021-09-26 03:30][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=14
+[2021-09-26 03:30][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=15
+[2021-09-26 03:30][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=16
+[2021-09-26 03:30][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=17
+[2021-09-26 03:30][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=18
+[2021-09-26 03:30][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=19
+[2021-09-26 03:30][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=20
+[2021-09-26 03:31][INFO] run start
+[2021-09-26 03:31][INFO] have not file : data\csv_file\doller.csv 
+[2021-09-26 03:31][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+[2021-09-26 03:31][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=11
+[2021-09-26 03:31][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=12
+[2021-09-26 03:31][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=13
+[2021-09-26 03:31][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=14
+[2021-09-26 03:31][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=15
+[2021-09-26 03:31][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=16
+[2021-09-26 03:31][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=17
+[2021-09-26 03:31][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=18
+[2021-09-26 03:31][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=19
+[2021-09-26 03:31][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=20
+[2021-09-26 03:34][INFO] run start
+[2021-09-26 03:34][INFO] have file : data\csv_file\doller.csv 
+[2021-09-26 03:34][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+[2021-09-26 03:34][INFO] save csv
+[2021-09-26 03:35][INFO] run start
+[2021-09-26 03:35][INFO] have file : data\csv_file\doller.csv 
+[2021-09-26 03:35][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+[2021-09-26 03:35][INFO] save csv
+[2021-09-26 03:36][INFO] run start
+[2021-09-26 03:36][INFO] have file : data\csv_file\doller.csv 
+[2021-09-26 03:36][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+[2021-09-26 03:36][INFO] save csv
+[2021-09-26 03:41][INFO] error
+[2021-09-26 03:41][ERROR] error
+[2021-09-26 03:47][INFO] run start
+[2021-09-26 03:47][INFO] have file : data\csv_file\doller.csv 
+[2021-09-26 03:47][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+[2021-09-26 03:47][INFO] save csv
+[2021-09-26 04:08][INFO] run start
+[2021-09-26 04:08][INFO] have file : data\csv_file\doller.csv 
+[2021-09-26 04:08][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+[2021-09-26 04:08][INFO] run start
+[2021-09-26 04:08][INFO] have file : data\csv_file\doller.csv 
+[2021-09-26 04:08][INFO] https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+[2021-09-26 04:08][INFO] save csv
+[2021-09-26 13:09][INFO] C:\Project\qubot\common\chromedriver.exe
+[2021-09-26 13:09][INFO] --------------------------------------------
+[2021-09-26 13:09][INFO] process start
+[2021-09-26 13:09][INFO] Selenium driver 생성
+[2021-09-26 13:09][INFO] click_id : fromDate 
+[2021-09-26 13:09][INFO] day 20201101 
+[2021-09-26 13:09][INFO] click_id : toDate 
+[2021-09-26 13:09][INFO] day 20210101 
+[2021-09-26 13:09][INFO] index_num : 1 
+[2021-09-26 13:09][INFO] all_index_num : 12
+[2021-09-26 13:09][INFO] row 추가 완료
+[2021-09-26 13:09][INFO] row 추가 완료
+[2021-09-26 13:09][INFO] row 추가 완료
+[2021-09-26 13:10][INFO] row 추가 완료
+[2021-09-26 13:10][INFO] row 추가 완료
+[2021-09-26 13:10][INFO] row 추가 완료
+[2021-09-26 13:10][INFO] row 추가 완료
+[2021-09-26 13:10][INFO] row 추가 완료
+[2021-09-26 13:10][INFO] row 추가 완료
+[2021-09-26 13:10][INFO] row 추가 완료
+[2021-09-26 13:11][INFO] row 추가 완료
+[2021-09-26 13:11][INFO] row 추가 완료
+[2021-09-26 13:11][INFO] row 추가 완료
+[2021-09-26 13:11][INFO] row 추가 완료
+[2021-09-26 13:11][INFO] row 추가 완료

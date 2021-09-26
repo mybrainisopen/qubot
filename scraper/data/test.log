@@ -1,0 +1,250 @@
+2021-09-23 19:13:57,688 - doller - INFO - run start
+2021-09-23 19:13:57,701 - doller - INFO - have file : data\csv_file\doller.csv 
+2021-09-23 19:13:57,706 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+2021-09-23 19:13:58,366 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=11
+2021-09-23 19:13:58,942 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=12
+2021-09-23 19:13:59,522 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=13
+2021-09-23 19:14:00,116 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=14
+2021-09-23 19:14:00,758 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=15
+2021-09-23 19:14:01,370 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=16
+2021-09-23 19:14:01,978 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=17
+2021-09-23 19:14:02,590 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=18
+2021-09-23 19:14:02,715 - doller - INFO - save csv
+2021-09-23 19:14:10,950 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 19:14:10,952 - crawler_selenium - INFO - --------------------------------------------
+2021-09-23 19:14:10,952 - crawler_selenium - INFO - process start
+2021-09-23 19:14:14,675 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 19:35:14,734 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 19:35:14,736 - crawler_selenium - INFO - --------------------------------------------
+2021-09-23 19:35:14,737 - crawler_selenium - INFO - process start
+2021-09-23 19:35:14,749 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 19:35:25,812 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 19:35:25,814 - crawler_selenium - INFO - --------------------------------------------
+2021-09-23 19:35:25,814 - crawler_selenium - INFO - process start
+2021-09-23 19:35:29,225 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 19:36:13,303 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 19:36:13,305 - crawler_selenium - INFO - --------------------------------------------
+2021-09-23 19:36:13,306 - crawler_selenium - INFO - process start
+2021-09-23 19:36:13,309 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 19:36:19,213 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 19:36:19,215 - crawler_selenium - INFO - --------------------------------------------
+2021-09-23 19:36:19,215 - crawler_selenium - INFO - process start
+2021-09-23 19:36:22,663 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:02:10,501 - doller - INFO - run start
+2021-09-23 20:02:10,503 - doller - INFO - have file : data\csv_file\doller.csv 
+2021-09-23 20:02:10,508 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+2021-09-23 20:02:10,653 - doller - INFO - save csv
+2021-09-23 20:02:16,307 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:02:16,309 - crawler_selenium - INFO - --------------------------------------------
+2021-09-23 20:02:16,309 - crawler_selenium - INFO - process start
+2021-09-23 20:02:19,749 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:03:17,572 - doller - INFO - run start
+2021-09-23 20:03:17,574 - doller - INFO - have file : data\csv_file\doller.csv 
+2021-09-23 20:03:17,579 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+2021-09-23 20:03:17,735 - doller - INFO - save csv
+2021-09-23 20:03:30,539 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:03:30,541 - crawler_selenium - INFO - --------------------------------------------
+2021-09-23 20:03:30,541 - crawler_selenium - INFO - process start
+2021-09-23 20:03:33,941 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:03:59,155 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:03:59,157 - crawler_selenium - INFO - --------------------------------------------
+2021-09-23 20:03:59,157 - crawler_selenium - INFO - process start
+2021-09-23 20:04:02,538 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:04:18,643 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:04:18,645 - crawler_selenium - INFO - --------------------------------------------
+2021-09-23 20:04:18,646 - crawler_selenium - INFO - process start
+2021-09-23 20:04:22,037 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:04:46,251 - qubot_test - INFO - qubot_test start
+2021-09-23 20:04:46,252 - scrap_all - INFO - macro_economics_config.json 읽어들임
+2021-09-23 20:04:46,253 - scrap_macro_economics_test - INFO - Creating Selenium Object
+2021-09-23 20:04:46,254 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:04:46,254 - scrap_macro_economics_test - INFO - Selenium driver loading
+2021-09-23 20:04:49,667 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:04:49,668 - qubot_test - INFO - qubot_test error !! : local variable 'driver' referenced before assignment
+2021-09-23 20:06:58,571 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:06:58,575 - crawler_selenium - INFO - --------------------------------------------
+2021-09-23 20:06:58,575 - crawler_selenium - INFO - process start
+2021-09-23 20:07:01,931 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:07:40,471 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:07:40,473 - crawler_selenium - INFO - --------------------------------------------
+2021-09-23 20:07:40,473 - crawler_selenium - INFO - process start
+2021-09-23 20:07:43,886 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:09:39,823 - selenium_process - INFO - C:\Project\qubot\test\libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:09:39,825 - crawler_selenium - INFO - --------------------------------------------
+2021-09-23 20:09:39,825 - crawler_selenium - INFO - process start
+2021-09-23 20:09:43,220 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:09:55,463 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:09:55,466 - crawler_selenium - INFO - --------------------------------------------
+2021-09-23 20:09:55,466 - crawler_selenium - INFO - process start
+2021-09-23 20:09:58,878 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:26:58,979 - qubot_test - INFO - qubot_test start
+2021-09-23 20:26:58,983 - scrap_all - INFO - macro_economics_config.json 읽어들임
+2021-09-23 20:26:58,985 - scrap_macro_economics_test - INFO - Creating Selenium Object
+2021-09-23 20:26:58,985 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:26:58,985 - scrap_macro_economics_test - INFO - Selenium driver loading
+2021-09-23 20:27:02,919 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:27:02,920 - qubot_test - INFO - qubot_test error !! : local variable 'driver' referenced before assignment
+2021-09-23 20:29:11,085 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:29:11,089 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:30:29,538 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:30:29,542 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:30:51,104 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:30:51,107 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:31:16,314 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:31:16,317 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:31:22,082 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:31:22,085 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:31:33,999 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:34:06,540 - selenium_process - INFO - C:\Project\qubot\test\libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:34:09,941 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:34:40,943 - selenium_process - INFO - C:\Project\qubot\test\libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:34:44,352 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:35:09,343 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:35:09,347 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:36:57,791 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:36:57,794 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:37:06,608 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:37:06,613 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:43:40,290 - doller - INFO - run start
+2021-09-23 20:43:40,299 - doller - INFO - have file : data\csv_file\doller.csv 
+2021-09-23 20:43:40,305 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+2021-09-23 20:43:40,480 - doller - INFO - save csv
+2021-09-23 20:44:01,325 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:44:01,325 - nasdaq - INFO - run start
+2021-09-23 20:44:04,662 - selenium_process - INFO - Message: session not created: This version of ChromeDriver only supports Chrome version 91
+Current browser version is 93.0.4577.82 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+
+2021-09-23 20:46:50,406 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:46:50,410 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:47:02,088 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:47:02,092 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:48:04,689 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:48:04,694 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:49:44,487 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:49:44,491 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:49:52,434 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:49:52,440 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:50:38,270 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:50:38,273 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:50:47,282 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:50:47,286 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:51:04,951 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:51:04,954 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:52:13,423 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:52:13,427 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:52:35,536 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:52:46,047 - selenium_process - INFO - C:\Project\qubot\test\libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:59:11,532 - selenium_process - INFO - C:\Project\qubot\test\libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:59:13,570 - selenium_process - INFO - Selenium driver 생성
+2021-09-23 20:59:32,050 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 20:59:32,053 - selenium_process - INFO - Message: 'chromedriver.exe' executable needs to be in PATH. Please see https://sites.google.com/a/chromium.org/chromedriver/home
+
+2021-09-23 20:59:48,218 - selenium_process - INFO - libs\chromedriver_win32\chromedriver.exe
+2021-09-23 21:00:00,126 - selenium_process - INFO - C:\Project\qubot\test\libs\chromedriver_win32\chromedriver.exe
+2021-09-23 21:00:02,154 - selenium_process - INFO - Selenium driver 생성
+2021-09-23 21:00:22,746 - selenium_process - INFO - C:\Project\qubot\test\libs\chromedriver_win32\chromedriver.exe
+2021-09-23 21:00:22,746 - nasdaq - INFO - run start
+2021-09-23 21:00:26,949 - selenium_process - INFO - Selenium driver 생성
+2021-09-23 21:00:29,963 - nasdaq - INFO - have file : data\csv_file\nasdaq.csv 
+2021-09-23 21:00:36,098 - nasdaq - INFO - soup 생성
+2021-09-23 21:00:39,117 - nasdaq - INFO - id="dayLink1" 의 데이터를 DataFrame 으로 저장함
+2021-09-23 21:00:39,118 - nasdaq - INFO - id="dayLink1" 처리 완료
+2021-09-23 21:00:48,248 - nasdaq - INFO - soup 생성
+2021-09-23 21:00:51,275 - nasdaq - INFO - id="dayLink2" 의 데이터를 DataFrame 으로 저장함
+2021-09-23 21:00:51,275 - nasdaq - INFO - id="dayLink2" 처리 완료
+2021-09-23 21:00:54,278 - nasdaq - INFO - 1 page 종료
+2021-09-23 21:01:06,488 - nasdaq - INFO - soup 생성
+2021-09-23 21:01:09,511 - nasdaq - INFO - id="dayLink11" 의 데이터를 DataFrame 으로 저장함
+2021-09-23 21:01:09,511 - nasdaq - INFO - 2 page 종료
+2021-09-23 21:01:52,702 - doller - INFO - run start
+2021-09-23 21:01:52,705 - doller - INFO - have file : data\csv_file\doller.csv 
+2021-09-23 21:01:52,714 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+2021-09-23 21:01:52,908 - doller - INFO - save csv
+2021-09-26 03:02:36,109 - doller - INFO - run start
+2021-09-26 03:02:36,111 - doller - INFO - have file : data\csv_file\doller.csv 
+2021-09-26 03:02:36,119 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+2021-09-26 03:02:36,281 - doller - INFO - save csv
+2021-09-26 03:02:36,283 - selenium_process - INFO - C:\Project\qubot\test\libs\chromedriver_win32\chromedriver.exe
+2021-09-26 03:02:36,283 - nasdaq - INFO - run start
+2021-09-26 03:02:38,470 - selenium_process - INFO - Selenium driver 생성
+2021-09-26 03:02:41,487 - nasdaq - INFO - have file : data\csv_file\nasdaq.csv 
+2021-09-26 03:02:47,617 - nasdaq - INFO - soup 생성
+2021-09-26 03:02:50,644 - nasdaq - INFO - id="dayLink1" 의 데이터를 DataFrame 으로 저장함
+2021-09-26 03:02:50,644 - nasdaq - INFO - id="dayLink1" 처리 완료
+2021-09-26 03:02:59,785 - nasdaq - INFO - soup 생성
+2021-09-26 03:03:02,802 - nasdaq - INFO - id="dayLink2" 의 데이터를 DataFrame 으로 저장함
+2021-09-26 03:03:02,803 - nasdaq - INFO - id="dayLink2" 처리 완료
+2021-09-26 03:03:05,805 - nasdaq - INFO - 1 page 종료
+2021-09-26 03:03:17,997 - nasdaq - INFO - soup 생성
+2021-09-26 03:06:31,544 - scrap_all - INFO - [Errno 2] No such file or directory: './setting_files/macro_economics_config.json'
+2021-09-26 03:20:42,736 - doller - INFO - run start
+2021-09-26 03:20:42,738 - doller - INFO - have file : data\csv_file\doller.csv 
+2021-09-26 03:20:42,746 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+2021-09-26 03:20:42,894 - doller - INFO - save csv
+2021-09-26 03:20:42,896 - selenium_process - INFO - C:\Project\qubot\test\libs\chromedriver_win32\chromedriver.exe
+2021-09-26 03:20:42,896 - nasdaq - INFO - run start
+2021-09-26 03:20:44,911 - selenium_process - INFO - Selenium driver 생성
+2021-09-26 03:20:47,920 - nasdaq - INFO - have file : data\csv_file\nasdaq.csv 
+2021-09-26 03:20:54,062 - nasdaq - INFO - soup 생성
+2021-09-26 03:20:57,079 - nasdaq - INFO - id="dayLink1" 의 데이터를 DataFrame 으로 저장함
+2021-09-26 03:20:57,079 - nasdaq - INFO - id="dayLink1" 처리 완료
+2021-09-26 03:21:06,194 - nasdaq - INFO - soup 생성
+2021-09-26 03:21:09,207 - nasdaq - INFO - id="dayLink2" 의 데이터를 DataFrame 으로 저장함
+2021-09-26 03:21:09,207 - nasdaq - INFO - id="dayLink2" 처리 완료
+2021-09-26 03:21:12,216 - nasdaq - INFO - 1 page 종료
+2021-09-26 03:21:24,417 - nasdaq - INFO - soup 생성
+2021-09-26 03:21:27,427 - nasdaq - INFO - id="dayLink11" 의 데이터를 DataFrame 으로 저장함
+2021-09-26 03:21:27,428 - nasdaq - INFO - 2 page 종료
+2021-09-26 03:22:22,607 - doller - INFO - run start
+2021-09-26 03:22:22,609 - doller - INFO - have file : data\csv_file\doller.csv 
+2021-09-26 03:22:22,614 - doller - INFO - https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW&page=10
+2021-09-26 03:22:22,747 - doller - INFO - save csv

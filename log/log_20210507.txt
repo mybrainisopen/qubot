@@ -1,0 +1,12 @@
+[2021-05-07 19:37:23,991 DEBUG] status DB 존재
+[2021-05-07 19:37:23,992 DEBUG] market_index DB 존재
+[2021-05-07 19:37:23,993 DEBUG] stock_info DB 존재
+[2021-05-07 19:37:23,993 DEBUG] daily_price DB 존재
+[2021-05-07 19:37:23,993 DEBUG] financial_statements DB 존재
+[2021-05-07 19:37:23,994 DEBUG] macro_economics DB 존재
+[2021-05-07 19:37:23,994 DEBUG] fundamental DB 존재
+[2021-05-07 19:37:23,996 DEBUG] valuation DB 존재
+[2021-05-07 19:37:23,996 DEBUG] momentum DB 존재
+[2021-05-07 19:37:23,997 DEBUG] backtest_book DB 존재
+[2021-05-07 19:37:23,997 DEBUG] backtest_portfolio DB 존재
+[2021-05-07 19:37:23,998 DEBUG] backtest_result DB 존재
