@@ -1,5 +1,5 @@
 import logging
-import config.setting as setting
+import common.config as setting
 from datetime import datetime
 
 # 오늘날짜변수 생성

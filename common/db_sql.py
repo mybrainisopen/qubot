@@ -1,7 +1,7 @@
 import pymysql
-from config import setting as cf
+from common import config as cf
 import pandas as pd
-from config import logger as logger
+from common import logger as logger
 pymysql.install_as_MySQLdb()
 
 class db_sql():
@@ -100,5 +100,5 @@ class db_sql():
 
 if __name__ == "__main__":
     sdb = db_sql()
-    sdb.drop_db('macro_economics')
+    sdb.drop_db('ipo')
     print("테스트 완료")

@@ -1,23 +1,24 @@
 import os
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from config.logging_process import Logging_process
-# logger = Logging_process("selenium_process")
+from common import logger as logger
+logger = logger.logger
 
-class Selenium_process(object):
-
+class SeleniumProcess(object):
     def __init__(self, url):
         self.url = url
-        self.chromedriver_path = os.path.join("libs", "chromedriver_win32", "chromedriver.exe")
-        # logger.info(self.chromedriver_path)
+        # self.chromedriver_path = os.path.join("libs", "chromedriver_win32", "chromedriver.exe")
+        self.chromedriver_path = 'C:\\Project\\qubot\\common\\chromedriver.exe'
+        # print(self.chromedriver_path)
+        logger.info(self.chromedriver_path)
 
     def run_chromedriver(self):
-        try:
-            driver = webdriver.Chrome(self.chromedriver_path)
-            driver.get(self.url)
-            # logger.info("Selenium driver 생성")
-        except Exception as error:
-            # logger.info(error)
+        # try:
+        driver = webdriver.Chrome(self.chromedriver_path)
+        driver.get(self.url)
+        logger.info("Selenium driver 생성")
+        # except Exception as error:
+        #     logger.info(error)
         return driver
 
     def down_chromedriver(self, driver):
@@ -42,3 +43,8 @@ class Selenium_process(object):
     def find_list_by_class(self, driver, class_name):
         list_by_class = driver.find_elements_by_class_name(class_name)
         return list_by_class
+
+if __name__=='__main__':
+    # cs = Selenium_process(url="https://kind.krx.co.kr/listinvstg/listinvstgcom.do?method=searchListInvstgCorpMain")
+    # cs.run_chromedriver()
+    pass

@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../cat-and-dog/.idea/cat-and-dog.iml" filepath="$PROJECT_DIR$/../cat-and-dog/.idea/cat-and-dog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../catn-and-dog/.idea/catn-and-dog.iml" filepath="$PROJECT_DIR$/../catn-and-dog/.idea/catn-and-dog.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/qubot.iml" filepath="$PROJECT_DIR$/.idea/qubot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../qubot-test/.idea/qubot-test.iml" filepath="$PROJECT_DIR$/../qubot-test/.idea/qubot-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/../qubot-trader/.idea/qubot-trader.iml" filepath="$PROJECT_DIR$/../qubot-trader/.idea/qubot-trader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../qubot_new/.idea/qubot_new.iml" filepath="$PROJECT_DIR$/../qubot_new/.idea/qubot_new.iml" />
       <module fileurl="file://$PROJECT_DIR$/../study/.idea/study.iml" filepath="$PROJECT_DIR$/../study/.idea/study.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../test/.idea/test.iml" filepath="$PROJECT_DIR$/../test/.idea/test.iml" />
     </modules>
   </component>
 </project>

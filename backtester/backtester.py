@@ -3,12 +3,13 @@ import pandas as pd
 import numpy as np
 import math
 import datetime
-import config.setting as cf
-import config.db_sql as dbl
 from matplotlib import pyplot as plt
-from config import logger as logger
+from common import config as cf
+from common import db_sql as dbl
+from common import logger as logger
+from common import init_db as init_db
 
-class backtester():
+class Backtester():
     def __init__(self):
         '''생성자'''
         self.logger = logger.logger
@@ -25,47 +26,15 @@ class backtester():
         # 데이터프레임 조작시 SettingWithCopyWarning 에러 안 뜨게 처리
         pd.options.mode.chained_assignment = None
         # DB초기화
-        self.initialize_db()
+        self.init_db = init_db.InitDB()
+        self.create_result_table()
         # 변수 설정
         self.tax_rate = cf.tax_rate
         self.fee_rate = cf.fee_rate
         self.slippage = cf.slippage
 
-    def initialize_db(self):
+    def create_result_table(self):
         '''DB초기화'''
-        # backtest_book 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'backtest_book'"
-        if self.cur.execute(sql):
-            self.logger.info("backtest_book 스키마 존재")
-            pass
-        else:
-            sql = "CREATE DATABASE backtest_book"
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("backtest_book 스키마 생성")
-
-        # backtest_portfolio 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'backtest_portfolio'"
-        if self.cur.execute(sql):
-            self.logger.info("backtest_portfolio 스키마 존재")
-            pass
-        else:
-            sql = "CREATE DATABASE backtest_portfolio"
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("backtest_portfolio 스키마 생성")
-
-        # backtest_result 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'backtest_result'"
-        if self.cur.execute(sql):
-            self.logger.info("backtest_result 스키마 존재")
-            pass
-        else:
-            sql = "CREATE DATABASE backtest_result"
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("backtest_result 스키마 생성")
-
         # backtest_result.evaluation 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'backtest_result' and table_name = 'evaluation'"
@@ -92,7 +61,7 @@ class backtester():
             self.logger.info("backtest_result.evaluation 테이블 생성")
 
     def create_book_table(self, strategy):
-        '''종목별 모멘텀 테이블 생성 함수'''
+        '''거래장부 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'backtest_book' and table_name = '{strategy}'"
         if self.cur.execute(sql):
             self.logger.info(f"backtest_book.{strategy} 테이블 존재함")
@@ -113,7 +82,7 @@ class backtester():
             self.logger.info(f"backtest_book.{strategy} 테이블 생성 완료")
 
     def create_portfolio_table(self, strategy):
-        '''종목별 모멘텀 테이블 생성 함수'''
+        '''포트폴리오 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'backtest_portfolio' and table_name = '{strategy}'"
         if self.cur.execute(sql):
             self.logger.info(f"backtest_portfolio.{strategy} 테이블 존재함")
@@ -161,12 +130,6 @@ class backtester():
 
     def backtest_book(self, strategy, initial, universe, start, end):
         '''전략에 맞는 거래장부 테이블 생성'''
-        # # 거래장부 테이블이 있었다면 삭제
-        # sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'backtest_book' and table_name = '{strategy}'"
-        # if self.cur.execute(sql):
-        #     sql = f"DROP TABLE backtest_book.`{strategy}`"
-        #     self.cur.execute(sql)
-        #     self.conn.commit()
 
         # 데이터프레임 생성
         book = pd.DataFrame(columns=['date', 'trading', 'stock', 'price', 'quantity', 'investment', 'fee', 'tax', 'slippage'])
@@ -216,18 +179,6 @@ class backtester():
 
     def backtest_portfolio(self, strategy, initial, book):
         '''전략에 맞는 포트폴리오 테이블 생성'''
-        # # 거래장부 가져오기
-        # sql = f"SELECT * FROM backtest_book.`{strategy}`"
-        # self.cur.execute(sql)
-        # book = self.cur.fetchall()
-        # book = pd.DataFrame(book)
-
-        # # 포트폴리오 테이블이 있었다면 삭제
-        # sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'backtest_portfolio' and table_name = '{strategy}'"
-        # if self.cur.execute(sql):
-        #     sql = f"DROP TABLE backtest_portfolio.`{strategy}`"
-        #     self.cur.execute(sql)
-        #     self.conn.commit()
 
         # 투자종목 리스트 추출
         stock_list = list(book[book['trading'] == 'buy']['stock'])
@@ -272,6 +223,8 @@ class backtester():
                     sql = f"SELECT close FROM daily_price.`{stock}` WHERE date={date_str}"
                     self.cur.execute(sql)
                     price = self.cur.fetchone()['close']
+                    if price is None:
+                        pass
                     quantity = int(book[(book['stock'] == stock) & (book['trading'] == 'buy') & (book['date'] == start_dt)]['quantity'])
                     investment += price*quantity
             portfolio = portfolio.append({'date': date_str, 'cash': cash, 'investment': investment}, ignore_index=True)
@@ -314,7 +267,7 @@ class backtester():
         MDD = (portfolio['total'].max() - portfolio['total'].min())/portfolio['total'].max()
         Sharpe = np.mean(portfolio['daily_return'])/np.std(portfolio['daily_return']) * np.sqrt(252.)
 
-        # DB입력
+        # DB 저장
         sql = f"INSERT INTO backtest_result.evaluation (strategy, start, end, initial, final, ROI, CAGR, MEAN, VOL, MDD, Sharpe) " \
               f"VALUES ('{strategy}', {start}, {end}, {initial}, {final}, {ROI}, {CAGR}, {MEAN}, {VOL}, {MDD}, {Sharpe})"
         self.cur.execute(sql)
@@ -375,8 +328,6 @@ class backtester():
         plt.legend(loc='best')
         plt.show()
 
-
-
     def meta_analysis(self):
         '''메타 분석'''
         sql = "SELECT * FROM backtest_result.evaluation"
@@ -388,7 +339,8 @@ class backtester():
         max_sharpe = meta.loc[meta['Sharpe'] == meta['Sharpe'].max()]
         min_risk = meta.loc[meta['VOL'] == meta['VOL'].min()]  # VOL 또는 MDD
         meta.plot.scatter(x='VOL', y='ROI', c='Sharpe', cmap='viridis', edgecolors='k', figsize=(11, 6), grid=True)  # 컬러맵 vidiris, 테두리는 검정(k)로 표시
-        plt.scatter(x=max_sharpe['VOL'], y=max_sharpe['ROI'], c='r', marker='*', s=300)  # 샤프지수가 가장 큰 포트폴리오를 300크기 붉은 별표로 표시
+        plt.scatter(x=max_return['VOL'], y=max_return['ROI'], c='r', marker='*', s=300)  # 수익률이 가장 큰 포트폴리오를 300크기 붉은 별표로 표시
+        plt.scatter(x=max_sharpe['VOL'], y=max_sharpe['ROI'], c='r', marker='o', s=200)  # 샤프지수가 가장 큰 포트폴리오를 200크기 붉은 o표로 표시
         plt.scatter(x=min_risk['VOL'], y=min_risk['ROI'], c='r', marker='X', s=200)  # 리스크가 가장 작은 포트폴리오를 200크기 붉은 X표로 표시
         plt.title('Portfolio Optimization')
         plt.xlabel('Risk')
@@ -408,52 +360,100 @@ class backtester():
                          '20180402', '20180601', '20180903', '20181203',
                          '20190401', '20190603', '20190902', '20191202',
                          '20200401', '20200601', '20200901', '20201201',
-                         '20210331', '20210531']
+                         '20210401', '20210604', '20210915']
         buy_date_list = ['20170404', '20170602', '20170904', '20171204',
                          '20180403', '20180604', '20180904', '20181204',
                          '20190402', '20190604', '20190903', '20191203',
                          '20200402', '20200602', '20200902', '20201202',
-                         '20210401', '20210601']
+                         '20210406', '20210607', '20210916']
         sell_date_list = ['20170601', '20170901', '20171201', '20180402',
                           '20180601', '20180903', '20181203', '20190401',
                           '20190603', '20190902', '20191202', '20200401',
                           '20200601', '20200901', '20201201', '20210331',
-                          '20210528', '20210604']
+                          '20210602', '20210914', '20210917']
+        period1 = ['20170403', '20170404', '20170601']
+        period2 = ['20170601', '20170602', '20170901']
+        period3 = ['20170901', '20170904', '20171201']
+        period4 = ['20171201', '20171204', '20180402']
+        period5 = ['20180402', '20180403', '20180601']
+        period6 = ['20180601', '20180604', '20180903']
+        period7 = ['20180903', '20180904', '20181203']
+        period8 = ['20181203', '20181204', '20190401']
+        period9 = ['20190401', '20190402', '20190603']
+        period10 = ['20190603', '20190604', '20190902']
+        period11 = ['20190902', '20190903', '20191202']
+        period12 = ['20191202', '20191203', '20200401']
+        period13 = ['20200401', '20200402', '20200601']
+        period14 = ['20200601', '20200602', '20200901']
+        period15 = ['20200901', '20200902', '20201201']
+        period16 = ['20201201', '20201202', '20210331']
+        period17 = ['20210401', '20210406', '20210602']
+        period18 = ['20210604', '20210607', '20210914']
+        period19 = ['20210915', '20210916', '20210917']
+
 
         # strategy_list 생성
-        # strategy = 'PER+PBR+PSR+ROE+ROA+GPA+1MRM+3MRM+6MRM+F_SCORE>=9+10'
-        val_list = ['', 'PER', 'PBR', 'PSR']
-        profit_list = ['', 'ROE', 'ROA', 'GPA']
-        mrm_list = ['', '1MRM', '3MRM', '6MRM']
+        val_list = ['PER', 'PBR', 'PSR']
+        profit_list = ['ROE', 'ROA', 'GPA']
+        mrm_list = ['1MRM', '3MRM', '6MRM']
+        f_list = ['F_SCORE>=9']
         amt_list = ['10']
-        strategy_list = ['PER+PBR+PSR+ROE+ROA+GPA+1MRM+3MRM+6MRM+F_SCORE>=9+10']
-        # for i in val_list:
-        #     for j in profit_list:
-        #         for k in mrm_list:
-        #             for l in amt_list:
-        #                 if i == '':
-        #                     if j == '':
-        #                         if k == '':
-        #                             item = 'F_SCORE>=9' + '+' + l
-        #                         else:
-        #                             item = k + '+' + 'F_SCORE>=9' + '+' + l
-        #                     else:
-        #                         if k == '':
-        #                             item = j + '+' + 'F_SCORE>=9' + '+' + l
-        #                         else:
-        #                             item = j + '+' + k + '+' + 'F_SCORE>=9' + '+' + l
-        #                 else:
-        #                     if j == '':
-        #                         if k == '':
-        #                             item = i + '+' + 'F_SCORE>=9' + '+' + l
-        #                         else:
-        #                             item = i + '+' + k + '+' + 'F_SCORE>=9' + '+' + l
-        #                     else:
-        #                         if k == '':
-        #                             item = i + '+' + j + '+' + 'F_SCORE>=9' + '+' + l
-        #                         else:
-        #                             item = i + '+' + j + '+' + k + '+' + 'F_SCORE>=9' + '+' + l
-        #                 strategy_list.append(item)
+        strategy_list = []
+        for v in val_list:
+            for p in profit_list:
+                for m in mrm_list:
+                    for f in f_list:
+                        for n in amt_list:
+                            if v == '':
+                                if p == '':
+                                    if m == '':
+                                        if f == '':
+                                            item = n
+                                        else:
+                                            item = f + '+' + n
+                                    else:
+                                        if f == '':
+                                            item = m + '+' + n
+                                        else:
+                                            item = m + '+' + f + '+' + n
+                                else:
+                                    if m == '':
+                                        if f == '':
+                                            item = p + '+' + n
+                                        else:
+                                            item = p + '+' + f + '+' + n
+                                    else:
+                                        if f == '':
+                                            item = p + '+' + m + '+' + n
+                                        else:
+                                            item = p + '+' + m + '+' + f + '+' + n
+                            else:
+                                if p == '':
+                                    if m == '':
+                                        if f == '':
+                                            item = v + '+' + n
+                                        else:
+                                            item = v + '+' + f + '+' + n
+                                    else:
+                                        if f == '':
+                                            item = v + '+' + m + '+' + n
+                                        else:
+                                            item = v + '+' + m + '+' + f + '+' + n
+                                else:
+                                    if m == '':
+                                        if f == '':
+                                            item = v + '+' + p + '+' + n
+                                        else:
+                                            item = v + '+' + p + '+' + f + '+' + n
+                                    else:
+                                        if f == '':
+                                            item = v + '+' + p + '+' + m + '+' + n
+                                        else:
+                                            item = v + '+' + p + '+' + m + '+' + f + '+' + n
+                            strategy_list.append(item)
+        strategy_list.pop(0)
+        strategy_list.pop(0)
+        print(strategy_list)
 
         for strategy in strategy_list:
             self.backtest(strategy=strategy, initial=10000000, set_date_list=set_date_list, buy_date_list=buy_date_list, sell_date_list=sell_date_list)
@@ -467,7 +467,7 @@ if __name__=="__main__":
     dbl.drop_db(db_name='backtest_result')
 
     # 메타분석
-    backtester = backtester()
+    backtester = Backtester()
     backtester.executor()
     backtester.meta_analysis()
 

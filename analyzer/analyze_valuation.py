@@ -1,10 +1,12 @@
 import pymysql
 import pandas as pd
-import config.setting as cf
+import common.config as cf
 import datetime
-from config import logger as logger
+from common import config as cf
+from common import logger as logger
+from common import init_db as init_db
 
-class analyze_valuation():
+class AnalyzeValuation():
     def __init__(self):
         '''생성자'''
         self.logger = logger.logger
@@ -19,20 +21,7 @@ class analyze_valuation():
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
         self.today = datetime.datetime.today().strftime('%Y%m%d')
         # DB초기화
-        self.initialize_db()
-
-    def initialize_db(self):
-        '''DB초기화'''
-        # valuation 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'valuation'"
-        if self.cur.execute(sql):
-            self.logger.info("valuation 스키마 존재")
-            pass
-        else:
-            sql = "CREATE DATABASE valuation"
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("valuation 스키마 생성")
+        self.init_db = init_db.InitDB()
 
     def create_table(self, stock):
         '''종목별 밸류에이션 테이블 생성 함수'''
@@ -200,6 +189,6 @@ class analyze_valuation():
 
 
 if __name__=="__main__":
-    analyze_valuation = analyze_valuation()
+    analyze_valuation = AnalyzeValuation()
     analyze_valuation.analyze_valuation()
 

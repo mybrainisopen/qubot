@@ -2,13 +2,14 @@ import pymysql
 import requests
 import time
 import pandas as pd
-from config import setting as cf
-from config import logger as logger
+from common import config as cf
+from common import logger as logger
+from common import init_db as init_db
 from datetime import datetime
 from bs4 import BeautifulSoup
 
 
-class scrap_daily_price():
+class ScrapDailyPrice():
     def __init__(self):
         '''생성자'''
         self.logger = logger.logger
@@ -24,20 +25,7 @@ class scrap_daily_price():
         self.today = datetime.today().strftime('%Y-%m-%d')
         self.headers = {'User-Agent': cf.user_agent}
         # DB초기화
-        self.initialize_db()
-
-    def initialize_db(self):
-        '''DB초기화'''
-        # daily_price 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'daily_price'"
-        if self.cur.execute(sql):
-            self.logger.info("daily_price 스키마 존재")
-            pass
-        else:
-            sql = "CREATE DATABASE daily_price"
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("daily_price 스키마 생성")
+        self.init_db = init_db.InitDB()
 
     def create_tbl(self, stock):
         '''종목별 주가 테이블 생성 함수'''
@@ -135,7 +123,6 @@ class scrap_daily_price():
             # 테이블 : 시가, 고가, 저가, 종가, 거래량 순서
         return price_df
 
-
     def scrap_daily_price_naver_chart(self):
         '''네이버 차트에서 daily_price 스크랩'''
         # 종목 리스트 가져오기
@@ -165,5 +152,5 @@ class scrap_daily_price():
 
 
 if __name__ == "__main__":
-    scrap_daily_price = scrap_daily_price()
+    scrap_daily_price = ScrapDailyPrice()
     scrap_daily_price.scrap_daily_price_naver_chart()

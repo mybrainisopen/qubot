@@ -6,5 +6,11 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="study" />
     <orderEntry type="module" module-name="qubot-trader" />
+    <orderEntry type="module" module-name="qubot-test" />
+    <orderEntry type="module" module-name="catn-and-dog" />
+    <orderEntry type="module" module-name="cat-and-dog" />
+    <orderEntry type="module" module-name="test" />
+    <orderEntry type="module" module-name="qubot" />
+    <orderEntry type="module" module-name="qubot_new" />
   </component>
 </module>

@@ -2,10 +2,11 @@ import pymysql
 import pandas as pd
 import datetime
 from dateutil.relativedelta import relativedelta
-import config.setting as cf
-from config import logger as logger
+from common import config as cf
+from common import logger as logger
+from common import init_db as init_db
 
-class analyze_fundamental():
+class AnalyzeFundamental():
     def __init__(self):
         '''생성자 : 기본 변수 생성'''
         self.logger = logger.logger
@@ -20,22 +21,9 @@ class analyze_fundamental():
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
         self.today = datetime.datetime.today().strftime('%Y-%m-%d')
         # DB초기화
-        self.initialize_db()
+        self.init_db = init_db.InitDB()
         # 데이터프레임 조작시 SettingWithCopyWarning 에러 안 뜨게 처리
         pd.options.mode.chained_assignment = None
-
-    def initialize_db(self):
-        '''DB초기화'''
-        # fundamental 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'fundamental'"
-        if self.cur.execute(sql):
-            self.logger.info("fundamental 스키마 존재")
-            pass
-        else:
-            sql = "CREATE DATABASE fundamental"
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("fundamental 스키마 생성")
 
     def drop_table(self, stock):
         '''해당 종목의 fundamental 테이블이 존재하면 삭제'''
@@ -943,5 +931,5 @@ class analyze_fundamental():
 
 
 if __name__=="__main__":
-    analyze_fundamental = analyze_fundamental()
+    analyze_fundamental = AnalyzeFundamental()
     analyze_fundamental.analyze_fundamental()

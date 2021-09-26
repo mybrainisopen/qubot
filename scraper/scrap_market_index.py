@@ -2,12 +2,13 @@ import pymysql
 import requests
 import time
 import pandas as pd
-from config import setting as cf
 import datetime
 from bs4 import BeautifulSoup
-from config import logger as logger
+from common import config as cf
+from common import logger as logger
+from common import init_db as init_db
 
-class scrap_market_index():
+class ScrapMarketIndex():
     def __init__(self):
         '''생성자'''
         self.logger = logger.logger
@@ -23,21 +24,11 @@ class scrap_market_index():
         self.today = datetime.date.today()
         self.headers = {'User-Agent': cf.user_agent}
         # DB초기화
+        self.init_db = init_db.InitDB()
         self.initialize_db()
 
     def initialize_db(self):
         '''DB 초기화'''
-        # market_index 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'market_index'"
-        if self.cur.execute(sql):
-            self.logger.info("market_index 스키마 존재")
-            pass
-        else:
-            sql = "CREATE DATABASE market_index"
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("market_index 스키마 생성")
-
         # market_index.kospi 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'market_index' and table_name = 'kospi'"
@@ -75,7 +66,6 @@ class scrap_market_index():
             self.cur.execute(sql)
             self.conn.commit()
             self.logger.info("market_index.kosdaq 테이블 생성")
-
 
     def scrap_kospi(self):
         '''코스피 지수 스크랩'''
@@ -164,6 +154,6 @@ class scrap_market_index():
         self.logger.info("(KOSDAQ) 스크랩 완료")
 
 if __name__ == '__main__':
-    scrap_market_index = scrap_market_index()
+    scrap_market_index = ScrapMarketIndex()
     scrap_market_index.scrap_kospi()
     scrap_market_index.scrap_kosdaq()

@@ -4,10 +4,11 @@ import re
 import pandas as pd
 import dart_fss as dart
 from dateutil.relativedelta import relativedelta
-from config import setting as cf
-from config import logger as logger
+from common import config as cf
+from common import logger as logger
+from common import init_db as init_db
 
-class scrap_financial_statements():
+class ScrapFinancialStatements():
     def __init__(self):
         '''생성자'''
         self.logger = logger.logger
@@ -24,20 +25,7 @@ class scrap_financial_statements():
         self.headers = {'User-Agent': cf.user_agent}
 
         # DB초기화
-        self.initialize_db()
-
-    def initialize_db(self):
-        '''DB초기화'''
-        # financial_statements 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'financial_statements'"
-        if self.cur.execute(sql):
-            self.logger.info("financial_statements 스키마 존재")
-            pass
-        else:
-            sql = "CREATE DATABASE financial_statements"
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("financial_statements 스키마 생성")
+        self.init_db = init_db.InitDB()
 
     def create_tbl(self, stock):
         '''종목별 주가 테이블 생성 함수'''
@@ -438,7 +426,8 @@ class scrap_financial_statements():
         self.logger.info("(전종목) 재무제표 스크랩 버그 픽스 완료")
 
 
+
 if __name__ == '__main__':
-    scrap_financial_statements = scrap_financial_statements()
+    scrap_financial_statements = ScrapFinancialStatements()
     scrap_financial_statements.scrap_financial_statements()
     scrap_financial_statements.scrap_bug_fix()

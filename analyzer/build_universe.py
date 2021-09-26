@@ -1,10 +1,12 @@
 import pymysql
 import pandas as pd
-import config.setting as cf
+import common.config as cf
 import datetime
-from config import logger as logger
+from common import config as cf
+from common import logger as logger
+from common import init_db as init_db
 
-class universe_builder():
+class UniverseBuilder():
     def __init__(self):
         '''생성자'''
         self.logger = logger.logger
@@ -19,20 +21,7 @@ class universe_builder():
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
         self.today = datetime.datetime.today().strftime('%Y%m%d')
         # DB초기화
-        self.initialize_db()
-
-    def initialize_db(self):
-        '''DB초기화'''
-        # universe 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'universe'"
-        if self.cur.execute(sql):
-            self.logger.info("universe 스키마 존재")
-            pass
-        else:
-            sql = "CREATE DATABASE universe"
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("universe 스키마 생성")
+        self.init_db = init_db.InitDB()
 
     def create_table(self, date):
         '''종목별 밸류에이션 테이블 생성 함수'''
@@ -140,5 +129,5 @@ class universe_builder():
 
 
 if __name__=="__main__":
-    universe_builder = universe_builder()
-    universe_builder.universe_builder_by_date(start_date='20210601', end_date=datetime.datetime.today().strftime('%Y%m%d'))
+    universe_builder = UniverseBuilder()
+    universe_builder.universe_builder_by_date(start_date='20210901', end_date=datetime.datetime.today().strftime('%Y%m%d'))

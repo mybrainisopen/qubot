@@ -3,12 +3,13 @@ import requests
 import re
 import time
 import pandas as pd
-from config import setting as cf
 from datetime import datetime
 from bs4 import BeautifulSoup
-from config import logger as logger
+from common import config as cf
+from common import logger as logger
+from common import init_db as init_db
 
-class scrap_stock_info():
+class ScrapStockInfo():
     def __init__(self):
         '''생성자'''
         self.logger = logger.logger
@@ -24,119 +25,11 @@ class scrap_stock_info():
         self.today = datetime.today().strftime('%Y-%m-%d')
         self.headers = {'User-Agent': cf.user_agent}
         # DB초기화
+        self.init_db = init_db.InitDB()
         self.initialize_db()
 
     def initialize_db(self):
         '''DB초기화'''
-        # status 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'status'"
-        if self.cur.execute(sql):
-            self.logger.info("status 스키마 존재")
-            pass
-        else:
-            sql = "CREATE DATABASE status"
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("status 스키마 생성")
-
-        # status.scrap_all_status 테이블 생성
-        sql = "SELECT 1 FROM Information_schema.tables where " \
-              "table_schema = 'status' and table_name = 'scrap_all_status'"
-        if self.cur.execute(sql):
-            self.logger.info("status.scrap_all_status 테이블 존재")
-            pass
-        else:
-            sql = """
-                        CREATE TABLE IF NOT EXISTS status.scrap_all_status (
-                        stock_info_scraped DATE, 
-                        market_index_scraped DATE, 
-                        macro_economics_scraped DATE, 
-                        daily_price_scraped DATE,
-                        financial_statements_scraped DATE)
-                    """
-            self.cur.execute(sql)
-            self.conn.commit()
-            # 더미 데이터 세팅
-            sql = """INSERT INTO status.scrap_all_status VALUES 
-                            ('2020-01-02', '2000-01-02', '2000-01-03', '2000-01-04', '2000-01-05')"""
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("status.scrap_all_status 테이블 생성")
-
-        # status.scrap_stock_status 테이블 생성
-        sql = "SELECT 1 FROM Information_schema.tables where " \
-              "table_schema = 'status' and table_name = 'scrap_stock_status'"
-        if self.cur.execute(sql):
-            self.logger.info("status.scrap_stock_status 테이블 존재")
-            pass
-        else:
-            sql = """
-                        CREATE TABLE IF NOT EXISTS status.scrap_stock_status (
-                        code CHAR(10), 
-                        stock VARCHAR(50), 
-                        stock_info_scraped DATE, 
-                        daily_price_scraped DATE,
-                        financial_statements_scraped DATE, 
-                        PRIMARY KEY (code, stock))
-                    """
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("status.scrap_stock_status 테이블 생성")
-
-        # status.analyze_all_status 테이블 생성
-        sql = "SELECT 1 FROM Information_schema.tables where " \
-              "table_schema = 'status' and table_name = 'analyze_all_status'"
-        if self.cur.execute(sql):
-            self.logger.info("status.analyze_all_status 테이블 존재")
-            pass
-        else:
-            sql = """
-                        CREATE TABLE IF NOT EXISTS status.analyze_all_status (
-                        fundamental_analyzed DATE, 
-                        valuation_analyzed DATE, 
-                        momentum_analyzed DATE, 
-                        universe_analyzed DATE)
-                    """
-            self.cur.execute(sql)
-            self.conn.commit()
-            # 더미 데이터 세팅
-            sql = """INSERT INTO status.analyze_all_status VALUES 
-                     ('2020-01-02', '2000-01-02', '2000-01-03', '2000-01-04')"""
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("status.analyze_all_status 테이블 생성")
-
-        # status.analyze_stock_status 테이블 생성
-        sql = "SELECT 1 FROM Information_schema.tables where " \
-              "table_schema = 'status' and table_name = 'analyze_stock_status'"
-        if self.cur.execute(sql):
-            self.logger.info("status.analyze_stock_status 테이블 존재")
-            pass
-        else:
-            sql = """
-                  CREATE TABLE IF NOT EXISTS status.analyze_stock_status (
-                  code CHAR(10), 
-                  stock VARCHAR(50), 
-                  fundamental_analyzed DATE, 
-                  valuation_analyzed DATE,
-                  momentum_analyzed DATE, 
-                  PRIMARY KEY (code, stock))
-                    """
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("status.analyze_stock_status 테이블 생성")
-
-        # stock_info 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'stock_info'"
-        if self.cur.execute(sql):
-            self.logger.info("stock_info 스키마 존재")
-            pass
-        else:
-            sql = "CREATE DATABASE stock_info"
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("stock_info 스키마 생성")
-
         # stock_info.stock_info 테이블 생성
         sql = "SELECT 1 FROM Information_schema.tables where " \
               "table_schema = 'stock_info' and table_name = 'stock_info'"
@@ -535,18 +428,8 @@ class scrap_stock_info():
 
 
 if __name__ == '__main__':
-    scrap_stock_info = scrap_stock_info()
+    scrap_stock_info = ScrapStockInfo()
     scrap_stock_info.scrap_stock_info()
     scrap_stock_info.scrap_stock_konex()
     scrap_stock_info.scrap_stock_insincerity()
     scrap_stock_info.scrap_stock_managing()
-
-
-'''
-모든상장종목 : http://kind.krx.co.kr/corpgeneral/corpList.do?method=download&searchType=13
-코스닥 : http://kind.krx.co.kr/corpgeneral/corpList.do?method=download&searchType=13&marketType=kosdaqMkt
-코스피 : http://kind.krx.co.kr/corpgeneral/corpList.do?method=download&searchType=13&marketType=stockMkt
-코넥스 : http://kind.krx.co.kr/corpgeneral/corpList.do?method=download&searchType=13&marketType=konexMkt
-관리종목 : http://kind.krx.co.kr/corpgeneral/corpList.do?method=download&searchType=01
-불성실공시법인 : http://kind.krx.co.kr/corpgeneral/corpList.do?method=download&searchType=05
-'''

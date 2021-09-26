@@ -8,7 +8,7 @@ import common.db_sql as dbl
 from matplotlib import pyplot as plt
 from common import logger as logger
 
-class RealInvestment():
+class TestInvestment():
     def __init__(self):
         '''생성자'''
         self.logger = logger.logger
@@ -33,36 +33,36 @@ class RealInvestment():
 
     def initialize_db(self):
         '''DB초기화'''
-        # real_book 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'real_book'"
+        # test_book 스키마 생성
+        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'test_book'"
         if self.cur.execute(sql):
-            self.logger.info("real_book 스키마 존재")
+            self.logger.info("test_book 스키마 존재")
             pass
         else:
-            sql = "CREATE DATABASE real_book"
+            sql = "CREATE DATABASE test_book"
             self.cur.execute(sql)
             self.conn.commit()
-            self.logger.info("real_book 스키마 생성")
+            self.logger.info("test_book 스키마 생성")
 
-        # real_portfolio 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'real_portfolio'"
+        # test_portfolio 스키마 생성
+        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'test_portfolio'"
         if self.cur.execute(sql):
-            self.logger.info("real_portfolio 스키마 존재")
+            self.logger.info("test_portfolio 스키마 존재")
             pass
         else:
-            sql = "CREATE DATABASE real_portfolio"
+            sql = "CREATE DATABASE test_portfolio"
             self.cur.execute(sql)
             self.conn.commit()
-            self.logger.info("real_portfolio 스키마 생성")
+            self.logger.info("test_portfolio 스키마 생성")
 
     def create_book_table(self, strategy):
         '''종목별 모멘텀 테이블 생성 함수'''
-        sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'real_book' and table_name = '{strategy}'"
+        sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'test_book' and table_name = '{strategy}'"
         if self.cur.execute(sql):
-            self.logger.info(f"real_book.{strategy} 테이블 존재함")
+            self.logger.info(f"test_book.{strategy} 테이블 존재함")
             pass
         else:
-            sql = f"CREATE TABLE IF NOT EXISTS real_book.`{strategy}` (" \
+            sql = f"CREATE TABLE IF NOT EXISTS test_book.`{strategy}` (" \
                   f"date DATE," \
                   f"trading CHAR(10), " \
                   f"stock VARCHAR(50), " \
@@ -74,16 +74,16 @@ class RealInvestment():
                   f"slippage BIGINT(20))"
             self.cur.execute(sql)
             self.conn.commit()
-            self.logger.info(f"real_book.{strategy} 테이블 생성 완료")
+            self.logger.info(f"test_book.{strategy} 테이블 생성 완료")
 
     def create_portfolio_table(self, strategy):
         '''종목별 모멘텀 테이블 생성 함수'''
-        sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'real_portfolio' and table_name = '{strategy}'"
+        sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'test_portfolio' and table_name = '{strategy}'"
         if self.cur.execute(sql):
-            self.logger.info(f"real_portfolio.{strategy} 테이블 존재함")
+            self.logger.info(f"test_portfolio.{strategy} 테이블 존재함")
             pass
         else:
-            sql = f"CREATE TABLE IF NOT EXISTS real_portfolio.`{strategy}` (" \
+            sql = f"CREATE TABLE IF NOT EXISTS test_portfolio.`{strategy}` (" \
                   f"date DATE," \
                   f"cash BIGINT(20), " \
                   f"investment BIGINT(20), " \
@@ -93,10 +93,16 @@ class RealInvestment():
                   f"PRIMARY KEY (date))"
             self.cur.execute(sql)
             self.conn.commit()
-            self.logger.info(f"real_portfolio.{strategy} 테이블 생성 완료")
+            self.logger.info(f"test_portfolio.{strategy} 테이블 생성 완료")
 
     def backtest_book(self, strategy, initial, universe, start, end):
         '''전략에 맞는 거래장부 테이블 생성'''
+        # # 거래장부 테이블이 있었다면 삭제
+        # sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'test_book' and table_name = '{strategy}'"
+        # if self.cur.execute(sql):
+        #     sql = f"DROP TABLE test_book.`{strategy}`"
+        #     self.cur.execute(sql)
+        #     self.conn.commit()
 
         # 데이터프레임 생성
         book = pd.DataFrame(columns=['date', 'trading', 'stock', 'price', 'quantity', 'investment', 'fee', 'tax', 'slippage'])
@@ -137,7 +143,7 @@ class RealInvestment():
         # book.to_csv(f'C:\\Project\\qubot\\csv\\{strategy}_book.csv', encoding='euc-kr')
         self.create_book_table(strategy)
         for row in book.itertuples():
-            sql = f"INSERT INTO backtest_book.`{strategy}` (date, trading, stock, price, quantity, investment, fee, tax, slippage) " \
+            sql = f"INSERT INTO test_book.`{strategy}` (date, trading, stock, price, quantity, investment, fee, tax, slippage) " \
                   f"VALUES ({row.date}, '{row.trading}', '{row.stock}', {row.price}, {row.quantity}, {row.investment}, {row.fee}, {row.tax}, {row.slippage})"
             self.cur.execute(sql)
             self.conn.commit()
@@ -145,7 +151,7 @@ class RealInvestment():
 
 
 if __name__=="__main__":
-    real_investment = RealInvestment()
+    test_investment = test_investment()
 
 """
 21.04.06 매수
@@ -160,5 +166,4 @@ KPX케미칼 : 65,365 / 7
 STX엔진 : 8,327 / 55
 인터지스 : 4,555 / 100
 
-예수금 : 304,635
 """

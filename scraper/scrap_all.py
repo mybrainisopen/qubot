@@ -1,14 +1,15 @@
 import pymysql
 import datetime
-from config import setting as cf
-from config import logger as logger
+from common import config as cf
+from common import logger as logger
+from common import init_db as init_db
 from scraper import scrap_stock_info as ssi
 from scraper import scrap_market_index as smi
 from scraper import scrap_macro_economics as sme
 from scraper import scrap_daily_price as sdp
 from scraper import scrap_financial_statements as sfs
 
-class scrap_all():
+class ScrapAll():
     def __init__(self):
         '''생성자 : 기본 변수 생성'''
         self.logger = logger.logger
@@ -23,115 +24,13 @@ class scrap_all():
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
         self.today = datetime.date.today()
         # DB초기화
-        self.initialize_db()
-        # 스크랩 모듈 불러오기
-        self.ssi = ssi.scrap_stock_info()
-        self.smi = smi.scrap_market_index()
-        self.sme = sme.scrap_macro_economics()
-        self.sdp = sdp.scrap_daily_price()
-        self.sfs = sfs.scrap_financial_statements()
-
-    def initialize_db(self):
-        '''DB초기화'''
-
-        # status 스키마 생성
-        sql = "SELECT 1 FROM Information_schema.SCHEMATA WHERE SCHEMA_NAME = 'status'"
-        if self.cur.execute(sql):
-            self.logger.info("status 스키마 존재")
-            pass
-        else:
-            sql = "CREATE DATABASE status"
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("status 스키마 생성")
-
-        # status.scrap_all_status 테이블 생성
-        sql = "SELECT 1 FROM Information_schema.tables where " \
-              "table_schema = 'status' and table_name = 'scrap_all_status'"
-        if self.cur.execute(sql):
-            self.logger.info("status.scrap_all_status 테이블 존재")
-            pass
-        else:
-            sql = """
-                CREATE TABLE IF NOT EXISTS status.scrap_all_status (
-                stock_info_scraped DATE, 
-                market_index_scraped DATE, 
-                macro_economics_scraped DATE, 
-                daily_price_scraped DATE,
-                financial_statements_scraped DATE)
-            """
-            self.cur.execute(sql)
-            self.conn.commit()
-            # 더미 데이터 세팅
-            sql = """INSERT INTO status.scrap_all_status VALUES 
-                    ('2020-01-02', '2000-01-02', '2000-01-03', '2000-01-04', '2000-01-05')"""
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("status.scrap_all_status 테이블 생성")
-            
-        # status.scrap_stock_status 테이블 생성
-        sql = "SELECT 1 FROM Information_schema.tables where " \
-              "table_schema = 'status' and table_name = 'scrap_stock_status'"
-        if self.cur.execute(sql):
-            self.logger.info("status.scrap_stock_status 테이블 존재")
-            pass
-        else:
-            sql = """
-                CREATE TABLE IF NOT EXISTS status.scrap_stock_status (
-                code CHAR(10), 
-                stock VARCHAR(50), 
-                stock_info_scraped DATE, 
-                daily_price_scraped DATE,
-                financial_statements_scraped DATE, 
-                PRIMARY KEY (code, stock))
-            """
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("status.scrap_stock_status 테이블 생성")
-
-        # status.analyze_all_status 테이블 생성
-        sql = "SELECT 1 FROM Information_schema.tables where " \
-              "table_schema = 'status' and table_name = 'analyze_all_status'"
-        if self.cur.execute(sql):
-            self.logger.info("status.analyze_all_status 테이블 존재")
-            pass
-        else:
-            sql = """
-                CREATE TABLE IF NOT EXISTS status.analyze_all_status (
-                fundamental_analyzed DATE, 
-                valuation_analyzed DATE, 
-                momentum_analyzed DATE, 
-                universe_analyzed DATE)
-            """
-            self.cur.execute(sql)
-            self.conn.commit()
-            # 더미 데이터 세팅
-            sql = """INSERT INTO status.analyze_all_status VALUES 
-                    ('2020-01-02', '2000-01-02', '2000-01-03', '2000-01-04')"""
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("status.analyze_all_status 테이블 생성")
-
-        # status.analyze_stock_status 테이블 생성
-        sql = "SELECT 1 FROM Information_schema.tables where " \
-              "table_schema = 'status' and table_name = 'analyze_stock_status'"
-        if self.cur.execute(sql):
-            self.logger.info("status.analyze_stock_status 테이블 존재")
-            pass
-        else:
-            sql = """
-                CREATE TABLE IF NOT EXISTS status.analyze_stock_status (
-                code CHAR(10), 
-                stock VARCHAR(50), 
-                fundamental_analyzed DATE, 
-                valuation_analyzed DATE,
-                momentum_analyzed DATE, 
-                PRIMARY KEY (code, stock))
-            """
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("status.analyze_stock_status 테이블 생성")
-
+        self.initialize_db = init_db.InitDB()
+        # 스크랩 모듈별 클래스 불러오기
+        self.ssi = ssi.ScrapStockInfo()
+        self.smi = smi.ScrapMarketIndex()
+        self.sme = sme.ScrapMacroEconomics()
+        self.sdp = sdp.ScrapDailyPrice()
+        self.sfs = sfs.ScrapFinancialStatements()
 
     def scrap_check(self):
         '''스크랩 실행'''
@@ -163,13 +62,14 @@ class scrap_all():
             self.logger.info("market_index 스크랩 완료!")
 
         if checklist[2] != self.today:
-            self.logger.info("macro_economics 스크랩 시작!")
-            # macro_economics 스크랩 실행
-            self.sme.scrap_macro_economics()
-            sql = f"UPDATE status.scrap_all_status SET macro_economics_scraped='20200101'"    # '{self.today}'"
-            self.cur.execute(sql)
-            self.conn.commit()
-            self.logger.info("macro_economics 스크랩 완료!")
+            # self.logger.info("macro_economics 스크랩 시작!")
+            # # macro_economics 스크랩 실행
+            # self.sme.scrap_macro_economics()
+            # sql = f"UPDATE status.scrap_all_status SET macro_economics_scraped='20200101'"    # '{self.today}'"
+            # self.cur.execute(sql)
+            # self.conn.commit()
+            # self.logger.info("macro_economics 스크랩 완료!")
+            pass
 
         if checklist[3] != self.today:
             self.logger.info("daily_price 스크랩 시작!")
@@ -191,6 +91,7 @@ class scrap_all():
             self.logger.info("financial_statements 스크랩 완료!")
 
 
+
 if __name__ == '__main__':
-    scrap_all = scrap_all()
+    scrap_all = ScrapAll()
     scrap_all.scrap_check()
