@@ -11,8 +11,8 @@ today = datetime.today().strftime('%Y%m%d')
 os.system('chcp 65001')  # os 모듈 사용시 한글 깨짐 방지
 sys.stdout = open(f'C:\\Project\\qubot\\log\\log_{today}.txt', 'w')
 
-scraper = scraper.scrap_all.scrap_all()
-analyzer = analyzer.analyze_all.analyze_all()
+scraper = scraper.scrap_all.ScrapAll()
+analyzer = analyzer.analyze_all.AnalyzeAll()
 # backtester = backtester.backtester.backtester()
 
 scraper.scrap_check()

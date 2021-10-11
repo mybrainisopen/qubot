@@ -1,9 +1,7 @@
-import os
 import time
 import pymysql
 import datetime
 import pandas as pd
-from pandas import DataFrame
 from urllib.request import urlopen
 from bs4 import BeautifulSoup, NavigableString
 from common import logger as logger
@@ -25,23 +23,18 @@ class NaverMacroEconomics(object):
             logger.info(error)
             return None, None
         soup = BeautifulSoup(html.read(), 'html.parser')
-        #print(soup)
         thead = soup.find('thead')
         tbody = soup.find('tbody')
-        #print(tbody)
         return thead, tbody
 
     def data_to_df(self, data_list, df):
-        #print(tbody)
         index = len(df)
         for i in range(len(data_list)):
-            day = data_list[i][0]
+            date = data_list[i][0]
             num = data_list[i][1]
-            # print(day)
-            # print(day in df[self.df.columns[0]].values)
-            if day in df[self.df.columns[0]].values:
+            if date in df[self.df.columns[0]].values:
                 return df, False
-            df.at[index, self.df.columns[0]] = day
+            df.at[index, self.df.columns[0]] = date
             df.at[index, self.df.columns[1]] = num
             index += 1
         return df, True
@@ -54,44 +47,23 @@ class NaverMacroEconomics(object):
             date = tr.find('td' , {'class' : 'date'})
             num = tr.find('td', {'class' : 'num'})
             date = date.get_text().strip()
-            date = date.replace('.', '-')
-            #date = datetime.datetime.strptime(date, "%Y-%m-%d")
+            date = date.replace('.', '')
             num = num.get_text().strip()
             num = num.replace(',', '')
             num = float(num)
             out_list.append((date, num))
         return out_list
 
-    def read_csv(self, load_path):
-        try:
-            df = pd.read_csv(load_path, encoding = 'utf-8')
-            logger.info("have file : {} ".format(load_path))
-            # load 하면 column 이 하나 더 생겨서 삭제함
-            df = df.iloc[:, 1:]
-            return df
-        except:
-            logger.info("have not file : {} ".format(load_path))
-            return self.df
-
-    def run(self, save_csv):
+    def run(self, df, n):
         logger.info("run start")
-        load_path = os.path.join('data', 'csv_file', save_csv)
-        df = self.read_csv(load_path)
-        # print(df)
-        # print(df.columns)
-        # print(df.index)
+        # df = pd.DataFrame(columns=['date', 'rate'])
         #425 가 마지막
-        # 기본값 1
-        n = 10
-        # print(df[self.df.columns[0]])
         while(True):
-            #print(n)
             try:
                 _, tbody = self.get_page_html(self.url, n)
             except Exception as e:
                 logger.error(e)
                 break
-            #print(tbody)
             out_list = self.tbody_data(tbody)
             # 더 이상 데이터가 없으면 중지함
             if len(out_list) < 1:
@@ -107,13 +79,7 @@ class NaverMacroEconomics(object):
 
         df = df.sort_values(by=self.df.columns[0], ascending=False)
         df = df.reindex(range(len(df)))
-        print(df)
-        # print(df.columns)
-        # print(df.index)
-        df.to_csv(os.path.join("data", "csv_file", save_csv))
-        logger.info('save csv')
         return df
-
 
 class ScrapMacroEconomics(object):
     def __init__(self):
@@ -131,11 +97,11 @@ class ScrapMacroEconomics(object):
         self.initialize_db = init_db.InitDB()
         # 스크랩 모듈별 클래스 불러오기
 
-    def create_exchange_table(self, tb_name):
-        '''종목별 주가 테이블 생성 함수'''
+    def create_rate_table(self, tb_name):
+        '''환율 테이블 생성 함수'''
         sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'macro_economics' and table_name = '{tb_name}'"
         if self.cur.execute(sql):
-            logger.info(f"daily_price.{tb_name} 테이블 존재함")
+            logger.info(f"macro_economics.{tb_name} 테이블 존재함")
             pass
         else:
             sql = f"CREATE TABLE IF NOT EXISTS macro_economics.`{tb_name}` (" \
@@ -146,26 +112,430 @@ class ScrapMacroEconomics(object):
             self.conn.commit()
             logger.info(f"macro_economics.{tb_name} 테이블 생성 완료")
 
-    def scrap_USDKRW(self):
-        self.create_exchange_table('USDKRW')
+    def create_price_table(self, tb_name):
+        '''가격 테이블 생성 함수'''
+        sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'macro_economics' and table_name = '{tb_name}'"
+        if self.cur.execute(sql):
+            logger.info(f"macro_economics.{tb_name} 테이블 존재함")
+            pass
+        else:
+            sql = f"CREATE TABLE IF NOT EXISTS macro_economics.`{tb_name}` (" \
+                  f"date DATE," \
+                  f"price FLOAT, " \
+                  f"PRIMARY KEY (date))"
+            self.cur.execute(sql)
+            self.conn.commit()
+            logger.info(f"macro_economics.{tb_name} 테이블 생성 완료")
+
+    def scrap_USDKRW(self, n):
+        logger.warning('scrap_USDKRW 시작')
+        self.create_rate_table('USDKRW')
         url = "https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW"
-        df = DataFrame(columns=['day', '매매기준율'])
-        pass
+        df = pd.DataFrame(columns=['date', 'rate'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.USDKRW VALUES ('{r.date}', '{r.rate}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_USDKRW 종료')
+
+    def scrap_EURKRW(self, n):
+        logger.warning('scrap_EURKRW 시작')
+        self.create_rate_table('EURKRW')
+        url = "https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_EURKRW"
+        df = pd.DataFrame(columns=['date', 'rate'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.EURKRW VALUES ('{r.date}', '{r.rate}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_EURKRW 종료')
+
+    def scrap_JPYKRW(self, n):
+        logger.warning('scrap_JPYKRW 시작')
+        self.create_rate_table('JPYKRW')
+        url = "https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_JPYKRW"
+        df = pd.DataFrame(columns=['date', 'rate'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.JPYKRW VALUES ('{r.date}', '{r.rate}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_JPYKRW 종료')
+
+    def scrap_CD91(self, n):
+        logger.warning('scrap_CD91 시작')
+        self.create_rate_table('CD91')
+        url = "https://finance.naver.com/marketindex/interestDailyQuote.nhn?marketindexCd=IRR_CD91"
+        df = pd.DataFrame(columns=['date', 'rate'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.CD91 VALUES ('{r.date}', '{r.rate}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_CD91 종료')
+
+    def scrap_CALL(self, n):
+        logger.warning('scrap_CALL 시작')
+        self.create_rate_table('CALL')
+        url = "https://finance.naver.com/marketindex/interestDailyQuote.nhn?marketindexCd=IRR_CALL"
+        df = pd.DataFrame(columns=['date', 'rate'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.CALL VALUES ('{r.date}', '{r.rate}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_CALL 종료')
+
+    def scrap_GOVT03Y(self, n):
+        logger.warning('scrap_GOVT03Y 시작')
+        self.create_rate_table('GOVT03Y')
+        url = "https://finance.naver.com/marketindex/interestDailyQuote.nhn?marketindexCd=IRR_GOVT03Y"
+        df = pd.DataFrame(columns=['date', 'rate'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.GOVT03Y VALUES ('{r.date}', '{r.rate}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_GOVT03Y 종료')
+
+    def scrap_CORP03Y(self, n):
+        logger.warning('scrap_CORP03Y 시작')
+        self.create_rate_table('CORP03Y')
+        url = "https://finance.naver.com/marketindex/interestDailyQuote.nhn?marketindexCd=IRR_CORP03Y"
+        df = pd.DataFrame(columns=['date', 'rate'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.CORP03Y VALUES ('{r.date}', '{r.rate}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_CORP03Y 종료')
+
+    def scrap_KOREA_GOLD(self, n):
+        logger.warning('scrap_KOREA_GOLD 시작')
+        self.create_price_table('KOREA_GOLD')
+        url = "https://finance.naver.com/marketindex/goldDailyQuote.nhn?"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.KOREA_GOLD VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_KOREA_GOLD 종료')
+
+    def scrap_WORLD_GOLD(self, n):
+        logger.warning('scrap_WORLD_GOLD 시작')
+        self.create_price_table('WORLD_GOLD')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?marketindexCd=CMDT_GC&fdtc=2"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.WORLD_GOLD VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_WORLD_GOLD 종료')
+
+
+    def scrap_DUBAI_OIL(self, n):
+        logger.warning('scrap_DUBAI_OIL 시작')
+        self.create_price_table('DUBAI_OIL')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?marketindexCd=OIL_DU&fdtc=2"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.DUBAI_OIL VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_DUBAI_OIL 종료')
+
+    def scrap_WTI(self, n):
+        logger.warning('scrap_WTI 시작')
+        self.create_price_table('WTI')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?marketindexCd=OIL_CL&fdtc=2"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.WTI VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_WTI 종료')
+
+    def scrap_CU(self, n):
+        logger.warning('scrap_CU 시작')
+        self.create_price_table('CU')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_CDY"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.CU VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_CU 종료')
+
+    def scrap_PB(self, n):
+        logger.warning('scrap_PB 시작')
+        self.create_price_table('PB')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_PDY"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.PB VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_PB 종료')
+
+    def scrap_ZN(self, n):
+        logger.warning('scrap_ZN 시작')
+        self.create_price_table('ZN')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_ZDY"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.ZN VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_ZN 종료')
+
+    def scrap_NI(self, n):
+        logger.warning('scrap_NI 시작')
+        self.create_price_table('NI')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_NDY"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.NI VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_NI 종료')
+
+    def scrap_AL(self, n):
+        logger.warning('scrap_AL 시작')
+        self.create_price_table('AL')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_AAY"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.AL VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_AL 종료')
+
+    def scrap_SN(self, n):
+        logger.warning('scrap_SN 시작')
+        self.create_price_table('SN')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_SDY"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.SN VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_SN 종료')
+
+    def scrap_corn(self, n):
+        logger.warning('scrap_corn 시작')
+        self.create_price_table('corn')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_C"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.corn VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_corn 종료')
+
+    def scrap_soybean(self, n):
+        logger.warning('scrap_soybean 시작')
+        self.create_price_table('soybean')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_S"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.soybean VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_soybean 종료')
+
+    def scrap_soybean_cake(self, n):
+        logger.warning('scrap_soybean_cake 시작')
+        self.create_price_table('soybean_cake')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_SM"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.soybean_cake VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_soybean_cake 종료')
+
+    def scrap_soybean_oil(self, n):
+        logger.warning('scrap_soybean_oil 시작')
+        self.create_price_table('soybean_oil')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_BO"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.soybean_oil VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_soybean_oil 종료')
+
+    def scrap_wheat(self, n):
+        logger.warning('scrap_wheat 시작')
+        self.create_price_table('wheat')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_W"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.wheat VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_wheat 종료')
+
+    def scrap_rice(self, n):
+        logger.warning('scrap_rice 시작')
+        self.create_price_table('rice')
+        url = "https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_RR"
+        df = pd.DataFrame(columns=['date', 'price'])
+        nfc = NaverMacroEconomics(url, df)
+        df = nfc.run(df, n)
+        try:
+            for r in df.itertuples():
+                sql = f"REPLACE INTO macro_economics.rice VALUES ('{r.date}', '{r.price}')"
+                self.cur.execute(sql)
+                self.conn.commit()
+        except Exception as e:
+            logger.error(e)
+        logger.warning('scrap_rice 종료')
+
 
 
 if __name__ == '__main__':
-    # 달러 환율
-    url = "https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_USDKRW"
-    df = DataFrame(columns=['day', '매매기준율'])
-    nfc = NaverMacroEconomics(url, df)
-    save_csv = 'doller.csv'
-    nfc.run(save_csv)
-    # load_path = os.path.join('data', 'csv_file', 'doller.csv')
-    # abs_path = os.path.abspath(load_path)
-    # print(abs_path)
+    scrap_macro_economics = ScrapMacroEconomics()
+    
+    # 달러, 유로, 엔 환율
+    # scrap_macro_economics.scrap_USDKRW(10)
+    # scrap_macro_economics.scrap_EURKRW(10)
+    # scrap_macro_economics.scrap_JPYKRW(10)
+
+    # 금리, 채권
+    # scrap_macro_economics.scrap_CD91(10)
+    # scrap_macro_economics.scrap_CALL(10)
+    # scrap_macro_economics.scrap_GOVT03Y(10)
+    # scrap_macro_economics.scrap_CORP03Y(10)
+    
+    # 금, 유가
+    # scrap_macro_economics.scrap_KOREA_GOLD(10)
+    # scrap_macro_economics.scrap_WORLD_GOLD(10)
+    # scrap_macro_economics.scrap_DUBAI_OIL(10)
+    # scrap_macro_economics.scrap_WTI(10)
+
+    # 금속
+    # scrap_macro_economics.scrap_CU(10)
+    # scrap_macro_economics.scrap_PB(10)
+    # scrap_macro_economics.scrap_ZN(10)
+    # scrap_macro_economics.scrap_NI(10)
+    # scrap_macro_economics.scrap_AL(10)
+    # scrap_macro_economics.scrap_SN(10)
+
+    # 상품
+    scrap_macro_economics.scrap_corn(10)
+    scrap_macro_economics.scrap_soybean(10)
+    scrap_macro_economics.scrap_soybean_cake(10)
+    scrap_macro_economics.scrap_soybean_oil(10)
+    scrap_macro_economics.scrap_wheat(10)
+    scrap_macro_economics.scrap_rice(10)
 
 
-    """
+    """ 
     모든상장종목 : http://kind.krx.co.kr/corpgeneral/corpList.do?method=download&searchType=13
     코스닥 : http://kind.krx.co.kr/corpgeneral/corpList.do?method=download&searchType=13&marketType=kosdaqMkt
     코스피 : http://kind.krx.co.kr/corpgeneral/corpList.do?method=download&searchType=13&marketType=stockMkt
@@ -183,27 +553,27 @@ if __name__ == '__main__':
     원유로 EURKRW : https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_EURKRW   // 날짜, 매매기준율
     원엔 JPYKRW : https://finance.naver.com/marketindex/exchangeDailyQuote.nhn?marketindexCd=FX_JPYKRW     // 날짜, 매매기준율
     
-    CD금리 CD : https://finance.naver.com/marketindex/interestDailyQuote.nhn?marketindexCd=IRR_CD91&page=1   // 날짜, 종가
+    CD금리 CD : https://finance.naver.com/marketindex/interestDailyQuote.nhn?marketindexCd=IRR_CD91   // 날짜, 종가
     콜금리 CALL : https://finance.naver.com/marketindex/interestDailyQuote.nhn?marketindexCd=IRR_CALL   // 날짜, 종가
     국고채3년 GOVT03Y : https://finance.naver.com/marketindex/interestDailyQuote.nhn?marketindexCd=IRR_GOVT03Y   // 날짜, 종가
     회사채3년 CORP03Y : https://finance.naver.com/marketindex/interestDailyQuote.nhn?marketindexCd=IRR_CORP03Y   // 날짜, 종가
     
-    국내금 GOLD : https://finance.naver.com/marketindex/goldDailyQuote.nhn?  // 날짜, 종가(매매기준율)
-    국제금 World_Gold: https://finance.naver.com/marketindex/worldDailyQuote.nhn?marketindexCd=CMDT_GC&fdtc=2   // 날짜, 종가
-    두바이유 Dubai_oil: https://finance.naver.com/marketindex/worldDailyQuote.nhn?marketindexCd=OIL_DU&fdtc=2  // 날짜, 종가
+    국내금 KOREA_GOLD : https://finance.naver.com/marketindex/goldDailyQuote.nhn?  // 날짜, 종가(매매기준율)
+    국제금 WORLD_GOLD: https://finance.naver.com/marketindex/worldDailyQuote.nhn?marketindexCd=CMDT_GC&fdtc=2   // 날짜, 종가
+    두바이유 DUBAI_OIL : https://finance.naver.com/marketindex/worldDailyQuote.nhn?marketindexCd=OIL_DU&fdtc=2  // 날짜, 종가
     유가WTI WTI : https://finance.naver.com/marketindex/worldDailyQuote.nhn?marketindexCd=OIL_CL&fdtc=2  // 날짜, 종가
     
-    구리 Cu : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_CDY&page=1   // 날짜, 종가
-    납 Pb : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_PDY&page=1   // 날짜, 종가
-    아연 Zn : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_ZDY&page=1   // 날짜, 종가
-    니켈 Ni : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_NDY&page=1   // 날짜, 종가
-    알루미늄합금 Al : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_AAY&page=1   // 날짜, 종가
-    주석 Sn : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_SDY&page=1   // 날짜, 종가
+    구리 Cu : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_CDY   // 날짜, 종가
+    납 Pb : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_PDY   // 날짜, 종가
+    아연 Zn : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_ZDY   // 날짜, 종가
+    니켈 Ni : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_NDY   // 날짜, 종가
+    알루미늄합금 Al : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_AAY   // 날짜, 종가
+    주석 Sn : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_SDY   // 날짜, 종가
     
-    옥수수 corn : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_C&page=1    // 날짜, 종가
-    대두 soybean : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_S&page=1   // 날짜, 종가
-    대두박 soybean_cake : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_SM&page=1   // 날짜, 종가
-    대두유 soybean_oil: https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_BO&page=1    // 날짜, 종가
-    소맥 wheat : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_W&page=1   // 날짜, 종가
-    쌀 rice : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_RR&page=1   // 날짜, 종가
+    옥수수 corn : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_C   // 날짜, 종가
+    대두 soybean : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_S   // 날짜, 종가
+    대두박 soybean_cake : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_SM   // 날짜, 종가
+    대두유 soybean_oil: https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_BO    // 날짜, 종가
+    소맥 wheat : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_W   // 날짜, 종가
+    쌀 rice : https://finance.naver.com/marketindex/worldDailyQuote.nhn?fdtc=2&marketindexCd=CMDT_RR   // 날짜, 종가
     """

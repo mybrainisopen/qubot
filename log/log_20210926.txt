@@ -139,3 +139,15 @@
 [2021-09-26 13:11][INFO] row 추가 완료
 [2021-09-26 13:11][INFO] row 추가 완료
 [2021-09-26 13:11][INFO] row 추가 완료
+[2021-09-26 16:11][INFO] C:\Project\qubot\common\chromedriver.exe
+[2021-09-26 16:11][INFO] --------------------------------------------
+[2021-09-26 16:11][INFO] process start
+[2021-09-26 16:11][INFO] Selenium driver 생성
+[2021-09-26 16:11][INFO] click_id : fromDate 
+[2021-09-26 16:11][INFO] day 20201101 
+[2021-09-26 16:12][INFO] C:\Project\qubot\common\chromedriver.exe
+[2021-09-26 16:12][INFO] --------------------------------------------
+[2021-09-26 16:12][INFO] process start
+[2021-09-26 16:12][INFO] Selenium driver 생성
+[2021-09-26 16:12][INFO] click_id : fromDate 
+[2021-09-26 16:12][INFO] day 20201101 

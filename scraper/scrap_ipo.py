@@ -19,7 +19,7 @@ DATA_DIR = os.path.join(BASE_DIR, "data")
 logger = logger.logger
 SeleniumProcess = selenium_process.SeleniumProcess
 
-class Crawler_BS4(object):
+class CrawlerBS4(object):
     """crawler 부분"""
     def __init__(self, driver):
         """driver를 받아 BeautifulSoup 객체를 생성한다."""
@@ -184,7 +184,7 @@ class Crawler_BS4(object):
         logger.info("row 추가 완료")
         return df
 
-class Crawler_Selenium(object):
+class CrawlerSelenium(object):
     def __init__(self, url):
         self.sp = SeleniumProcess(url)
 
@@ -215,7 +215,7 @@ class Crawler_Selenium(object):
                     new_page = handle
             driver.switch_to.window(new_page)
             time.sleep(3)
-            cbs4 = Crawler_BS4(driver)
+            cbs4 = CrawlerBS4(driver)
             time.sleep(3)
             df = cbs4.data_to_df(df)
             time.sleep(3)
@@ -223,7 +223,8 @@ class Crawler_Selenium(object):
             # 사실상 신규상장기업현황 일때만 작동하게 됨
             try:
                 click_id = 'tabName'
-                list_by_id = self.find_list_by_id(driver, click_id)
+                # list_by_id = self.find_list_by_id(driver, click_id)
+                list_by_id = SeleniumProcess.find_list_by_id(driver, click_id)
                 for _id in list_by_id[1:]:
                     try:
                         _id.click()
@@ -231,7 +232,7 @@ class Crawler_Selenium(object):
                         logger.info(error)
                         continue
                     time.sleep(3)
-                    cbs4 = Crawler_BS4(driver)
+                    cbs4 = CrawlerBS4(driver)
                     time.sleep(3)
                     df = cbs4.data_to_df(df)
                     time.sleep(3)
@@ -246,7 +247,7 @@ class Crawler_Selenium(object):
             #     break
         return df
 
-    def run(self, df, save_csv):
+    def run(self, df):
         logger.info("--------------------------------------------")
         logger.info("process start")
 
@@ -278,7 +279,7 @@ class Crawler_Selenium(object):
 
         #전체 페이지 갯수 가져오기
         #나중에 페이지를 넘기기 위해서 가져옴
-        cbs4 = Crawler_BS4(driver)
+        cbs4 = CrawlerBS4(driver)
         #time.sleep(3)
         index_num, all_index_num = cbs4.find_index()
         logger.info("index_num : {} ".format(index_num))
@@ -308,39 +309,104 @@ class Crawler_Selenium(object):
             df = self.click_popup_list(driver, list_by_css, df)
             #time.sleep(3)
         print(df)
-        df.to_csv(os.path.join("data", "csv_file", save_csv))
         self.sp.down_chromedriver(driver)
         logger.info("process end")
         logger.info("--------------------------------------------")
 
+class ScrapIPO():
+    def __init__(self):
+        self.conn = pymysql.connect(
+            host=cf.db_ip,
+            port=int(cf.db_port),
+            user=cf.db_id,
+            password=cf.db_pw,
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor)
+        self.cur = self.conn.cursor()
+        self.now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+        self.today = datetime.date.today()
+        # DB초기화
+        self.initialize_db = init_db.InitDB()
+        # 스크랩 모듈별 클래스 불러오기
+        # self.create_IPO_table()
+
+    def create_IPO_table(self):
+        '''환율 테이블 생성 함수'''
+        sql = f"SELECT 1 FROM information_schema.tables WHERE table_schema = 'scrap_IPO' and table_name = 'IPO'"
+        if self.cur.execute(sql):
+            logger.info(f"scrap_IPO.IPO 테이블 존재함")
+            pass
+        else:
+            sql = f"CREATE TABLE IF NOT EXISTS scrap_IPO.`IPO` (" \
+                  f"회사명 VARCHAR(30)," \
+                  f"심사청구일 DATE, " \
+                  f"심사결과 CHAR(10), " \
+                  f"신규상장 DATE, " \
+                  f"업종 VARCHAR(50), " \
+                  f"기업구분 VARCHAR(20), " \
+                  f"결산월 CHAR(5), " \
+                  f"상장(예정)주식수 BIGINT(20), " \
+                  f"공모(예정)주식수 BIGINT(20), " \
+                  f"상장주선인 VARCHAR(50), " \
+                  f"설립일 DATE, " \
+                  f"수요예측일정 DATE, " \
+                  f"공모청약일정 DATE, " \
+                  f"상장(예정)일 DATE, " \
+                  f"납입일 DATE, " \
+                  f"희망공모가격 BIGINT(20), " \
+                  f"발행주식수-공모전(주) BIGINT(20), " \
+                  f"발행주식수-공모후(주) BIGINT(20), " \
+                  f"공모금액-주식수(주)-모집 BIGINT(20)," \
+                  f"공모금액-주식수(주)-매출 BIGINT(20), " \
+                  f"공모금액-주식수(주)-총액 BIGINT(20), " \
+                  f"그룹별배엊-주식수(주)-우리사주조합 BIGINT(20), " \
+                  f"그룹별배정-주식수(주)-기관투자자 BIGINT(20), " \
+                  f"그룹별배정-주식수(주)-일반투자자 BIGINT(20), " \
+                  f"그룹별배정-주식수(주)-기타 BIGINT(20), " \
+                  f"그룹별배정-주식수(주)-합계 BIGINT(20)," \
+                  f"사모(주관사인수)-주식수 BIGINT(20), " \
+                  f"상장주식수-보통주 BIGINT(20)," \
+                  f"의무보유-보통주 BIGINT(20)," \
+                  f"우리사주-보통주 BIGINT(20)," \
+                  f"유통가능주식수-보통주 BIGINT(20)," \
+                  f"청약경쟁률 FLOAT" \
+                  f"PRIMARY KEY (회사명))"
+            self.cur.execute(sql)
+            self.conn.commit()
+            logger.info(f"scrap_IPO.IPO 테이블 생성 완료")
+
+    def scrap_preparation(self):
+        '''예비심사기업'''
+        url = "https://kind.krx.co.kr/listinvstg/listinvstgcom.do?method=searchListInvstgCorpMain"
+        cs = CrawlerSelenium(url)
+        df = DataFrame(columns=['회사명', '심사청구일', '심사결과', '신규상장', '업종', '기업구분', '결산월', '상장(예정)주식수', '공모(예정)주식수', '상장주선인'])
+        cs.run(df)
+
+    def scrap_public_offering(self):
+        '''공모기업현황'''
+        url = "https://kind.krx.co.kr/listinvstg/pubofrprogcom.do?method=searchPubofrProgComMain"
+        cs = CrawlerSelenium(url)
+        df = DataFrame(columns=['회사명', '설립일', '업종', '결산월', '기업구분', \
+                                '수요예측일정', '공모청약일정', '상장(예정)일', '납입일', '희망공모가격', \
+                                '발행주식수-공모전(주)', '발행주식수-공모후(주)', \
+                                '공모금액-주식수(주)-모집', '공모금액-주식수(주)-매출', '공모금액-주식수(주)-총액', \
+                                '그룹별배정-주식수(주)-우리사주조합', '그룹별배정-주식수(주)-기관투자자', '그룹별배정-주식수(주)-일반투자자', '그룹별배정-주식수(주)-기타', '그룹별배정-주식수(주)-합계', \
+                                '사모(주관사인수)-주식수', \
+                                '상장주식수-보통주', '의무보유-보통주', '우리사주-보통주', '유통가능주식수-보통주'])
+        cs.run(df)
+
+    def scrap_listing(self):
+        '''신규상장기업현황'''
+        url = "https://kind.krx.co.kr/listinvstg/listingcompany.do?method=searchListingTypeMain"
+        cs = CrawlerSelenium(url)
+        df = DataFrame(columns=['회사명', '청약경쟁률'])
+        cs.run(df)
 
 if __name__ == '__main__':
-    # 예비심사기업
-    url = "https://kind.krx.co.kr/listinvstg/listinvstgcom.do?method=searchListInvstgCorpMain"
-    cs = Crawler_Selenium(url)
-    df = DataFrame(columns=['회사명', '심사청구일', '심사결과', '신규상장', '업종', '기업구분', '결산월', '상장(예정)주식수', '공모(예정)주식수', '상장주선인'])
-    save_csv = 'test1.csv'
-    cs.run(df, save_csv)
-
-    # # 공모기업현황
-    # url = "https://kind.krx.co.kr/listinvstg/pubofrprogcom.do?method=searchPubofrProgComMain"
-    # cs = Crawler_Selenium(url)
-    # df = DataFrame(columns=['회사명', '설립일', '업종', '결산월', '기업구분', \
-    #                         '수요예측일정', '공모청약일정', '상장(예정)일', '납입일', '희망공모가격', \
-    #                         '발행주식수-공모전 (주)', '발행주식수-공모후 (주)', \
-    #                         '공모금액-주식수 (주)-모집', '공모금액-주식수 (주)-매출', '공모금액-주식수 (주)-총액', \
-    #                         '그룹별배정-주식수 (주)-우리사주조합', '그룹별배정-주식수 (주)-기관투자자', '그룹별배정-주식수 (주)-일반투자자', '그룹별배정-주식수 (주)-기타', '그룹별배정-주식수 (주)-합계', \
-    #                         '사모(주관사인수)-주식수', \
-    #                         '상장주식수-보통주', '의무보유-보통주', '우리사주-보통주', '유통가능주식수-보통주'])
-    # save_csv = 'test2.csv'
-    # cs.run(df, save_csv)
-    #
-    # # 신규상장기업현황
-    # url = "https://kind.krx.co.kr/listinvstg/listingcompany.do?method=searchListingTypeMain"
-    # cs = Crawler_Selenium(url)
-    # df = DataFrame(columns=['회사명', '청약경쟁률'])
-    # save_csv = 'test3.csv'
-    # cs.run(df, save_csv)
+    scrap_IPO = ScrapIPO()
+    scrap_IPO.scrap_preparation()
+    scrap_IPO.scrap_public_offering()
+    scrap_IPO.scrap_listing()
 
     '''
     예비심사기업 : https://kind.krx.co.kr/listinvstg/listinvstgcom.do?method=searchListInvstgCorpMain  # 예비심사기업

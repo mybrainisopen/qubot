@@ -1,50 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe5df4b0-3be7-42b5-ac85-31d96f15a87f" name="Default Changelist" comment="20210605">
-      <change afterPath="$PROJECT_DIR$/common/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/init_db.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/selenium_process.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/kind_krx/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/libs/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/naver_finance/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/naver_finance_ver2/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/qubot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/qubot.iml" afterDir="false" />
+    <list default="true" id="fe5df4b0-3be7-42b5-ac85-31d96f15a87f" name="Default Changelist" comment="20210926">
+      <change afterPath="$PROJECT_DIR$/scraper/scrap_world_index.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyzer/analyze_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_all.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyzer/analyze_bollinger.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_bollinger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyzer/analyze_fundamental.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_fundamental.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyzer/analyze_momentum.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_momentum.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyzer/analyze_valuation.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/analyze_valuation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyzer/build_universe.py" beforeDir="false" afterPath="$PROJECT_DIR$/analyzer/build_universe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backtester/backtester.py" beforeDir="false" afterPath="$PROJECT_DIR$/backtester/backtester.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backtester/real_investment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backtester/real_investment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backup/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backtester/meta_tester.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/db_sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/common/db_sql.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/common/logger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/logging_process.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/common/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/selenium_process.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/setting.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/documents/qubot.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/documents/qubot.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/practice.py" beforeDir="false" afterPath="$PROJECT_DIR$/backtester/test_investment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/nasdaq.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/naver_main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/scrap_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_all.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/scrap_daily_price.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_daily_price.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/scrap_financial_statements.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_financial_statements.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/common/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/common/init_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/csv_file/doller.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/csv_file/doller.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/csv_file/exchange_rate/won-doller.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/csv_file/exchange_rate/won-doller.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/log_20210926.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log/log_20210926.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qubot.py" beforeDir="false" afterPath="$PROJECT_DIR$/qubot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scraper/data/csv_file/doller.csv" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/data/csv_file/doller.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scraper/data/html_file/html_file.txt" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/data/html_file/html_file.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scraper/scrap_ipo.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_ipo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scraper/scrap_macro_economics.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_macro_economics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/scrap_market_index.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_market_index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/scrap_stock_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_stock_info.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trader/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trader/auto_connect.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trader/auto_trader.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trader/test.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +77,7 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.scrap_ipo">
-    <configuration name="kind_main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="init_db" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="qubot" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -115,11 +85,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/common" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/kind_main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/common/init_db.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -128,7 +98,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="naver_main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="qubot" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="qubot" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -136,32 +106,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/naver_main.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="scrap_all" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="qubot" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test/naver_finance_ver2" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/naver_finance_ver2/scrap_all.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/qubot.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -191,7 +140,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="scrap_macro_economics" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="scrap_world_index" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="qubot" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -203,7 +152,28 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scraper/scrap_macro_economics.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scraper/scrap_world_index.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="qubot" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -215,10 +185,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.scrap_ipo" />
-        <item itemvalue="Python.kind_main" />
-        <item itemvalue="Python.scrap_macro_economics" />
-        <item itemvalue="Python.naver_main" />
-        <item itemvalue="Python.scrap_all" />
+        <item itemvalue="Python.init_db" />
+        <item itemvalue="Python.scrap_world_index" />
+        <item itemvalue="Python.qubot" />
+        <item itemvalue="Python.test" />
       </list>
     </recent_temporary>
   </component>
@@ -322,7 +292,21 @@
       <option name="project" value="LOCAL" />
       <updated>1622888066132</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="20210926">
+      <created>1632630203506</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1632630203506</updated>
+    </task>
+    <task id="LOCAL-00015" summary="20210926">
+      <created>1632630245243</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1632630245243</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -353,7 +337,8 @@
     <MESSAGE value="20210207 - valuation 에러 수정" />
     <MESSAGE value="20210214 - backtester 에러 수정" />
     <MESSAGE value="20210605" />
-    <option name="LAST_COMMIT_MESSAGE" value="20210605" />
+    <MESSAGE value="20210926" />
+    <option name="LAST_COMMIT_MESSAGE" value="20210926" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -362,6 +347,10 @@
           <url>file://$PROJECT_DIR$/trader/auto_connect.py</url>
           <line>1</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/test/naver_finance/nasdaq.py</url>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

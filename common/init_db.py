@@ -127,6 +127,7 @@ class InitDB():
         self.create_database('scrap_macro_economics')
         self.create_database('scrap_daily_price')
         self.create_database('scrap_financial_statements')
+        self.create_database('scrap_IPO')
         self.create_database('analyze_fundamental')
         self.create_database('analyze_momentum')
         self.create_database('analyze_valuation')
