@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe5df4b0-3be7-42b5-ac85-31d96f15a87f" name="Default Changelist" comment="20210926">
-      <change afterPath="$PROJECT_DIR$/scraper/scrap_world_index.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+    <list default="true" id="fe5df4b0-3be7-42b5-ac85-31d96f15a87f" name="Default Changelist" comment="20211011">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/common/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/init_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/common/init_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/csv_file/doller.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/csv_file/doller.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/csv_file/exchange_rate/won-doller.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/csv_file/exchange_rate/won-doller.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log/log_20210926.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log/log_20210926.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qubot.py" beforeDir="false" afterPath="$PROJECT_DIR$/qubot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/data/csv_file/doller.csv" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/data/csv_file/doller.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scraper/data/html_file/html_file.txt" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/data/html_file/html_file.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scraper/scrap_ipo.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_ipo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scraper/scrap_macro_economics.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_macro_economics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scraper/scrap_world_index.py" beforeDir="false" afterPath="$PROJECT_DIR$/scraper/scrap_world_index.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -306,7 +297,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632630245243</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="20211011">
+      <created>1633942276421</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1633942276421</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -338,7 +336,8 @@
     <MESSAGE value="20210214 - backtester 에러 수정" />
     <MESSAGE value="20210605" />
     <MESSAGE value="20210926" />
-    <option name="LAST_COMMIT_MESSAGE" value="20210926" />
+    <MESSAGE value="20211011" />
+    <option name="LAST_COMMIT_MESSAGE" value="20211011" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

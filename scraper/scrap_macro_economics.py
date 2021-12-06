@@ -54,7 +54,7 @@ class NaverMacroEconomics(object):
             out_list.append((date, num))
         return out_list
 
-    def run(self, df, n):
+    def run(self, df, n):  # 페이지수 바꾸기
         logger.info("run start")
         # df = pd.DataFrame(columns=['date', 'rate'])
         #425 가 마지막

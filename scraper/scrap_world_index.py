@@ -100,7 +100,7 @@ class WorldStockMarket(object):
             logger.info("have not file : {} ".format(load_path))
             return self.df
 
-    def run(self, df, num):
+    def run(self, df, num):  # 페이지 수 입력하게 바꾸기
         logger.info("run start")
         #driver 로딩
         driver = self.sp.run_chromedriver()
@@ -292,7 +292,7 @@ class ScrapMacroEconomics(object):
 
 if __name__ == '__main__':
     scrap_macro_economics = ScrapMacroEconomics()
-    # scrap_macro_economics.scrap_DOW()
+    scrap_macro_economics.scrap_DOW()
     scrap_macro_economics.scrap_NASDAQ()
     scrap_macro_economics.scrap_SNP500()
     scrap_macro_economics.scrap_SHANGHAI()

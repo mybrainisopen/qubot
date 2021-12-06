@@ -1,6 +1,5 @@
 import os
 import time
-import csv
 import pymysql
 import datetime
 import pandas as pd
@@ -247,7 +246,7 @@ class CrawlerSelenium(object):
             #     break
         return df
 
-    def run(self, df):
+    def run(self, df):  # 시작일, 종료일 입력으로 바꾸기
         logger.info("--------------------------------------------")
         logger.info("process start")
 
@@ -328,7 +327,7 @@ class ScrapIPO():
         # DB초기화
         self.initialize_db = init_db.InitDB()
         # 스크랩 모듈별 클래스 불러오기
-        # self.create_IPO_table()
+        self.create_IPO_table()
 
     def create_IPO_table(self):
         '''환율 테이블 생성 함수'''
@@ -345,31 +344,31 @@ class ScrapIPO():
                   f"업종 VARCHAR(50), " \
                   f"기업구분 VARCHAR(20), " \
                   f"결산월 CHAR(5), " \
-                  f"상장(예정)주식수 BIGINT(20), " \
-                  f"공모(예정)주식수 BIGINT(20), " \
+                  f"상장주식수 BIGINT(20), " \
+                  f"공모주식수 BIGINT(20), " \
                   f"상장주선인 VARCHAR(50), " \
                   f"설립일 DATE, " \
                   f"수요예측일정 DATE, " \
                   f"공모청약일정 DATE, " \
-                  f"상장(예정)일 DATE, " \
+                  f"상장일 DATE, " \
                   f"납입일 DATE, " \
                   f"희망공모가격 BIGINT(20), " \
-                  f"발행주식수-공모전(주) BIGINT(20), " \
-                  f"발행주식수-공모후(주) BIGINT(20), " \
-                  f"공모금액-주식수(주)-모집 BIGINT(20)," \
-                  f"공모금액-주식수(주)-매출 BIGINT(20), " \
-                  f"공모금액-주식수(주)-총액 BIGINT(20), " \
-                  f"그룹별배엊-주식수(주)-우리사주조합 BIGINT(20), " \
-                  f"그룹별배정-주식수(주)-기관투자자 BIGINT(20), " \
-                  f"그룹별배정-주식수(주)-일반투자자 BIGINT(20), " \
-                  f"그룹별배정-주식수(주)-기타 BIGINT(20), " \
-                  f"그룹별배정-주식수(주)-합계 BIGINT(20)," \
-                  f"사모(주관사인수)-주식수 BIGINT(20), " \
-                  f"상장주식수-보통주 BIGINT(20)," \
-                  f"의무보유-보통주 BIGINT(20)," \
-                  f"우리사주-보통주 BIGINT(20)," \
-                  f"유통가능주식수-보통주 BIGINT(20)," \
-                  f"청약경쟁률 FLOAT" \
+                  f"발행주식수_공모전 BIGINT(20), " \
+                  f"발행주식수_공모후 BIGINT(20), " \
+                  f"공모금액_주식수_모집 BIGINT(20)," \
+                  f"공모금액_주식수_매출 BIGINT(20), " \
+                  f"공모금액_주식수_총액 BIGINT(20), " \
+                  f"그룹별배정_주식수_우리사주조합 BIGINT(20), " \
+                  f"그룹별배정_주식수_기관투자자 BIGINT(20), " \
+                  f"그룹별배정_주식수_일반투자자 BIGINT(20), " \
+                  f"그룹별배정_주식수_기타 BIGINT(20), " \
+                  f"그룹별배정_주식수_합계 BIGINT(20)," \
+                  f"사모_주관사인수_주식수 BIGINT(20), " \
+                  f"상장주식수_보통주 BIGINT(20)," \
+                  f"의무보유_보통주 BIGINT(20)," \
+                  f"우리사주_보통주 BIGINT(20)," \
+                  f"유통가능주식수_보통주 BIGINT(20)," \
+                  f"청약경쟁률 FLOAT, " \
                   f"PRIMARY KEY (회사명))"
             self.cur.execute(sql)
             self.conn.commit()
@@ -404,9 +403,9 @@ class ScrapIPO():
 
 if __name__ == '__main__':
     scrap_IPO = ScrapIPO()
-    scrap_IPO.scrap_preparation()
-    scrap_IPO.scrap_public_offering()
-    scrap_IPO.scrap_listing()
+    # scrap_IPO.scrap_preparation()
+    # scrap_IPO.scrap_public_offering()
+    # scrap_IPO.scrap_listing()
 
     '''
     예비심사기업 : https://kind.krx.co.kr/listinvstg/listinvstgcom.do?method=searchListInvstgCorpMain  # 예비심사기업
